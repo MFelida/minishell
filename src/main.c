@@ -6,14 +6,14 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/26 14:35:57 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:36:36 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void)
+int	main(void)
 {
 	printf("Hello, World! BRUH\n");
 	return (EXIT_SUCCESS);
