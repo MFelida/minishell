@@ -2,6 +2,7 @@
 compile_commands.json
 
 obj/
+lib/
 **test*
 
 minishell
