@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/26 14:26:03 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:30:02 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 int main(void)
 {
-	printf("Hello, World!\n");
+	printf("Hello, World! BRUH\n");
 	return EXIT_SUCCESS;
 }
