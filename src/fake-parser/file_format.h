@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   file_format.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/27 18:17:51 by mifelida         ###   ########.fr       */
+/*   Created: 2025/05/27 16:53:35 by mifelida          #+#    #+#             */
+/*   Updated: 2025/05/27 18:21:56 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fake-parser/fake_parser.h"
+#ifndef FILE_FORMAT_H
+# define FILE_FORMAT_H
 
-#include <stdio.h>
-#include <stdlib.h>
+# include "fake-parser/fake_parser.h"
 
-int	main(int argc, char *argv[])
-{
-	if (argc > 1)
-		get_parse_tree(argv[1]);
-	else
-		printf("Hello, World!\n");
-	return (EXIT_SUCCESS);
-}
+char	*g_op_strings[] = {
+[FP_OP_CMD] = "cmd",
+[FP_OP_PIPE] = "pipe",
+[FP_OP_FILE_OUTPUT] = "output",
+[FP_OP_FILE_INPUT] = "input",
+[FP_OP_ERROR] = "",
+};
+
+#endif // !FILE_FORMAT_H

@@ -1,13 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fake-parser.h                                      :+:      :+:    :+:   */
+/*   parse_tree.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 16:09:07 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/27 16:09:27 by mifelida         ###   ########.fr       */
+/*   Created: 2025/05/27 17:07:18 by mifelida          #+#    #+#             */
+/*   Updated: 2025/05/27 17:21:03 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	get_parse_tree(char *ser_tree);
+#ifndef PARSE_TREE_H
+# define PARSE_TREE_H
+
+#endif // !PARSE_TREE_H
