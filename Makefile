@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -xc
 CPPFLAGS = -Iinclude -Ilibft
 
 NAME = minishell
@@ -19,8 +19,9 @@ LIBDIR = lib
 LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
 LIBFLAGS = -L$(LIBDIR) -lft
 
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean debug
 
+all: CFLAGS += -O2
 all: $(NAME)
 
 $(NAME): $(OBJS)
@@ -39,6 +40,9 @@ $(LIBDIR):
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
+
+debug: CFLAGS += -O0 -g
+debug: fclean $(NAME)
 
 clean:
 	@rm -rfv $(OBJDIR)
