@@ -1,24 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   fake-parser.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/27 16:10:12 by mifelida         ###   ########.fr       */
+/*   Created: 2025/05/27 16:09:07 by mifelida          #+#    #+#             */
+/*   Updated: 2025/05/27 16:09:27 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fake-parser/fake-parser.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-
-int	main(int argc, char *argv[])
-{
-	if (argc > 1)
-		get_parse_tree(argv[1]);
-	printf("Hello, World!\n");
-	return (EXIT_SUCCESS);
-}
+void	get_parse_tree(char *ser_tree);

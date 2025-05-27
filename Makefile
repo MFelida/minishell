@@ -6,10 +6,13 @@ NAME = minishell
 
 SRCFILES = main.c
 SRCDIR = src
-SRCS = $(adprefix $(SRCDIR)/,$(SRCFILES))
 
 OBJDIR = obj
-OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o))
+
+PF_DIR = $(SRCDIR)/fake-parser
+include $(PF_DIR)/fake-parser.mk
+
+OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) $(PF_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib
@@ -29,7 +32,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(LIBS) | $(OBJDIR)
 $(LIBS): | $(LIBDIR)
 	@git submodule update --init --recursive
 	@make -C libft all
-	@cd $(LIBDIR); ln -s ../libft/libft.a
+	@cd $(LIBDIR); ln -sf ../libft/libft.a
 
 $(LIBDIR):
 	@mkdir -p $(LIBDIR)
