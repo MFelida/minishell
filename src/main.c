@@ -6,11 +6,11 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/27 18:17:51 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/29 22:20:53 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fake-parser/fake_parser.h"
+#include "fake_parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>

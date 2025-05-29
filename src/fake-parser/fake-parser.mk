@@ -1,4 +1,4 @@
-PF_SRCFILES = fake_parser.c
+PF_SRCFILES = fake_parser.c print_tree.c
 
 PF_OBJS = $(addprefix $(OBJDIR)/,$(PF_SRCFILES:.c=.o))
 
