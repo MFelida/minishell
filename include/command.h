@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:19 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 00:24:02 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:06:09 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define COMMAND_H
 
 # include <sys/resource.h>
-#include "fake_parser.h"
+# include "fake_parser.h"
 
 typedef enum e_cmd_io_type
 {

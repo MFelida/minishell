@@ -6,15 +6,19 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 00:24:41 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:10:06 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.h"
 
-#include <bits/types/struct_rusage.h>
+#include <stdlib.h>
+#include <sys/resource.h>
+#include <linux/limits.h>
+#include <stddef.h>
 #include <unistd.h>
 #include "fake_parser.h"
+#include "libft.h"
 
 t_cmd_params	cmd_params_default(void)
 {
@@ -32,9 +36,34 @@ t_cmd_params	cmd_params_default(void)
 	return (res);
 }
 
+char **make_argv(t_parse_node **nodes)
+{
+	char	**res;
+	size_t	n_args;
+	size_t	i;
+
+	n_args = 0;
+	while(nodes[n_args])
+		n_args++;
+	res = malloc((n_args + 1) * sizeof(char*));
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (nodes[i])
+	{
+		res[i] = nodes[i]->tok.id.value;
+		i++;
+	}
+	res[i] = NULL;
+	return (res);
+}
+
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
-	
+	params.cmd_args = make_argv(node->children);
+	if (!params.cmd_args)
+		return (1);
+	return (0);
 }
 
 int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
