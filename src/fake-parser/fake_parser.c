@@ -6,16 +6,16 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:05:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/29 21:57:45 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:02:20 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fake_parser.h"
+#include "file_format.h"
 #include "libft.h"
 
 #include <errno.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -64,7 +64,7 @@ t_parse_node	*get_cmd_node(int fd)
 
 	res = malloc(sizeof(t_parse_node));
 	res->tok = (t_fp_token){.op.type = FP_TOK_OP, .op.op = FP_OP_CMD};
-	res->children = ft_calloc(50, sizeof(t_parse_node*));
+	res->children = ft_calloc(50, sizeof (t_parse_node *));
 	i = 0;
 	while ((line = ft_gnl(fd)) && ft_strncmp(skip_whitespace(line), "\n", 1))
 	{
@@ -82,7 +82,7 @@ t_parse_node	*get_pipe_node(int fd)
 
 	res = malloc(sizeof(t_parse_node));
 	res->tok = (t_fp_token){.op.op = FP_OP_PIPE, .op.type = FP_TOK_OP};
-	res->children = ft_calloc(3, sizeof(t_parse_node*));
+	res->children = ft_calloc(3, sizeof(t_parse_node *));
 	res->children[0] = get_next_node(fd);
 	res->children[1] = get_next_node(fd);
 	return (res);
@@ -90,14 +90,19 @@ t_parse_node	*get_pipe_node(int fd)
 
 t_parse_node	*get_next_node(int fd)
 {
-	char	*line;
+	char		*line;
+	t_fp_ops	op;
 
 	line = ft_gnl(fd);
-	if (!ft_strncmp(skip_whitespace(line), "cmd", 3))
-		return (free(line), get_cmd_node(fd));
-	if (!ft_strncmp(skip_whitespace(line), "pipe", 4))
-		return (free(line), get_pipe_node(fd));
-	return (NULL);
+	op = 0;
+	while (op < sizeof(g_op_strings)
+		&& ft_strncmp(skip_whitespace(line),
+			g_op_strings[op], ft_strlen(g_op_strings[op])))
+		op++;
+	free(line);
+	if (op == FP_OP_ERROR || op >= sizeof(g_op_strings))
+		return (NULL);
+	return (g_node_getters[op](fd));
 }
 
 t_parse_node	*get_parse_tree(char *file)
