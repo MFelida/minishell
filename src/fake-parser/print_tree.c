@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 14:55:54 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/29 21:58:02 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 10:53:16 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "fake_parser.h"
 #include "libft.h"
 
-void	_indent(int	tab_depth)
+void	_indent(int tab_depth)
 {
 	while (tab_depth-- > 0)
 		ft_putstr_fd("  ", 1);
