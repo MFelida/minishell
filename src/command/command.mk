@@ -1,4 +1,4 @@
-CMD_SRCFILES = command.c
+CMD_SRCFILES = command.c find_bin.c
 
 CMD_OBJS = $(addprefix $(OBJDIR)/,$(CMD_SRCFILES:.c=.o))
 

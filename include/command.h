@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:19 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 11:06:09 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:32:32 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,11 @@ typedef struct s_cmd_io
 	union
 	{
 		int		fd;
-		char	*file_name;
+		struct
+		{
+			char	*name;
+			int		flags;
+		}	file;
 	};
 }	t_cmd_io;
 
