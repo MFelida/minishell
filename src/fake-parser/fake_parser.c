@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:05:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 11:02:20 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/05/30 15:30:06 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void			fp_print(t_parse_node node, int tab_depth);
 
 #define FP_WHITESPACE	"\t\v\f "
 
-char	*skip_whitespace(char *str)
+char	*skip_ws(char *str)
 {
 	while (ft_strchr(FP_WHITESPACE, *str))
 		str++;
@@ -66,8 +66,13 @@ t_parse_node	*get_cmd_node(int fd)
 	res->tok = (t_fp_token){.op.type = FP_TOK_OP, .op.op = FP_OP_CMD};
 	res->children = ft_calloc(50, sizeof (t_parse_node *));
 	i = 0;
-	while ((line = ft_gnl(fd)) && ft_strncmp(skip_whitespace(line), "\n", 1))
+	while ((line = ft_gnl(fd)) && ft_strncmp(skip_ws(line), "\n", 1))
 	{
+		if (!ft_strncmp(skip_ws(line), "\n", 1))
+		{
+			free(line);
+			break;
+		}
 		res->children[i] = get_id_node(line);
 		free(line);
 		i++;
@@ -96,7 +101,7 @@ t_parse_node	*get_next_node(int fd)
 	line = ft_gnl(fd);
 	op = 0;
 	while (op < sizeof(g_op_strings)
-		&& ft_strncmp(skip_whitespace(line),
+		&& ft_strncmp(skip_ws(line),
 			g_op_strings[op], ft_strlen(g_op_strings[op])))
 		op++;
 	free(line);
