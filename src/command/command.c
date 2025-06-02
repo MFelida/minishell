@@ -6,24 +6,26 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 16:57:32 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:53:34 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.h"
+#include "exit_statuses.h"
+#include "fake_parser.h"
+#include "libft.h"
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <linux/limits.h>
 #include <stddef.h>
 #include <unistd.h>
-#include "fake_parser.h"
-#include "libft.h"
 
-char	*find_bin(const char* name);
+int	find_bin(char *dest, const char* name);
 
 t_cmd_params	cmd_params_default(void)
 {
@@ -38,28 +40,7 @@ t_cmd_params	cmd_params_default(void)
 	res.wstatus = -1;
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;
-	return (res);
-}
-
-char **make_argv(t_parse_node **nodes)
-{
-	char	**res;
-	size_t	n_args;
-	size_t	i;
-
-	n_args = 0;
-	while(nodes[n_args])
-		n_args++;
-	res = malloc((n_args + 1) * sizeof(char*));
-	if (!res)
-		return (NULL);
-	i = 0;
-	while (nodes[i])
-	{
-		res[i] = nodes[i]->tok.id.value;
-		i++;
-	}
-	res[i] = NULL;
+	res.bin_path[0] = '\0';
 	return (res);
 }
 
@@ -78,35 +59,71 @@ int	io_to_fd(t_cmd_io io, int fd)
 	}
 	if (io.type == MS_CMD_IO_FD && io.fd != fd)
 	{
-		if (dup2(io.fd, fd))
+		if (dup2(io.fd, fd) < 0)
 			ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "dup2", strerror(errno));
 		if (close(io.fd))
 			ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "close", strerror(errno));
 	}
 	if (io.type == MS_CMD_IO_ERROR)
 	{
-		ft_fprintf(2, "%s: io_to_fd: io type unknown\n");
+		ft_fprintf(STDERR_FILENO, "%s: io_to_fd: io type unknown\n");
 		return (1);
 	}
 	return (!!errno);
 }
 
+char	**make_argv(t_parse_node *node)
+{
+	char	**res;
+	int		argc;
+	int		i;
+
+	argc = count_chld_nodes(node);
+	res = ft_calloc((argc + 1), sizeof(char *));
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (node->children[i])
+	{
+		res[i] = node->children[i]->tok.id.value;
+		i++;
+	}
+	return (res);
+}
+
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
-	char	*bin_path;
+	int	find_bin_ret;
 
-	bin_path = find_bin(params.cmd_args[0]);
+	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
+	if (find_bin_ret > 0)
+	{
+		ft_fprintf(STDERR_FILENO, "%s: command not found\n", params.cmd_args[0]);
+		// TODO free stuff
+		exit(MS_CMD_NOT_FOUND);
+	}
+	if (find_bin_ret < 0)
+	{
+		ft_fprintf(STDERR_FILENO, "%s: permission denied", params.cmd_args[0]);
+		// TODO free stuff
+		exit(MS_PERM_DENIED);
+	}
 	io_to_fd(params.stdin, STDIN_FILENO);
 	io_to_fd(params.stdout, STDOUT_FILENO);
 	io_to_fd(params.stderr, STDERR_FILENO);
-	execve(bin_path, params.cmd_args, params.envp);
-	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "execve", strerror(errno));
+	execve(params.bin_path, params.cmd_args, params.envp);
+	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
+				__FILE_NAME__, "execve", strerror(errno));
 	exit(EXIT_FAILURE);
 }
 
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
-	params.cmd_args = make_argv(node->children);
+	params.cmd_args = make_argv(node);
+	for (int i = 0; params.cmd_args[i]; i++) {
+		printf("%s%s", i != 0 ? ";" : "", params.cmd_args[i]);
+	}
+	printf("\n");
 	if (!params.cmd_args)
 		return (1);
 	errno = 0;
@@ -127,6 +144,7 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	t_cmd_params	writer;
 	t_cmd_params	reader;
 	int				pipefd[2];
+	int				retval;
 
 	if (pipe(pipefd))
 		return (1);
@@ -136,16 +154,11 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	reader = params;
 	reader.stdin.fd = pipefd[0];
 	reader.stdin.type = MS_CMD_IO_FD;
-	if (cmd_next_node(writer, node->children[0])
-		|| cmd_next_node(reader, node->children[1]))
-	{
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return (1);
-	}
+	retval = cmd_next_node(writer, node->children[0])
+		|| cmd_next_node(reader, node->children[1]);
 	close(pipefd[0]);
 	close(pipefd[1]);
-	return (0);
+	return (retval);
 }
 
 int	cmd_next_node(t_cmd_params params, t_parse_node *node)
