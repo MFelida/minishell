@@ -16,7 +16,7 @@ OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o))
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -o $(NAME) $(OBJS)
+	$(CC) -o $(NAME) -lreadline $(OBJS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
