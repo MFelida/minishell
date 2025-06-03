@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 17:02:18 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/03 14:35:06 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
+#include "parsing_header.h"
 
 void	signal_handler(int	signal)
 {
@@ -34,7 +35,7 @@ int	main(void)
 		input = readline("minishell> ");
 		if (!input)
 		{
-			printf ("exit\n");
+			printf("exit\n");
 			break;
 		}
 		if (*input)
@@ -47,4 +48,35 @@ int	main(void)
 	}
 	printf("Hello, World! BRUH\n");
 	return (EXIT_SUCCESS);
+}
+
+int	parser_processer(char *input)
+{
+	int	i;
+	int	apo_bool;
+
+	apo_bool = 0;
+	i = 0;
+	while(input[i] != '\0')
+	{
+		while (ft_isspace(input[i]))
+			i++;
+		while (!ft_isspace(input[i]))
+		{
+			if (input[i] == '"')
+			{
+				while 
+			}			
+		}
+	}
+}
+
+int	within_apo(char *input, int i)
+{
+	while(input[i] != '"')
+}
+
+int	parser_sender(char *input)
+{
+	
 }
