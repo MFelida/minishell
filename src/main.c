@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/03 14:35:06 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/04 18:36:23 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,29 @@ int	main(void)
 
 int	parser_processer(char *input)
 {
-	int	i;
-	int	apo_bool;
+	int		i;
+	int		apo_bool;
+	char	*seperated_input;
 
 	apo_bool = 0;
 	i = 0;
 	while(input[i] != '\0')
 	{
-		while (ft_isspace(input[i]))
+		while (ft_isspace(input[i]) && apo_bool != 1)
 			i++;
-		while (!ft_isspace(input[i]))
+		while (!ft_isspace(input[i]) || apo_bool == 1)
 		{
 			if (input[i] == '"')
 			{
-				while 
-			}			
+				if (apo_bool == 1)
+					apo_bool = 0;
+				else
+					apo_bool = 1;
+				i++;
+			}
+			// basically strcpy but with comma ',' seperators between each token, then pass it to split with , as the c
+			// then you will have a malloced 2d array with each token and can look at them independently
+			// might be the move
 		}
 	}
 }
