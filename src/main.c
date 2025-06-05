@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/04 18:36:23 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/05 18:13:27 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	parser_processer(char *input)
 			// basically strcpy but with comma ',' seperators between each token, then pass it to split with , as the c
 			// then you will have a malloced 2d array with each token and can look at them independently
 			// might be the move
+			// think ft_split for argument intake as well
 		}
 	}
 }
