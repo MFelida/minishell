@@ -25,7 +25,7 @@
 #include <stddef.h>
 #include <unistd.h>
 
-int	find_bin(char *dest, const char* name);
+int	find_bin(char *dest, const char *name);
 
 t_cmd_params	cmd_params_default(void)
 {
@@ -42,34 +42,6 @@ t_cmd_params	cmd_params_default(void)
 	res.cmd_args = NULL;
 	res.bin_path[0] = '\0';
 	return (res);
-}
-
-int	io_to_fd(t_cmd_io io, int fd)
-{
-	errno = 0;
-	if (io.type == MS_CMD_IO_FILE)
-	{
-		io.fd = open(io.file.name, io.file.flags, 0644);
-		if (io.fd < 0)
-		{
-			ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "open", strerror(errno));
-			return (1);
-		}
-		io.type = MS_CMD_IO_FD;
-	}
-	if (io.type == MS_CMD_IO_FD && io.fd != fd)
-	{
-		if (dup2(io.fd, fd) < 0)
-			ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "dup2", strerror(errno));
-		if (close(io.fd))
-			ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "close", strerror(errno));
-	}
-	if (io.type == MS_CMD_IO_ERROR)
-	{
-		ft_fprintf(STDERR_FILENO, "%s: io_to_fd: io type unknown\n");
-		return (1);
-	}
-	return (!!errno);
 }
 
 char	**make_argv(t_parse_node *node)
@@ -98,7 +70,9 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	if (find_bin_ret > 0)
 	{
-		ft_fprintf(STDERR_FILENO, "%s: command not found\n", params.cmd_args[0]);
+		ft_fprintf(STDERR_FILENO,
+			"%s: command not found\n",
+			params.cmd_args[0]);
 		// TODO free stuff
 		exit(MS_CMD_NOT_FOUND);
 	}
@@ -108,12 +82,10 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		// TODO free stuff
 		exit(MS_PERM_DENIED);
 	}
-	io_to_fd(params.stdin, STDIN_FILENO);
-	io_to_fd(params.stdout, STDOUT_FILENO);
-	io_to_fd(params.stderr, STDERR_FILENO);
+	// TODO do_redirs
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
-				__FILE_NAME__, "execve", strerror(errno));
+		__FILE_NAME__, "execve", strerror(errno));
 	exit(EXIT_FAILURE);
 }
 
@@ -130,7 +102,8 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	params.pid = fork();
 	if (params.pid < 0)
 	{
-		ft_fprintf(STDERR_FILENO, "%s: %s: %s\n", __FILE_NAME__, "fork", strerror(errno));
+		ft_fprintf(STDERR_FILENO,
+			"%s: %s: %s\n", __FILE_NAME__, "fork", strerror(errno));
 		return (1);
 	}
 	if (params.pid == 0)

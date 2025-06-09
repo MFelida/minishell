@@ -9,13 +9,17 @@ SRCDIR = src
 
 OBJDIR = obj
 
+REDIR_DIR = $(SRCDIR)/command
+include $(REDIR_DIR)/command.mk
+
 CMD_DIR = $(SRCDIR)/command
 include $(CMD_DIR)/command.mk
 
 PF_DIR = $(SRCDIR)/fake-parser
 include $(PF_DIR)/fake-parser.mk
 
-OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) $(CMD_OBJS) $(PF_OBJS)
+OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
+	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib
