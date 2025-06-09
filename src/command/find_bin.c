@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static int	_find_on_path(char	*dest, const char* name)
+static int	_find_on_path(char	*dest, const char *name)
 {
 	char		*path_var;
 	char		**path_split;
@@ -44,7 +44,7 @@ static int	_find_on_path(char	*dest, const char* name)
 	return (1);
 }
 
-int	find_bin(char *dest, const char* name)
+int	find_bin(char *dest, const char *name)
 {
 	if (ft_strchr(name, '/'))
 	{
