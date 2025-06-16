@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/11 14:04:19 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:07:29 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@ void	signal_handler(int signal)
 int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.html
 {
 	char	*input;
+	t_token_list	*head;
 
+	head = NULL;
 	// tokenize input (think operators and identifiers, whitespace)
 	// check for commands, check if operators are control, otherwise split metachars
 	// set up tree and send it over
@@ -92,6 +94,30 @@ int	pipe_finder(char *input)
 		i++;
 	}
 	return (pipecount);
+}
+
+void	add_node(char *string, t_token_list *head)
+{
+	if (!head)
+		head = mk_node(string, head);
+	else
+		head->next = mk_node(string, head);
+}
+
+t_token_list	*mk_node(char *string, t_token_list *head)
+{
+	t_token_list *node;
+
+	node = (t_token_list *)malloc(sizeof(t_token_list));
+	node->string = string;
+	node->type = typefinder(string);
+	node->next = NULL;
+	return (node);
+}
+
+int	typefinder(char *string)
+{
+	
 }
 
 // int	parser_processer(char *input)

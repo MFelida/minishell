@@ -6,14 +6,22 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/06/11 09:53:14 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/16 11:44:39 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_HEADER_H
 # define PARSING_HEADER_H
+#include "tokens.h"
 
 int	ft_isspace(char c);
+
+typedef struct s_token_list
+{
+	char *string;
+	int *type;
+	t_token_list *next;
+}	t_token_list;
 
 
 #endif
