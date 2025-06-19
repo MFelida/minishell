@@ -61,11 +61,22 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	return (EXIT_SUCCESS);
 }
 
+size_t	whitespace_len(char *string)
+{
+	size_t	i;
+
+	i = 0;
+	while (string[i] != '\0' && ft_isspace(string[i]))
+		i++;
+	return (i);
+}
+
 int	parser_processor(char *input)
 {
 	int	i;
 	int	j;
-	char *new_input;
+	size_t	len;
+	char *new_input; // replace it with struct later, initialize struct in main
 
 	j = 0;
 	i = 0;
@@ -73,10 +84,13 @@ int	parser_processor(char *input)
 	i++;
 	if (input[i] == '"')
 	{
+		len = whitespace_len(input[++i]);
+		new_input = (char *)malloc(len);
 		while(input[++i] != '"')
 		{
-			new_input[j] = input[i];	
+			new_input[j] = input[i];
 		}
+		new_input = '\0';
 	}
 }
 
