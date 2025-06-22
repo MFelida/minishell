@@ -32,7 +32,6 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	char	*input;
 	t_token_list	*head;
 
-	head = NULL;
 	// tokenize input (think operators and identifiers, whitespace)
 	// check for commands, check if operators are control, otherwise split metachars
 	// set up tree and send it over
@@ -80,17 +79,24 @@ int	parser_processor(char *input)
 
 	j = 0;
 	i = 0;
-	while(isspace(input[i]))
-	i++;
-	if (input[i] == '"')
+	while(input[i])
 	{
-		len = whitespace_len(input[++i]);
-		new_input = (char *)malloc(len);
-		while(input[++i] != '"')
+		while(isspace(input[i]))
+		i++;
+		if (input[i] == '"')
 		{
-			new_input[j] = input[i];
+			len = whitespace_len(input[++i]);
+			new_input = (char *)malloc(len);
+			while(input[i] != '"')
+			{
+				new_input[j] = input[i];
+			}
+			new_input = '\0';
 		}
-		new_input = '\0';
+		else while (input[i] > 33 && input[i] < 127)
+		{
+			new_input[j] = input[i++];
+		}
 	}
 }
 
