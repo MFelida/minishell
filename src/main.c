@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/16 12:07:29 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:14:47 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	char	*input;
 	t_token_list	*head;
 
+	head = NULL;
 	// tokenize input (think operators and identifiers, whitespace)
 	// check for commands, check if operators are control, otherwise split metachars
 	// set up tree and send it over
@@ -51,7 +52,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 		if (*input)
 		{
 			add_history(input);
-			// parser_processor(input);
+			// parser_processor(input, head);
 		}
 		printf("your command: %s\n", input);
 		free(input);
@@ -70,7 +71,7 @@ size_t	whitespace_len(char *string)
 	return (i);
 }
 
-int	parser_processor(char *input)
+int	parser_processor(char *input, t_token_list *head)
 {
 	int	i;
 	int	j;
@@ -93,10 +94,12 @@ int	parser_processor(char *input)
 			}
 			new_input = '\0';
 		}
-		else while (input[i] > 33 && input[i] < 127)
+		else if (input[i] > 33 && input[i] < 127)
 		{
-			new_input[j] = input[i++];
+			ft_strlcpy(new_input, input, whitespace_len(input));
 		}
+		add_node(new_input, head);
+		i += whitespace_len(input);
 	}
 }
 
@@ -137,7 +140,7 @@ t_token_list	*mk_node(char *string, t_token_list *head)
 
 int	typefinder(char *string)
 {
-	
+	//returns enum of type for linked list
 }
 
 // int	parser_processer(char *input)
