@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:09:07 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 16:50:03 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:13:23 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ typedef struct s_parse_node
 # define FP_FI_N_CHLD	2
 
 t_parse_node	*get_parse_tree(char *file);
-int	count_chld_nodes(t_parse_node *parent);
+int				count_chld_nodes(t_parse_node *parent);
 
 #endif // !FAKE_PARSER_H

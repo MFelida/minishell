@@ -6,12 +6,12 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 14:45:43 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 14:49:36 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:11:38 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "redirect.h"
+#include "redirect_types.h"
 
 t_redir	*_new_redir(void)
 {
@@ -35,5 +35,3 @@ t_redir_error	_get_src_dest(t_redir_src *d, t_redir_src	*r)
 	*d = *r;
 	return (MS_REDIR_OK);
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 17:38:14 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:07:47 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,13 +138,13 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.write));
 	writer = params;
 	if (add_redir(&writer,
-		(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
-		(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
+			(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
+			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	reader = params;
 	if (add_redir(&reader,
-		(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
-		(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
+			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
+			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(&writer, node->children[0])
 		|| cmd_next_node(&reader, node->children[1]);
