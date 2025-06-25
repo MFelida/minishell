@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 16:55:57 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:38:14 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	return (0);
 }
 
-t_open_fds	*new_fd(int	fd)
+t_open_fds	*new_fd(const int	fd)
 {
 	t_open_fds	*new;
 
@@ -146,16 +146,16 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 		(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 		(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
-	retval = cmd_next_node(writer, node->children[0])
-		|| cmd_next_node(reader, node->children[1]);
+	retval = cmd_next_node(&writer, node->children[0])
+		|| cmd_next_node(&reader, node->children[1]);
 	return (retval);
 }
 
-int	cmd_next_node(t_cmd_params params, t_parse_node *node)
+int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 {
 	if (node->tok.op.op == FP_OP_CMD)
-		return (cmd_run(params, node));
+		return (cmd_run(*params, node));
 	if (node->tok.op.op == FP_OP_PIPE)
-		return (cmd_pipe(params, node));
+		return (cmd_pipe(*params, node));
 	return (1);
 }

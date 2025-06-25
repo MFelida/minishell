@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                    +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/09 10:36:00 by username     #+#    #+#                  */
-/*   Updated: 2025/06/25 15:14:22 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:13:53 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,13 @@ t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
 	t_redir			*new;
 	t_redir_error	error;
 
-	if (!cmd || !cmd->redirs)
-		return (MS_REDIR_NULL_LIST);
 	error = MS_REDIR_OK;
 	new = _new_redir();
 	if (!new)
 		return (MS_REDIR_ERRNO);
 	error |= _get_src_dest(&new->src, &src);
 	error |= _get_src_dest(&new->dest, &dest);
-	ft_lstadd_back((t_list **)cmd->redirs, (t_list *)new);
+	ft_lstadd_back((t_list **) &cmd->redirs, (t_list *)new);
 	return (error);
 }
 

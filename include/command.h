@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:19 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 14:41:04 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:38:02 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_cmd_params
 	char				**envp;
 }	t_cmd_params;
 
-int				cmd_next_node(t_cmd_params params, t_parse_node *node);
+int				cmd_next_node(t_cmd_params *params, t_parse_node *node);
 t_cmd_params	cmd_params_default(void);
 
 #endif // !COMMAND_H

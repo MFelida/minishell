@@ -48,7 +48,7 @@ $(LIBDIR):
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
-debug: CFLAGS += -O0 -g
+debug: CFLAGS += -O0 -gdwarf-2
 debug: fclean $(NAME)
 
 clean:
