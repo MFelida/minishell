@@ -9,8 +9,8 @@ SRCDIR = src
 
 OBJDIR = obj
 
-REDIR_DIR = $(SRCDIR)/command
-include $(REDIR_DIR)/command.mk
+REDIR_DIR = $(SRCDIR)/redirect
+include $(REDIR_DIR)/redirect.mk
 
 CMD_DIR = $(SRCDIR)/command
 include $(CMD_DIR)/command.mk

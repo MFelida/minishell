@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 14:55:57 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:55:57 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_cmd_params	cmd_params_default(void)
 	res.envp = environ;
 	res.wstatus = -1;
 	res.redirs = NULL;
+	res.open_fds = malloc(sizeof(t_open_fds **));
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;
 	res.bin_path[0] = '\0';
