@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:19 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 16:31:50 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 14:41:04 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,22 @@
 # define COMMAND_H
 
 # include "fake_parser.h"
-# include "redirect.h"
+# include "redirect_types.h"
 
 # include <linux/limits.h>
 # include <sys/resource.h>
+
+typedef enum e_cmd_error
+{
+	MS_CMD_ERROR_OK,
+	MS_CMD_ERROR_PIPE,
+}	t_cmd_error;
 
 typedef struct s_cmd_params
 {
 	struct s_cmd_params	*next;
 	t_redir				*redirs;
+	t_open_fds			**open_fds;
 	int					pid;
 	char				**cmd_args;
 	char				bin_path[PATH_MAX];

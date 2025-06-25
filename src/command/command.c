@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 17:53:34 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 14:55:57 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "exit_statuses.h"
 #include "fake_parser.h"
 #include "libft.h"
+#include "redirect.h"
+#include "redirect_types.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -32,12 +34,10 @@ t_cmd_params	cmd_params_default(void)
 	t_cmd_params	res;
 	extern char		**environ;
 
-	res.stdin = (t_cmd_io){.type = MS_CMD_IO_FD, .fd = STDIN_FILENO};
-	res.stdout = (t_cmd_io){.type = MS_CMD_IO_FD, .fd = STDOUT_FILENO};
-	res.stderr = (t_cmd_io){.type = MS_CMD_IO_FD, .fd = STDERR_FILENO};
 	res.pid = -1;
 	res.envp = environ;
 	res.wstatus = -1;
+	res.redirs = NULL;
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;
 	res.bin_path[0] = '\0';
@@ -82,7 +82,8 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		// TODO free stuff
 		exit(MS_PERM_DENIED);
 	}
-	// TODO do_redirs
+	do_redirs(&params);
+	close_fds(params.open_fds);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
@@ -112,25 +113,40 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	return (0);
 }
 
+t_open_fds	*new_fd(int	fd)
+{
+	t_open_fds	*new;
+
+	new = malloc(sizeof(t_open_fds));
+	if (!new)
+		return (NULL);
+	new->fd = fd;
+	return (new);
+}
+
 int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 {
 	t_cmd_params	writer;
 	t_cmd_params	reader;
-	int				pipefd[2];
+	t_pipe			p;
 	int				retval;
 
-	if (pipe(pipefd))
-		return (1);
+	if (pipe(p.a) < 0)
+		return (MS_CMD_ERROR_PIPE);
+	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.read));
+	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.write));
 	writer = params;
-	writer.stdout.fd = pipefd[1];
-	writer.stdout.type = MS_CMD_IO_FD;
+	if (add_redir(&writer,
+		(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
+		(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
+		return (MS_CMD_ERROR_PIPE);
 	reader = params;
-	reader.stdin.fd = pipefd[0];
-	reader.stdin.type = MS_CMD_IO_FD;
+	if (add_redir(&reader,
+		(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
+		(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
+		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(writer, node->children[0])
 		|| cmd_next_node(reader, node->children[1]);
-	close(pipefd[0]);
-	close(pipefd[1]);
 	return (retval);
 }
 
