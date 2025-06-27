@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/24 11:14:47 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/06/26 11:51:49 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	parser_processor(char *input, t_token_list *head)
 			ft_strlcpy(new_input, input, whitespace_len(input));
 		}
 		add_node(new_input, head);
-		i += whitespace_len(input);
+		i += whitespace_len(input[i]);
 	}
 }
 
@@ -141,6 +141,10 @@ t_token_list	*mk_node(char *string, t_token_list *head)
 int	typefinder(char *string)
 {
 	//returns enum of type for linked list
+	if (ft_strlen(string) < 3)
+	{
+		
+	}
 }
 
 // int	parser_processer(char *input)
