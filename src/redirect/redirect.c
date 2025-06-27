@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                    +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/09 10:36:00 by username     #+#    #+#                  */
-/*   Updated: 2025/06/25 17:13:53 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:48:39 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	close_fds(t_open_fds **fds)
 		temp = temp->next;
 	}
 	ft_lstclear((t_list **) fds, del_fds_list);
+	free(fds);
 }
 
 static t_redir_error	_do_redir(t_redir *redir)
