@@ -141,10 +141,21 @@ t_token_list	*mk_node(char *string, t_token_list *head)
 int	typefinder(char *string)
 {
 	//returns enum of type for linked list
+	//make an array of strings containing the tokens, and then while array
+	//strcmp until you find the token, then assign the right token to it and put it in the tree struct
+	//in the right order
+
+
 	if (ft_strlen(string) < 3)
 	{
 		
 	}
+}
+
+char	**init_array(int identifier)
+{
+	// depending on the enum identifier create an array of
+	// strings, and stringcompare through the string then give it an enum if it's found
 }
 
 // int	parser_processer(char *input)
