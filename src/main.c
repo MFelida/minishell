@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/26 11:51:49 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/02 16:31:35 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	signal_handler(int signal)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
+//fukkit, make token counter to allocate token struct, no linked lists, then make an identification function for each token, which also then creates a AST. I think that's the move.'
 
 int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.html
 {
@@ -61,6 +63,49 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	return (EXIT_SUCCESS);
 }
 
+int	neo_parser_processor(char *input, t_token_list **head)
+{
+	char	*curr;
+	size_t	word_pos;
+	size_t	i;
+	int		escaping;
+	int		in_double_quote;
+	int		in_single_quote;
+
+	in_single_quote = 0;
+	in_double_quote = 0;
+	escaping = 0;
+	i = 0;
+	word_pos = 0;
+	while(input[i] != '\0')
+	{
+		if (escaping)
+		{
+			curr[word_pos++] = input[i];
+			escaping = 0;
+		}
+		else if (input[i] = "\\")
+				escaping = 1;
+		else if (input[i] = "'" && !in_double_quote)
+			in_single_quote = 1;
+		else if (input[i] = '"' && !in_single_quote)
+			in_double_quote = 1;
+		if (isspace(input[i]) && !in_single_quote && !in_double_quote) //replace with ft_isspace
+		{
+			if (curr)
+			{
+				add_node(curr, head);
+				ft_bzero(curr, word_pos + 1);
+				word_pos = 0;
+			}
+			while (isspace(input[i]))
+				i++;
+		}
+		i++;
+	}
+
+}
+
 size_t	whitespace_len(char *string)
 {
 	size_t	i;
@@ -82,7 +127,7 @@ int	parser_processor(char *input, t_token_list *head)
 	i = 0;
 	while(input[i])
 	{
-		while(isspace(input[i]))
+		while(isspace(input[i])) // Replace with ft_isspace
 		i++;
 		if (input[i] == '"')
 		{

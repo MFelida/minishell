@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/06/24 11:08:46 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/02 16:30:18 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,6 @@ typedef struct s_token_list
 }	t_token_list;
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+void	ft_bzero(void *s, size_t n);
 
 #endif
