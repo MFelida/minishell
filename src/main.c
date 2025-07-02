@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/07/02 16:31:35 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/02 16:42:04 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,28 @@ int	neo_parser_processor(char *input, t_token_list **head)
 	{
 		if (escaping)
 		{
-			curr[word_pos++] = input[i];
+			curr[word_pos++] = input[i++];
 			escaping = 0;
+			continue;
 		}
 		else if (input[i] = "\\")
-				escaping = 1;
+		{
+			escaping = 1;
+			i++;
+			continue;
+		}
 		else if (input[i] = "'" && !in_double_quote)
+		{
 			in_single_quote = 1;
+			i++;
+			continue;
+		}
 		else if (input[i] = '"' && !in_single_quote)
+		{
 			in_double_quote = 1;
+			i++;
+			continue;
+		}
 		if (isspace(input[i]) && !in_single_quote && !in_double_quote) //replace with ft_isspace
 		{
 			if (curr)
@@ -101,9 +114,15 @@ int	neo_parser_processor(char *input, t_token_list **head)
 			while (isspace(input[i]))
 				i++;
 		}
-		i++;
+		curr[word_pos++] = input[i++];
 	}
-
+	if (curr)
+	{
+		add_node(curr, head);
+		ft_bzero(curr, word_pos + 1);
+		word_pos = 0;
+	}
+	return (head); // Idk if I need to return head or 1 or smth
 }
 
 size_t	whitespace_len(char *string)
