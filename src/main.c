@@ -69,8 +69,8 @@ int	neo_parser_processor(char *input, t_token_list **head)
 	size_t	word_pos;
 	size_t	i;
 	int		escaping;
-	int		in_double_quote;
-	int		in_single_quote;
+	int		in_double_quote; //so revamp these bools into one single int using the enums for clarity.
+	int		in_single_quote; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
 
 	in_single_quote = 0;
 	in_double_quote = 0;
@@ -85,25 +85,35 @@ int	neo_parser_processor(char *input, t_token_list **head)
 			escaping = 0;
 			continue;
 		}
-		else if (input[i] = "\\")
+		else if (input[i] == "\\")
 		{
 			escaping = 1;
 			i++;
 			continue;
 		}
-		else if (input[i] = "'" && !in_double_quote)
+		else if (input[i] == "'" && !in_double_quote)
 		{
 			in_single_quote = 1;
 			i++;
 			continue;
 		}
-		else if (input[i] = '"' && !in_single_quote)
+		else if (input[i] == '"' && !in_single_quote)
 		{
 			in_double_quote = 1;
 			i++;
 			continue;
 		}
-		if (isspace(input[i]) && !in_single_quote && !in_double_quote) //replace with ft_isspace
+		else if (input[i] == '|' && !in_double_quote && !in_single_quote)
+		{
+			add_node(curr, head);
+			ft_bzero(curr, word_pos + 1);
+			word_pos = 0;
+			add_node("|", head);
+			while (isspace(input[i]))
+				i++;
+			continue;
+		}
+		if (isspace(input[i]) && !in_single_quote && !in_double_quote) //replace with ismetachar, define whether it's whitespace or metachar that needs to be tokenized, generate node accordingly
 		{
 			if (curr)
 			{
@@ -126,16 +136,6 @@ int	neo_parser_processor(char *input, t_token_list **head)
 	return (head); // Idk if I need to return head or 1 or smth
 }
 
-size_t	whitespace_len(char *string)
-{
-	size_t	i;
-
-	i = 0;
-	while (string[i] != '\0' && ft_isspace(string[i]))
-		i++;
-	return (i);
-}
-
 int	token_assign(t_token_list **head)
 {
 	t_token_list	*curr;
@@ -145,6 +145,16 @@ int	token_assign(t_token_list **head)
 	{
 		
 	}
+}
+
+size_t	whitespace_len(char *string)
+{
+	size_t	i;
+
+	i = 0;
+	while (string[i] != '\0' && ft_isspace(string[i]))
+		i++;
+	return (i);
 }
 
 int	parser_processor(char *input, t_token_list *head)
