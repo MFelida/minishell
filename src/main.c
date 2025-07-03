@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/07/02 16:42:04 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/03 15:20:26 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	neo_parser_processor(char *input, t_token_list **head)
 			}
 			while (isspace(input[i]))
 				i++;
+			continue;
 		}
 		curr[word_pos++] = input[i++];
 	}
@@ -133,6 +134,17 @@ size_t	whitespace_len(char *string)
 	while (string[i] != '\0' && ft_isspace(string[i]))
 		i++;
 	return (i);
+}
+
+int	token_assign(t_token_list **head)
+{
+	t_token_list	*curr;
+	
+	curr = *head;
+	while(curr != NULL)
+	{
+		
+	}
 }
 
 int	parser_processor(char *input, t_token_list *head)
