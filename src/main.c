@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/07/03 15:20:26 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:09:55 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 		if (*input)
 		{
 			add_history(input);
-			// parser_processor(input, head);
+			// neo_parser_processor(input, head);
 		}
 		printf("your command: %s\n", input);
 		free(input);
@@ -71,7 +71,9 @@ int	neo_parser_processor(char *input, t_token_list **head)
 	int		escaping;
 	int		in_double_quote; //so revamp these bools into one single int using the enums for clarity.
 	int		in_single_quote; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
+	int		quote_status;// revamped "bool" here
 
+	quote_status = 0; // see enums in header
 	in_single_quote = 0;
 	in_double_quote = 0;
 	escaping = 0;
@@ -134,6 +136,16 @@ int	neo_parser_processor(char *input, t_token_list **head)
 		word_pos = 0;
 	}
 	return (head); // Idk if I need to return head or 1 or smth
+}
+
+int	ft_ismetachar(char c)
+{
+	if (isspace(c))
+		return (1);
+	else if (c == '|')
+		return(MS_PIPE);
+	// other enums but you get the gist
+	
 }
 
 int	token_assign(t_token_list **head)
