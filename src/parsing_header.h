@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/07/10 18:01:43 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/10 18:08:14 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,12 @@ IN_DOUBLE_QUOTE,
 
 typedef enum quote_state
 {
-	NOT_ESCAPING,
-	ESCAPING,
+	SINGLE_ESCAPING,
 }	t_quote_state;
 
 typedef enum double_quote_state
 {
-	NOT_ESCAPING,
-	ESCAPING,
+	DOUBLE_ESCAPING,
 }	t_quote_state;
 
 int	ft_isspace(char c);

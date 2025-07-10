@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/07/10 18:02:49 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/10 18:11:32 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,84 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	}
 	printf("Hello, World! BRUH\n");
 	return (EXIT_SUCCESS);
+}
+
+int	neo_parser_processor_v2(char *input, t_token_list **head)
+{
+	char	*curr; //so revamp these bools into one single int using the enums for clarity.
+	size_t	word_pos; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
+	size_t	i;
+	int		quote_status;// revamped "bool" here
+
+	quote_status = NOT_IN_QUOTES; // see enums in header
+	word_pos = 0;
+	while(input[i] != '\0')
+	{
+		if (quote_status = ESCAPING)
+		{
+			curr[word_pos++] = input[i++];
+			if (quote_status = SINGLE_ESCAPING)
+				quote_status = IN_SINGLE_QUOTE;
+			else if (quote_status = DOUBLE_ESCAPING)
+				quote_status = IN_DOUBLE_QUOTE;
+			else
+				quote_status = NOT_IN_QUOTES;
+			continue;
+		}
+		else if (input[i] == "\\")
+		{
+			if (quote_status = IN_SINGLE_QUOTE)
+				quote_status = SINGLE_ESCAPING;
+			else if (quote_status = IN_DOUBLE_QUOTE)
+				quote_status = DOUBLE_ESCAPING;
+			else
+				quote_status = ESCAPING;
+			i++;
+			continue;
+		}
+		else if (input[i] == "'" && quote_status != IN_DOUBLE_QUOTE)
+		{
+			quote_status = IN_SINGLE_QUOTE;
+			i++;
+			continue;
+		}
+		else if (input[i] == '"' && quote_status != IN_SINGLE_QUOTE)
+		{
+			quote_status = IN_DOUBLE_QUOTE;
+			i++;
+			continue;
+		}
+		else if (input[i] == '|' && quote_status != IN_DOUBLE_QUOTE && quote_status != IN_SINGLE_QUOTE)
+		{
+			add_node(curr, head);
+			ft_bzero(curr, word_pos + 1);
+			word_pos = 0;
+			add_node("|", head);
+			while (isspace(input[i]))
+				i++;
+			continue;
+		}
+		if (isspace(input[i]) && quote_status != IN_DOUBLE_QUOTE && quote_status != IN_SINGLE_QUOTE) //replace with ismetachar, define whether it's whitespace or metachar that needs to be tokenized, generate node accordingly
+		{
+			if (curr)
+			{
+				add_node(curr, head);
+				ft_bzero(curr, word_pos + 1);
+				word_pos = 0;
+			}
+			while (isspace(input[i]))
+				i++;
+			continue;
+		}
+		curr[word_pos++] = input[i++];
+	}
+	if (curr)
+	{
+		add_node(curr, head);
+		ft_bzero(curr, word_pos + 1);
+		word_pos = 0;
+	}
+	return (head); // Idk if I need to return head or 1 or smth
 }
 
 int	neo_parser_processor(char *input, t_token_list **head)
