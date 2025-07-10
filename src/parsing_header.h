@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/07/02 16:30:18 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/10 18:01:43 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 typedef enum argument_state
 {
 NOT_IN_QUOTES,
+ESCAPING,
 IN_SINGLE_QUOTE,
 IN_DOUBLE_QUOTE,
 } t_argument_state;
