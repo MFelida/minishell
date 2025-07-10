@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   find_bin.c                                         :+:      :+:    :+:   */
+/*   find_bin.c                                          :+:    :+:           */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 16:04:42 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 17:56:32 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:30:59 by mfelida        ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 
 static int	_find_on_path(char	*dest, const char *name)
 {
-	char		*path_var;
-	char		**path_split;
-	int			i;
+	char	*path_var;
+	char	**path_split;
+	int		i;
 
 	path_var = getenv("PATH");
 	if (!path_var)

@@ -28,6 +28,7 @@ typedef enum e_cmd_error
 typedef struct s_cmd_params
 {
 	struct s_cmd_params	*next;
+	struct s_cmd_params	**head;
 	t_redir				*redirs;
 	t_open_fds			**open_fds;
 	int					pid;

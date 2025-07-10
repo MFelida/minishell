@@ -88,11 +88,14 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
+	free(params.cmd_args);
 	exit(EXIT_FAILURE);
 }
 
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
+	t_cmd_params	*params_node;
+
 	params.cmd_args = make_argv(node);
 	for (int i = 0; params.cmd_args[i]; i++) {
 		printf("%s%s", i != 0 ? ";" : "", params.cmd_args[i]);
@@ -110,7 +113,11 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	}
 	if (params.pid == 0)
 		cmd_exec(params);
-	// TODO: Push to child list
+	params_node = malloc(sizeof(t_cmd_params));
+	if (!params_node)
+		return (1);
+	*params_node = params;
+	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	return (0);
 }
 
