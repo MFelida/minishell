@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/07/10 18:11:32 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/14 10:28:32 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 	size_t	word_pos; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
 	size_t	i;
 	int		quote_status;// revamped "bool" here
+	int		temp;
 
+	temp = 0;
 	quote_status = NOT_IN_QUOTES; // see enums in header
 	word_pos = 0;
 	while(input[i] != '\0')
@@ -96,16 +98,30 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 			i++;
 			continue;
 		}
-		else if (input[i] == "'" && quote_status != IN_DOUBLE_QUOTE)
+		else if (input[i] == '\'' && quote_status != IN_DOUBLE_QUOTE)
 		{
 			quote_status = IN_SINGLE_QUOTE;
-			i++;
+			temp = single_qoute_lex(input, head);
+			if (temp < 0)
+			{
+				i = 0;
+				return (0); // don't know if I need to return error if it fails here, I think just return 0, unless something actually program breaking happens like a malloc fail
+			}
+			else
+				i += temp;
 			continue;
 		}
 		else if (input[i] == '"' && quote_status != IN_SINGLE_QUOTE)
 		{
 			quote_status = IN_DOUBLE_QUOTE;
-			i++;
+			temp = single_qoute_lex(input, head);
+			if (temp < 0)
+			{
+				i = 0;
+				return (0); // don't know if I need to return error if it fails here, I think just return 0, unless something actually program breaking happens like a malloc fail
+			}
+			else
+				i += temp;
 			continue;
 		}
 		else if (input[i] == '|' && quote_status != IN_DOUBLE_QUOTE && quote_status != IN_SINGLE_QUOTE)
@@ -139,6 +155,46 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		word_pos = 0;
 	}
 	return (head); // Idk if I need to return head or 1 or smth
+}
+
+int	single_qoute_lex(char *input, t_token_list **head)
+{
+	int	i;
+
+	i = 0;
+	while(input[i] != '\0')
+	{
+		while(input[i] != '\'')
+		{
+			
+		}
+	}
+	if (input[i] == '\0')
+	{
+		ft_printf("Error: no closing '\n");
+		node_free(head); //freeing function for token list that bzeros head/removes all nodes for fresh start next iteration.
+		return (-1); //make enum for error handling of incorrect usage
+	}
+}
+
+int	double_qoute_lex(char *input, t_token_list **head)
+{
+	int	i;
+
+	i = 0;
+	while(input[i] != '\0')
+	{
+		while(input[i] != '"')
+		{
+			
+		}
+	}
+	if (input[i] == '\0')
+	{
+		ft_printf("Error: no closing \"\n");
+		node_free(head); //freeing function for token list that bzeros head/removes all nodes for fresh start next iteration.
+		return (-1); //make enum for error handling of incorrect usage
+	}
 }
 
 int	neo_parser_processor(char *input, t_token_list **head)
