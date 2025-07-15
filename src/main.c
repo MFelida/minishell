@@ -157,16 +157,20 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 	return (head); // Idk if I need to return head or 1 or smth
 }
 
-int	single_qoute_lex(char *input, t_token_list **head)
+int	single_qoute_lex(char *input, t_token_list **head, char *curr)
 {
 	int	i;
+	int	j;
 
+	j = 0;
 	i = 0;
 	while(input[i] != '\0')
 	{
 		while(input[i] != '\'')
 		{
-			
+			curr[j] = input[i]; //see if curr actually gets changed, you might just be sending temporal reference over.
+			i++;
+			j++;
 		}
 	}
 	if (input[i] == '\0')
@@ -177,16 +181,20 @@ int	single_qoute_lex(char *input, t_token_list **head)
 	}
 }
 
-int	double_qoute_lex(char *input, t_token_list **head)
+int	double_qoute_lex(char *input, t_token_list **head, char *curr)
 {
 	int	i;
+	int	j;
 
+	j = 0;
 	i = 0;
 	while(input[i] != '\0')
 	{
 		while(input[i] != '"')
 		{
-			
+			curr[j] = input[i]; //see if curr actually gets changed, you might just be sending temporal reference over.
+			j++;
+			i++;
 		}
 	}
 	if (input[i] == '\0')
@@ -196,6 +204,8 @@ int	double_qoute_lex(char *input, t_token_list **head)
 		return (-1); //make enum for error handling of incorrect usage
 	}
 }
+
+
 
 int	neo_parser_processor(char *input, t_token_list **head)
 {

@@ -42,7 +42,8 @@ typedef struct s_token_list
 }	t_token_list;
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-int	single_qoute_lex(char *input, t_token_list **head);
+int	single_qoute_lex(char *input, t_token_list **head, char *curr);
+int	double_qoute_lex(char *input, t_token_list **head, char *curr);
 void	ft_bzero(void *s, size_t n);
 
 #endif
