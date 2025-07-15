@@ -101,7 +101,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		else if (input[i] == '\'' && quote_status != IN_DOUBLE_QUOTE)
 		{
 			quote_status = IN_SINGLE_QUOTE;
-			temp = single_qoute_lex(input, head);
+			temp = single_qoute_lex(input, head, curr);
 			if (temp < 0)
 			{
 				i = 0;
@@ -114,7 +114,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		else if (input[i] == '"' && quote_status != IN_SINGLE_QUOTE)
 		{
 			quote_status = IN_DOUBLE_QUOTE;
-			temp = single_qoute_lex(input, head);
+			temp = single_qoute_lex(input, head, curr);
 			if (temp < 0)
 			{
 				i = 0;
