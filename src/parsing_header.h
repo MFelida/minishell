@@ -14,6 +14,8 @@
 # define PARSING_HEADER_H
 #include "tokens.h"
 
+#define METACHARS "<|>?*[]${}()&;="
+
 typedef enum argument_state
 {
 NOT_IN_QUOTES,
