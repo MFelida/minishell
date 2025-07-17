@@ -13,6 +13,8 @@
 #ifndef PARSING_HEADER_H
 # define PARSING_HEADER_H
 #include "tokens.h"
+#include <stdlib.h>
+#include <stddef.h>
 
 #define METACHARS "<|>?*[]${}()&;="
 
@@ -43,6 +45,7 @@ typedef struct s_token_list
 	int *type;
 }	t_token_list;
 
+void	add_node(char *string, t_token_list *head);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 int	single_qoute_lex(char *input, t_token_list **head, char *curr);
 int	double_qoute_lex(char *input, t_token_list **head, char *curr);

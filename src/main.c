@@ -127,7 +127,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		else if (input[i] == '|' && quote_status != IN_DOUBLE_QUOTE && quote_status != IN_SINGLE_QUOTE)
 		{
 			add_node(curr, head);
-			ft_bzero(curr, word_pos + 1);
+			ft_bzero(curr, word_pos + 1); //probably make a wrapper that bzero's to begin with
 			word_pos = 0;
 			add_node("|", head);
 			while (isspace(input[i]))
@@ -139,7 +139,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 			if (curr)
 			{
 				add_node(curr, head);
-				ft_bzero(curr, word_pos + 1);
+				ft_bzero(curr, word_pos + 1); //probably make a wrapper that bzero's to begin with
 				word_pos = 0;
 			}
 			while (isspace(input[i]))
@@ -151,7 +151,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 	if (curr)
 	{
 		add_node(curr, head);
-		ft_bzero(curr, word_pos + 1);
+		ft_bzero(curr, word_pos + 1); //probably make a wrapper that bzero's to begin with
 		word_pos = 0;
 	}
 	return (head); // Idk if I need to return head or 1 or smth

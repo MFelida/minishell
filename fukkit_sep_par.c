@@ -78,13 +78,19 @@ parse_meta_char(char *input, t_token_list **head)
 	int	i;
 
 	i = 0;
-	while(input[i] != '\0')
+	while(input[i] != '\0' && (ismetachar(input[i]) || isspace(input[i])))
 	{
 		while(isspace(input[i]))
 		{
 			i++;
 		}
-		if (input[i] )
+		if (ismetachar(input[i]))
+		{
+			if (ismetachar(input[i + 1]))
+			{
+				add_node(input[i], head); //ok this won't work bc it needs a string, make a curr.
+			}
+		}
 	}
 }
 
