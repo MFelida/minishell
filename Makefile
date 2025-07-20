@@ -26,7 +26,7 @@ LIBDIR = lib
 LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
 LIBFLAGS = -L$(LIBDIR) -lft
 
-.PHONY: all re clean fclean debug
+.PHONY: all re clean fclean debug asan
 
 all: CFLAGS += -O2
 all: $(NAME)
@@ -56,5 +56,8 @@ clean:
 
 fclean: clean
 	@rm -rfv $(NAME)
+
+asan: CC += -fsanitize=address
+asan: debug
 
 re: fclean all
