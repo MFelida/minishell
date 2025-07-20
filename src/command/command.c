@@ -37,8 +37,11 @@ t_cmd_params	cmd_params_default(void)
 	res.pid = -1;
 	res.envp = environ;
 	res.wstatus = -1;
+	res.next = NULL;
 	res.redirs = NULL;
-	res.open_fds = malloc(sizeof(t_open_fds **));
+	res.open_fds = malloc(sizeof(t_open_fds *));
+	*res.open_fds = NULL;
+	res.head = NULL;
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;
 	res.bin_path[0] = '\0';
@@ -62,6 +65,20 @@ char	**make_argv(t_parse_node *node)
 		i++;
 	}
 	return (res);
+}
+
+static void	_free_cmd_params(void *d)
+{
+	t_cmd_params	*params;
+
+	params = d;
+	free(params->cmd_args);
+	free(d);
+}
+
+void	free_cmd_params(t_cmd_params params)
+{
+	ft_lstclear((t_list **) params.head, _free_cmd_params);
 }
 
 _Noreturn void	cmd_exec(t_cmd_params params)
@@ -88,7 +105,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
-	free(params.cmd_args);
+	free_cmd_params(params);
 	exit(EXIT_FAILURE);
 }
 
@@ -129,6 +146,7 @@ t_open_fds	*new_fd(const int	fd)
 	if (!new)
 		return (NULL);
 	new->fd = fd;
+	new->next = NULL;
 	return (new);
 }
 
