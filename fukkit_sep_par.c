@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/07/14 12:16:09 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:47:36 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ int	double_qoute_lex(char *input, t_token_list **head, char *curr)
 parse_meta_char(char *input, t_token_list **head)
 {
 	int	i;
+	int	j;
+	char *curr;
 
+	j = 0;
 	i = 0;
 	while(input[i] != '\0' && (ismetachar(input[i]) || isspace(input[i])))
 	{
@@ -86,12 +89,18 @@ parse_meta_char(char *input, t_token_list **head)
 		}
 		if (ismetachar(input[i]))
 		{
+			curr[j++] = input[i];
 			if (ismetachar(input[i + 1]))
 			{
-				add_node(input[i], head); //ok this won't work bc it needs a string, make a curr.
+				curr[j++] = input[i + 1];
+				add_node(curr, head); //ok this won't work bc it needs a string, make a curr.
+				// also, make it assign it a metachar flag as well
+				i++;
 			}
+			i++; //iteration is gonna be weird here, fix it
 		}
 	}
+	return (i);
 }
 
 int	JUST_PARSE_IT_BRO(char *input, t_token_list **head)
@@ -108,7 +117,8 @@ int	JUST_PARSE_IT_BRO(char *input, t_token_list **head)
 			temp += parse_meta_char(input[i], head);
 			if (temp < 0) //invalid character spotted
 			{
-				
+				free_head(head);
+				exit (1); // for instance
 			}
 		}
 	}
