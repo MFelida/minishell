@@ -16,6 +16,7 @@
 #include "libft.h"
 #include "redirect.h"
 #include "redirect_types.h"
+#include "utils.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -26,60 +27,6 @@
 #include <linux/limits.h>
 #include <stddef.h>
 #include <unistd.h>
-
-int	find_bin(char *dest, const char *name);
-
-t_cmd_params	cmd_params_default(void)
-{
-	t_cmd_params	res;
-	extern char		**environ;
-
-	res.pid = -1;
-	res.envp = environ;
-	res.wstatus = -1;
-	res.next = NULL;
-	res.redirs = NULL;
-	res.open_fds = malloc(sizeof(t_open_fds *));
-	*res.open_fds = NULL;
-	res.head = NULL;
-	res.rusage = (struct rusage){0};
-	res.cmd_args = NULL;
-	res.bin_path[0] = '\0';
-	return (res);
-}
-
-char	**make_argv(t_parse_node *node)
-{
-	char	**res;
-	int		argc;
-	int		i;
-
-	argc = count_chld_nodes(node);
-	res = ft_calloc((argc + 1), sizeof(char *));
-	if (!res)
-		return (NULL);
-	i = 0;
-	while (node->children[i])
-	{
-		res[i] = node->children[i]->tok.id.value;
-		i++;
-	}
-	return (res);
-}
-
-static void	_free_cmd_params(void *d)
-{
-	t_cmd_params	*params;
-
-	params = d;
-	free(params->cmd_args);
-	free(d);
-}
-
-void	free_cmd_params(t_cmd_params params)
-{
-	ft_lstclear((t_list **) params.head, _free_cmd_params);
-}
 
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
@@ -136,18 +83,6 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	*params_node = params;
 	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	return (0);
-}
-
-t_open_fds	*new_fd(const int	fd)
-{
-	t_open_fds	*new;
-
-	new = malloc(sizeof(t_open_fds));
-	if (!new)
-		return (NULL);
-	new->fd = fd;
-	new->next = NULL;
-	return (new);
 }
 
 int	cmd_pipe(t_cmd_params params, t_parse_node	*node)

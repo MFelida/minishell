@@ -17,6 +17,7 @@
 # include "redirect_types.h"
 
 t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src from, t_redir_dest to);
+t_open_fds		*new_fd(const int	fd);
 t_redir_error	do_redirs(t_cmd_params *params);
 void			close_fds(t_open_fds **fds);
 

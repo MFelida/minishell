@@ -31,8 +31,13 @@ t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
 		return (MS_REDIR_ERRNO);
 	error |= _get_src_dest(&new->src, &src);
 	error |= _get_src_dest(&new->dest, &dest);
-	ft_lstadd_back((t_list **) &cmd->redirs, (t_list *)new);
+	ft_lstadd_back((t_list **) &cmd->redirs, (t_list *) new);
 	return (error);
+}
+
+void	del_redir_list(t_redir **redir)
+{
+	ft_lstclear((t_list **) redir, free);
 }
 
 static t_redir_error	_file_to_fd(t_redir_src file_redir, int fd)
@@ -58,6 +63,18 @@ static t_redir_error	_fd_to_fd(int from, int to)
 	if (err < 0)
 		return (MS_REDIR_ERRNO);
 	return (MS_REDIR_OK);
+}
+
+t_open_fds	*new_fd(const int	fd)
+{
+	t_open_fds	*new;
+
+	new = malloc(sizeof(t_open_fds));
+	if (!new)
+		return (NULL);
+	new->fd = fd;
+	new->next = NULL;
+	return (new);
 }
 
 void	del_fds_list(void *fds_list)
