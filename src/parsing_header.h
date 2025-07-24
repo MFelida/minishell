@@ -28,15 +28,29 @@ IN_DOUBLE_QUOTE,
 
 typedef enum quote_state
 {
+	NOT_ESCAPING = 0,
 	SINGLE_ESCAPING,
 }	t_quote_state;
 
 typedef enum double_quote_state
 {
+	NOT_ESCAPING = 0,
 	DOUBLE_ESCAPING,
 }	t_quote_state;
 
 int	ft_isspace(char c);
+
+typedef struct s_parsing_context
+{
+
+	char			*argument;
+	int				pos;
+	t_token_list	*head;
+	int				quote_status;
+	int				error_code; //might be necessary Idk
+	int				escaping;
+
+}	t_parsing_context;
 
 typedef struct s_token_list
 {

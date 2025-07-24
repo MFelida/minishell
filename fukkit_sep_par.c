@@ -12,6 +12,92 @@
 
 #include "parsing_header.h"
 
+int	neo_parser_processor(char *input, t_token_list **head)
+{
+	char	*curr;
+	size_t	word_pos;
+	size_t	i;
+	int		escaping;
+	int		in_double_quote; //so revamp these bools into one single int using the enums for clarity.
+	int		in_single_quote; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
+	int		quote_status;// revamped "bool" here
+
+	t_parsing_context *parsing_context;
+
+	parsing_context = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
+	if (!parsing_context)
+		// free whatever and exit(1);
+	parsing_context->argument = input;
+	parsing_context->head = head; // probably define everything except input and head beforehand, not here.
+	parsing_context->pos = 0;
+	parsing_context->quote_status = NOT_IN_QUOTES;
+	parsing_context->escaping = NOT_ESCAPING;
+
+	quote_status = NOT_IN_QUOTES; // see enums in header
+	in_single_quote = 0;
+	in_double_quote = 0;
+	escaping = 0;
+	i = 0;
+	word_pos = 0;
+	while(parsing_context->argument[parsing_context->pos] != '\0')
+	{
+		if (parsing_context->escaping = ESCAPING) //escaping, double escaping and single escaping is all 1 so it's gucci
+		{
+			curr[word_pos++] = input[i++];
+			parsing_context->escaping = 0;
+			continue;
+		}
+		else if (input[i] == "\\")
+		{
+			escaping = 1;
+			i++;
+			continue;
+		}
+		else if (input[i] == "'" && !in_double_quote)
+		{
+			in_single_quote = 1;
+			i++;
+			continue;
+		}
+		else if (input[i] == '"' && !in_single_quote)
+		{
+			in_double_quote = 1;
+			i++;
+			continue;
+		}
+		else if (input[i] == '|' && !in_double_quote && !in_single_quote)
+		{
+			add_node(curr, head);
+			ft_bzero(curr, word_pos + 1);
+			word_pos = 0;
+			add_node("|", head);
+			while (isspace(input[i]))
+				i++;
+			continue;
+		}
+		if (isspace(input[i]) && !in_single_quote && !in_double_quote) //replace with ismetachar, define whether it's whitespace or metachar that needs to be tokenized, generate node accordingly
+		{
+			if (curr)
+			{
+				add_node(curr, head);
+				ft_bzero(curr, word_pos + 1);
+				word_pos = 0;
+			}
+			while (isspace(input[i]))
+				i++;
+			continue;
+		}
+		curr[word_pos++] = input[i++];
+	}
+	if (curr)
+	{
+		add_node(curr, head);
+		ft_bzero(curr, word_pos + 1);
+		word_pos = 0;
+	}
+	return (head); // Idk if I need to return head or 1 or smth
+}
+
 int	ismetachar(char c)
 {
 	int	i;
