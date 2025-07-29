@@ -12,6 +12,55 @@
 
 #include "parsing_header.h"
 
+int	neo_parser_processor_v2(char *input, t_token_list **head)
+{
+	char	*curr;
+	size_t	word_pos;
+	size_t	i;
+	int		escaping;
+	int		in_double_quote; //so revamp these bools into one single int using the enums for clarity.
+	int		in_single_quote; //then, turn this into a state machine, if in state of quotes, head into a seperate whileloop, return the count we've incremented and go back to the initial whileloop
+	int		quote_status;// revamped "bool" here
+
+	t_parsing_context *par_con;
+
+	par_con = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
+	if (!par_con)
+		// free whatever and exit(1);
+	par_con->arg = input;
+	par_con->head = head; // probably define everything except input and head beforehand, not here.
+	par_con->pos = 0;
+	par_con->quote = NOT_IN_QUOTES;
+	par_con->escaping = NOT_ESCAPING;
+	par_con->error = 0;
+
+	quote_status = NOT_IN_QUOTES; // see enums in header
+	in_single_quote = 0;
+	in_double_quote = 0;
+	escaping = 0;
+	i = 0;
+	word_pos = 0;
+	while(par_con->arg[par_con->pos] != '\0')
+	{
+		if (par_con->arg[par_con->pos] == '"')
+		{
+			par_con->quote = IN_DOUBLE_QUOTE;
+			double_quote_state(par_con)
+		}
+	}
+}
+
+int	double_quote_state(t_parsing_context *par_con)
+{
+	while (par_con->arg[++par_con->pos] != '"')
+	{
+		if (par_con->arg[par_con->pos] == '\\')
+		{
+			if
+		}
+	}
+}
+
 int	neo_parser_processor(char *input, t_token_list **head)
 {
 	char	*curr;
@@ -65,7 +114,7 @@ int	neo_parser_processor(char *input, t_token_list **head)
 			i++;
 			continue;
 		}
-		else if (input[i] == '|' && !in_double_quote && !in_single_quote)
+		else if (input[i] == '|' && !in_double_quote && !in_single_quote) //consider splitting appended tokens like |cat in a next stage after lexing.\
 		{
 			add_node(curr, head);
 			ft_bzero(curr, word_pos + 1);
