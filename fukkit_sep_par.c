@@ -45,9 +45,27 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		if (par_con->arg[par_con->pos] == '"')
 		{
 			par_con->quote = IN_DOUBLE_QUOTE;
-			double_quote_state(par_con)
+			double_quote_state(par_con);
+			continue ;
+		}
+		else if (par_con->arg[par_con->pos] == '\'')
+		{
+			par_con->pos++;
+			par_con->quote = IN_SINGLE_QUOTE;
+			single_quote_state(par_con);
 		}
 	}
+}
+
+int	single_quote_state(t_parsing_context *par_con)
+{
+	while(par_con->arg[par_con->pos] != '\'')
+	{
+		par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+	}
+	add_node(par_con->curr, par_con->head);
+	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+	par_con->curr_pos = 0;
 }
 
 int	double_quote_state(t_parsing_context *par_con)

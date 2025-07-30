@@ -49,7 +49,8 @@ typedef struct s_parsing_context
 	int				quote;
 	int				error; //might be necessary Idk
 	int				escaping;
-
+	char			*curr;
+	int				curr_pos;
 }	t_parsing_context;
 
 typedef struct s_token_list
