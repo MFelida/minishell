@@ -26,6 +26,7 @@
 #include <sys/resource.h>
 #include <linux/limits.h>
 #include <stddef.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 _Noreturn void	cmd_exec(t_cmd_params params)
@@ -111,11 +112,56 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	return (retval);
 }
 
+int	cmd_input_redir(t_cmd_params params, t_parse_node *node)
+{
+	int	retval;
+
+	retval = add_redir(&params,
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[0]->tok.id.value, .mode = O_RDONLY},
+					(t_redir_src){.type = MS_REDIR_FD, .fd = STDIN_FILENO});
+	if (retval)
+		return (retval);
+	return (cmd_next_node(&params, node->children[1]));
+}
+
+int	cmd_output_redir(t_cmd_params params, t_parse_node *node)
+{
+	int	retval;
+
+	retval = add_redir(&params,
+					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY});
+	if (retval)
+		return (retval);
+	return (cmd_next_node(&params, node->children[0]));
+}
+
+int	cmd_output_append(t_cmd_params params, t_parse_node *node)
+{
+	int	retval;
+
+	retval = add_redir(&params,
+					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_APPEND});
+	if (retval)
+		return (retval);
+	return (cmd_next_node(&params, node->children[0]));
+}
+
 int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 {
-	if (node->tok.op.op == FP_OP_CMD)
+	t_fp_ops	op;
+
+	op = node->tok.op.op;
+	if (op == FP_OP_CMD)
 		return (cmd_run(*params, node));
-	if (node->tok.op.op == FP_OP_PIPE)
+	if (op == FP_OP_PIPE)
 		return (cmd_pipe(*params, node));
+	if (op == FP_OP_FILE_INPUT)
+		return (cmd_input_redir(*params, node));
+	if (op == FP_OP_FILE_OUTPUT)
+		return (cmd_output_redir(*params, node));
+	if (op == FP_OP_FILE_APPEND)
+		return (cmd_output_append(*params, node));
 	return (1);
 }

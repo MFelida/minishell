@@ -19,6 +19,7 @@ typedef enum e_fp_ops
 	FP_OP_PIPE,
 	FP_OP_FILE_OUTPUT,
 	FP_OP_FILE_INPUT,
+	FP_OP_FILE_APPEND,
 	FP_OP_ERROR = 0,
 }	t_fp_ops;
 
