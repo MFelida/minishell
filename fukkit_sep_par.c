@@ -34,16 +34,19 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 	par_con->escaping = NOT_ESCAPING;
 	par_con->error = 0;
 
-	quote_status = NOT_IN_QUOTES; // see enums in header
+	quote_status = NOT_IN_QUOTES;
 	in_single_quote = 0;
 	in_double_quote = 0;
 	escaping = 0;
 	i = 0;
 	word_pos = 0;
-	while(par_con->arg[par_con->pos] != '\0')
+	while (par_con->arg[par_con->pos] != '\0')
 	{
+		while (ft_isspace(par_con->arg[par_con->pos])) //make sure I gave up on metachar idea bc multiple passes
+			par_con->arg[par_con->pos++];
 		if (par_con->arg[par_con->pos] == '"')
 		{
+			par_con->pos++;
 			par_con->quote = IN_DOUBLE_QUOTE;
 			double_quote_state(par_con);
 			continue ;
@@ -53,6 +56,53 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 			par_con->pos++;
 			par_con->quote = IN_SINGLE_QUOTE;
 			single_quote_state(par_con);
+			continue ;
+		}
+		else
+		{
+			argument_state(par_con);
+			continue ;
+		}
+		//consider checking for an infinite loop
+	}
+	if (no errors so far)
+		second_pass(par_con);
+}
+
+int	second_pass(t_parsing_context *par_con)
+{
+	//check for appended things (think: |cat, echo&)
+	//perhaps expand variables
+	//then second or third pass assign tokens
+	//third or fourth pass, make syntax tree struct.
+}
+
+int	argument_state(t_parsing_context *par_con)
+{
+	while(par_con->arg[par_con->pos] != '\0')
+	{
+		if (par_con->arg[par_con->pos] == '"' || par_con->arg[par_con->pos] == '\'' \
+			&& ( par_con->pos == 0 || par_con->arg[par_con->pos - 1] == '\\'))
+		{
+			if (par_con->curr)
+			{
+				par_con->curr[par_con->curr_pos++] = '\0';
+				add_node(par_con->curr, par_con->head);
+			}
+			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+			par_con->curr_pos = 0;
+			return (0);// return error values
+		}
+		else if (ft_isspace(par_con->arg[par_con->pos]))
+		{
+			if (par_con->curr)
+			{
+				par_con->curr[par_con->curr_pos++] = '\0';
+				add_node(par_con->curr, par_con->head);
+			}
+			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+			par_con->curr_pos = 0;
+			return (0);// return error values
 		}
 	}
 }
@@ -70,13 +120,35 @@ int	single_quote_state(t_parsing_context *par_con)
 
 int	double_quote_state(t_parsing_context *par_con)
 {
-	while (par_con->arg[++par_con->pos] != '"')
+	while (par_con->arg[++par_con->pos] != '\0')
 	{
+		if (par_con->arg[par_con->pos] == '"' && par_con->arg[par_con->pos - 1] != '\\')
+		{
+			if (par_con->curr)
+			{
+				par_con->curr[par_con->curr_pos++] = '\0';
+				add_node(par_con->curr, par_con->head);
+			}
+			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+			par_con->curr_pos = 0;
+			return (0);// return error values
+		}
 		if (par_con->arg[par_con->pos] == '\\')
 		{
-			if
+			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+			continue ;
+		}
+		else
+		{
+			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+			continue ;
 		}
 	}
+	add_node(par_con->curr, par_con->head);
+	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+	par_con->curr_pos = 0;
+	return (0); // return error values
 }
 
 int	neo_parser_processor(char *input, t_token_list **head)
