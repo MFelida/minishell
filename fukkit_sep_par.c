@@ -71,10 +71,22 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 
 int	second_pass(t_parsing_context *par_con)
 {
-	//check for appended things (think: |cat, echo&)
+	//check for appended things (think: cat|c|at, echo&)
 	//perhaps expand variables
 	//then second or third pass assign tokens
 	//third or fourth pass, make syntax tree struct.
+	t_token_list *node;
+
+	node = par_con->head;
+	while (node != NULL)
+	{
+		node_trim_splitter(node);
+	}
+}
+
+int	node_trim_splitter(t_token_list *node)
+{
+
 }
 
 int	argument_state(t_parsing_context *par_con)
@@ -88,7 +100,7 @@ int	argument_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con->curr, par_con->head);
-			}
+			} // instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!! 
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 			par_con->curr_pos = 0;
 			return (0);// return error values
@@ -99,7 +111,7 @@ int	argument_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con->curr, par_con->head);
-			}
+			}// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 			par_con->curr_pos = 0;
 			return (0);// return error values
@@ -114,6 +126,9 @@ int	single_quote_state(t_parsing_context *par_con)
 		par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
 	}
 	add_node(par_con->curr, par_con->head);
+	// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
+
+	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
 	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 	par_con->curr_pos = 0;
 }
@@ -128,6 +143,7 @@ int	double_quote_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con->curr, par_con->head);
+				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			}
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 			par_con->curr_pos = 0;
@@ -146,8 +162,11 @@ int	double_quote_state(t_parsing_context *par_con)
 		}
 	}
 	add_node(par_con->curr, par_con->head);
+	// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 	par_con->curr_pos = 0;
+	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
+
 	return (0); // return error values
 }
 
