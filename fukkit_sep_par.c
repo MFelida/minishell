@@ -143,6 +143,7 @@ int	double_quote_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con->curr, par_con->head);
+				quote_assign(par_con->head)
 				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			}
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
@@ -168,6 +169,17 @@ int	double_quote_state(t_parsing_context *par_con)
 	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
 
 	return (0); // return error values
+}
+
+void	quote_assign(t_token_list **head) //Idk if double deref is correct here when just passing par_con->head
+{
+	t_token_list *node;
+
+	node = *head;
+	while(node->next != NULL)
+		node = node->next;
+	node->type = t_ms_id_token; //change type to union, not int? and then assign id token?? with information?? 
+	//for example here, list the quote status that is included in the token enum/struct
 }
 
 int	neo_parser_processor(char *input, t_token_list **head)
