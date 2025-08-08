@@ -287,7 +287,9 @@ int	ft_ismetachar(char c)
 	if (isspace(c))
 		return (1);
 	else if (c == '|')
-		return(MS_PIPE);
+		return (MS_PIPE);
+	else if (c == '&')
+		return ()
 	// other enums but you get the gist
 	
 }

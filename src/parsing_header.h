@@ -67,6 +67,7 @@ int	single_qoute_lex(char *input, t_token_list **head, char *curr);
 int	double_qoute_lex(char *input, t_token_list **head, char *curr);
 void	ft_bzero(void *s, size_t n);
 int	second_pass(t_parsing_context *par_con);
-void	quote_assign(t_token_list *head)
+void	quote_assign(t_token_list *head);
+int	node_trim_splitter(t_parsing_context *par_con, t_token_list *node);
 
 #endif

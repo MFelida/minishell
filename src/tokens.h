@@ -12,22 +12,22 @@
 
 typedef enum e_ms_operators
 {
-	MS_FILE_OUTPUT = 1,
+	MS_OP_ERROR = 0,
+	MS_FILE_OUTPUT,
 	MS_FILE_APPEND,
 	MS_FILE_INPUT,
 	MS_HEREDOC,
 	MS_PIPE,
 	MS_ENV_VAR,
 	MS_CMD,
-	MS_OP_ERROR = 0,
 }	t_ms_operators;
 
 typedef enum e_ms_token_type
 {
+	MS_TOK_ERROR = 0,
 	MS_TOK_OPERATOR,
 	MS_TOK_IDENTIFIER,
 	MS_TOK_COMMAND,
-	MS_TOK_ERROR = 0,
 }	t_ms_token_type;
 
 typedef enum e_ms_cmd_type

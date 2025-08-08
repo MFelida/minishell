@@ -80,13 +80,30 @@ int	second_pass(t_parsing_context *par_con)
 	node = par_con->head;
 	while (node != NULL)
 	{
-		node_trim_splitter(node);
+		node_trim_splitter(par_con, node);
 	}
 }
 
-int	node_trim_splitter(t_token_list *node)
+int	node_trim_splitter(t_parsing_context *par_con, t_token_list *node)
 {
+	while(node != NULL)
+	{
+		if (node->type)
+		{
+			node = node->next;
+			continue ;
+		}
+		meta_splitter(par_con, node);
+		node = node->next;
+	}
+}
 
+void	meta_splitter(t_parsing_context *par_con, t_token_list *node)
+{
+	while(node->string != '\0')
+	{ //START FROM HERE, ADD SUPPORT IN ISMETACHAR FOR RETURNING EVERY TYPE OF ENUM
+		if (ismetachar)
+	}
 }
 
 int	argument_state(t_parsing_context *par_con)
@@ -143,7 +160,7 @@ int	double_quote_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con, par_con->curr, par_con->head);
-				quote_assign(par_con->head)
+				par_con->tail->type = MS_TOK_IDENTIFIER
 				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			}
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
@@ -152,7 +169,7 @@ int	double_quote_state(t_parsing_context *par_con)
 		}
 		if (par_con->arg[par_con->pos] == '\\')
 		{
-			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++]; 
 			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
 			continue ;
 		}
