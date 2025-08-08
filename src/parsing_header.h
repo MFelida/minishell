@@ -46,6 +46,7 @@ typedef struct s_parsing_context
 	char			*arg;
 	int				pos;
 	t_token_list	*head;
+	t_token_list	*tail;
 	int				quote;
 	int				error; //might be necessary Idk
 	int				escaping;
@@ -57,10 +58,10 @@ typedef struct s_token_list
 {
 	t_token_list *next;
 	char *string;
-	int *type;
+	t_ms_token *type;
 }	t_token_list;
 
-void	add_node(char *string, t_token_list *head);
+void	add_node(t_parsing_context *par_con, char *string, t_token_list *head);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 int	single_qoute_lex(char *input, t_token_list **head, char *curr);
 int	double_qoute_lex(char *input, t_token_list **head, char *curr);

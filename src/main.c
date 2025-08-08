@@ -361,12 +361,14 @@ int	pipe_finder(char *input)
 	return (pipecount);
 }
 
-void	add_node(char *string, t_token_list *head)
+void	add_node(t_parsing_context *par_con,char *string, t_token_list *head)
 {
 	if (!head)
 		head = mk_node(string, head);
-	else
-		head->next = mk_node(string, head);
+	while (head->next != NULL)
+		head = head->next;
+	head->next = mk_node(string, head); //watch out for problems with order, head should be updated to next every tim
+	par_con->tail = head->next;
 }
 
 t_token_list	*mk_node(char *string, t_token_list *head)

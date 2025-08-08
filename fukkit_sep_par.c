@@ -99,7 +99,7 @@ int	argument_state(t_parsing_context *par_con)
 			if (par_con->curr)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
-				add_node(par_con->curr, par_con->head);
+				add_node(par_con, par_con->curr, par_con->head);
 			} // instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!! 
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 			par_con->curr_pos = 0;
@@ -110,7 +110,7 @@ int	argument_state(t_parsing_context *par_con)
 			if (par_con->curr)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
-				add_node(par_con->curr, par_con->head);
+				add_node(par_con, par_con->curr, par_con->head);
 			}// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 			par_con->curr_pos = 0;
@@ -125,9 +125,9 @@ int	single_quote_state(t_parsing_context *par_con)
 	{
 		par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
 	}
-	add_node(par_con->curr, par_con->head);
+	add_node(par_con, par_con->curr, par_con->head);
 	// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
-
+	par_con->tail->type = MS_TOK_IDENTIFIER;
 	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
 	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 	par_con->curr_pos = 0;
@@ -142,7 +142,7 @@ int	double_quote_state(t_parsing_context *par_con)
 			if (par_con->curr)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
-				add_node(par_con->curr, par_con->head);
+				add_node(par_con, par_con->curr, par_con->head);
 				quote_assign(par_con->head)
 				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			}
@@ -162,8 +162,9 @@ int	double_quote_state(t_parsing_context *par_con)
 			continue ;
 		}
 	}
-	add_node(par_con->curr, par_con->head);
-	// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
+	add_node(par_con, par_con->curr, par_con->head);
+	// instantly assign identifier bc it is always a quote, when there's quotation, ~NOT DONE YET!!!!!!!!~ DONE NOW >:D 8/8/25
+	par_con->tail->type = MS_TOK_IDENTIFIER;
 	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 	par_con->curr_pos = 0;
 	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
@@ -171,16 +172,19 @@ int	double_quote_state(t_parsing_context *par_con)
 	return (0); // return error values
 }
 
-void	quote_assign(t_token_list **head) //Idk if double deref is correct here when just passing par_con->head
-{
-	t_token_list *node;
 
-	node = *head;
-	while(node->next != NULL)
-		node = node->next;
-	node->type = t_ms_id_token; //change type to union, not int? and then assign id token?? with information?? 
-	//for example here, list the quote status that is included in the token enum/struct
-}
+//THIS IS NOT NEEDED ANYMORE AS I MADE MAKE TAIL BE THE MOST RECENT NODE EVERY TIME SO THAT I CAN INSTANTLY CHANGE ITS TYPE EVERY TIME >:D
+
+// void	quote_assign(t_token_list **head) //Idk if double deref is correct here when just passing par_con->head
+// {
+// 	t_token_list *node;
+
+// 	node = *head;
+// 	while(node->next != NULL)
+// 		node = node->next;
+// 	node->type = t_ms_id_token; //change type to union, not int? and then assign id token?? with information?? 
+// 	//for example here, list the quote status that is included in the token enum/struct
+// }
 
 int	neo_parser_processor(char *input, t_token_list **head)
 {
