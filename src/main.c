@@ -366,8 +366,8 @@ void	add_node(t_parsing_context *par_con,char *string, t_token_list *head)
 	if (!head)
 		head = mk_node(string, head);
 	while (head->next != NULL)
-		head = head->next;
-	head->next = mk_node(string, head); //watch out for problems with order, head should be updated to next every tim
+		head = head->next; //make sure this doesn't iterate the actual head in your struct, just the pointer to head handed over for this func.
+	head->next = mk_node(string, head);
 	par_con->tail = head->next;
 }
 
