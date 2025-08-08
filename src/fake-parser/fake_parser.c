@@ -124,7 +124,7 @@ t_parse_node	*get_output_node(int fd)
 	res->children = ft_calloc(3, sizeof(t_parse_node *));
 	res->children[0] = get_next_node(fd);
 	line = ft_gnl(fd);
-	free(line);
+	// free(line);
 	res->children[1] = get_id_node(line);
 	return (res);
 }

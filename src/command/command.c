@@ -29,6 +29,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+	// ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
+	// 	__FILE_NAME__, func, strerror(errno));
+void	_clean_before_exit(t_cmd_params params)
+{
+	close_fds(params.open_fds);
+	free_cmd_params(params);
+}
+
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
 	int	find_bin_ret;
@@ -39,22 +47,26 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		ft_fprintf(STDERR_FILENO,
 			"%s: command not found\n",
 			params.cmd_args[0]);
-		// TODO free stuff
+		_clean_before_exit(params);
 		exit(MS_CMD_NOT_FOUND);
 	}
 	if (find_bin_ret < 0)
 	{
 		ft_fprintf(STDERR_FILENO, "%s: permission denied", params.cmd_args[0]);
-		// TODO free stuff
+		_clean_before_exit(params);
 		exit(MS_PERM_DENIED);
 	}
-	do_redirs(&params);
+	if (do_redirs(&params))
+	{
+		_clean_before_exit(params);
+		exit(MS_FAILURE);
+	}
 	close_fds(params.open_fds);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
 	free_cmd_params(params);
-	exit(EXIT_FAILURE);
+	exit(MS_FAILURE);
 }
 
 int	cmd_run(t_cmd_params params, t_parse_node *node)
@@ -130,7 +142,7 @@ int	cmd_output_redir(t_cmd_params params, t_parse_node *node)
 
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY});
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY | O_CREAT, .flags = 0644});
 	if (retval)
 		return (retval);
 	return (cmd_next_node(&params, node->children[0]));
