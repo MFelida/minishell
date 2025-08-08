@@ -137,11 +137,10 @@ t_parse_node	*get_append_node(int fd)
 	res = malloc(sizeof(t_parse_node));
 	res->tok = (t_fp_token){.op.op = FP_OP_FILE_APPEND, .op.type = FP_TOK_OP};
 	res->children = ft_calloc(3, sizeof(t_parse_node *));
+	res->children[0] = get_next_node(fd);
 	line = ft_gnl(fd);
-	res->children[0] = get_id_node(line);
-	free(line);
-	skip_line(fd);
-	res->children[1] = get_next_node(fd);
+	// free(line);
+	res->children[1] = get_id_node(line);
 	return (res);
 }
 

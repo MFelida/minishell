@@ -142,7 +142,7 @@ int	cmd_output_redir(t_cmd_params params, t_parse_node *node)
 
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY | O_CREAT, .flags = 0644});
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY | O_CREAT | O_TRUNC, .flags = 0644});
 	if (retval)
 		return (retval);
 	return (cmd_next_node(&params, node->children[0]));
@@ -154,7 +154,7 @@ int	cmd_output_append(t_cmd_params params, t_parse_node *node)
 
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_APPEND});
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_APPEND | O_CREAT | O_WRONLY, .flags = 0644});
 	if (retval)
 		return (retval);
 	return (cmd_next_node(&params, node->children[0]));
