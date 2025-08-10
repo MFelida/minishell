@@ -82,6 +82,7 @@ t_parse_node	*get_cmd_node(int fd)
 		free(line);
 		i++;
 	}
+	free(line);
 	res->children[i] = NULL;
 	return (res);
 }
@@ -124,8 +125,8 @@ t_parse_node	*get_output_node(int fd)
 	res->children = ft_calloc(3, sizeof(t_parse_node *));
 	res->children[0] = get_next_node(fd);
 	line = ft_gnl(fd);
-	// free(line);
 	res->children[1] = get_id_node(line);
+	free(line);
 	return (res);
 }
 
@@ -139,8 +140,8 @@ t_parse_node	*get_append_node(int fd)
 	res->children = ft_calloc(3, sizeof(t_parse_node *));
 	res->children[0] = get_next_node(fd);
 	line = ft_gnl(fd);
-	// free(line);
 	res->children[1] = get_id_node(line);
+	free(line);
 	return (res);
 }
 

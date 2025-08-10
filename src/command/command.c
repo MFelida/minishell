@@ -104,12 +104,14 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	t_cmd_params	reader;
 	t_pipe			p;
 	int				retval;
+	t_list			*last;
 
 	if (pipe(p.a) < 0)
 		return (MS_CMD_ERROR_PIPE);
 	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.read));
 	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.write));
 	writer = params;
+	last = ft_lstlast((t_list *) params.redirs);
 	if (add_redir(&writer,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
@@ -121,43 +123,65 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(&writer, node->children[0])
 		|| cmd_next_node(&reader, node->children[1]);
+	free(ft_lstlast((t_list *) reader.redirs));
+	free(ft_lstlast((t_list *) writer.redirs));
+	if (last)
+		last->next = NULL;
 	return (retval);
 }
 
 int	cmd_input_redir(t_cmd_params params, t_parse_node *node)
 {
-	int	retval;
+	int		retval;
+	t_list	*last;
 
+	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
 					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[0]->tok.id.value, .mode = O_RDONLY},
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDIN_FILENO});
 	if (retval)
 		return (retval);
-	return (cmd_next_node(&params, node->children[1]));
+	retval = cmd_next_node(&params, node->children[1]);
+	free(ft_lstlast((t_list *) params.redirs));
+	if (last)
+		last->next = NULL;
+	return (retval);
 }
 
 int	cmd_output_redir(t_cmd_params params, t_parse_node *node)
 {
-	int	retval;
+	int		retval;
+	t_list	*last;
 
+	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
 					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_WRONLY | O_CREAT | O_TRUNC, .flags = 0644});
 	if (retval)
 		return (retval);
-	return (cmd_next_node(&params, node->children[0]));
+	retval =  cmd_next_node(&params, node->children[0]);
+	free(ft_lstlast((t_list *) params.redirs));
+	if (last)
+		last->next = NULL;
+	return (retval);
 }
 
 int	cmd_output_append(t_cmd_params params, t_parse_node *node)
 {
-	int	retval;
+	int		retval;
+	t_list	*last;
 
+	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
 					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[1]->tok.id.value, .mode = O_APPEND | O_CREAT | O_WRONLY, .flags = 0644});
 	if (retval)
 		return (retval);
-	return (cmd_next_node(&params, node->children[0]));
+	retval = cmd_next_node(&params, node->children[0]);
+	free(ft_lstlast((t_list *) params.redirs));
+	if (last)
+		last->next = NULL;
+	return (retval);
 }
 
 int	cmd_next_node(t_cmd_params *params, t_parse_node *node)

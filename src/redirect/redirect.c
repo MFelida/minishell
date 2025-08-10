@@ -124,5 +124,6 @@ t_redir_error	do_redirs(t_cmd_params *params)
 			return (err);
 		redirs = redirs->next;
 	}
+	del_redir_list(&params->redirs);
 	return (MS_REDIR_OK);
 }

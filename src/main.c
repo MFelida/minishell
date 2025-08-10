@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "command.h"
+#include "command/utils.h"
 #include "fake_parser.h"
 #include "libft.h"
 #include "redirect.h"
@@ -25,6 +26,7 @@ int	main(int argc, char *argv[])
 	t_cmd_params	params;
 	t_cmd_params	*param_list;
 	t_cmd_params	last_cmd;
+	int				res;
 
 	if (argc <= 1)
 	{
@@ -40,5 +42,7 @@ int	main(int argc, char *argv[])
 	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) param_list);
 	waitpid(last_cmd.pid, &last_cmd.wstatus, 0);
 	waitpid(-1, NULL, 0);
-	return (WEXITSTATUS(last_cmd.wstatus));
+	res = WEXITSTATUS(last_cmd.wstatus);
+	free_cmd_params(params);
+	return (res);
 }
