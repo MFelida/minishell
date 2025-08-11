@@ -70,5 +70,8 @@ int	second_pass(t_parsing_context *par_con);
 void	quote_assign(t_token_list *head);
 int	node_trim_splitter(t_parsing_context *par_con, t_token_list *node);
 void	init_parcon(t_parsing_context *par_con, t_token_list **head);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+size_t	ft_strlen(const char *s);
+char	*ft_strdup(const char *s)
 
 #endif

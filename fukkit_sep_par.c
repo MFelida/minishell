@@ -83,7 +83,7 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 		{
 			par_con->pos++;
 			par_con->quote = IN_DOUBLE_QUOTE;
-			double_quote_state(par_con);
+			neo_double_quote_state(par_con);
 			continue ;
 		}
 		else if (par_con->arg[par_con->pos] == '\'')
@@ -102,6 +102,39 @@ int	neo_parser_processor_v2(char *input, t_token_list **head)
 	}
 	if (no errors so far)
 		second_pass(par_con);
+}
+
+int	neo_double_quote_state(t_parsing_context *par_con)
+{
+	while (par_con->arg[++par_con->pos] != '\0')
+	{
+		if (par_con->arg[par_con->pos] == '"' && par_con->arg[par_con->pos - 1] != '\\')
+		{
+			if (par_con->curr)
+			{
+				par_con->curr[par_con->curr_pos++] = '\0';
+				add_node(par_con, par_con->curr, par_con->head);
+				par_con->tail->type = MS_TOK_IDENTIFIER;
+				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
+			}
+			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+			par_con->curr_pos = 0;
+			return (0);// return error values
+		}
+		else
+		{
+			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+			continue ;
+		}
+	}
+	add_node(par_con, par_con->curr, par_con->head);
+	// instantly assign identifier bc it is always a quote, when there's quotation, ~NOT DONE YET!!!!!!!!~ DONE NOW >:D 8/8/25
+	par_con->tail->type = MS_TOK_IDENTIFIER;
+	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+	par_con->curr_pos = 0;
+	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
+
+	return (0); // return error values
 }
 
 int	second_pass(t_parsing_context *par_con)
@@ -190,13 +223,26 @@ int	double_quote_var(t_parsing_context *par_con)
 {
 	char	*varname;
 	int		i;
+	int		temp_pos;
+	const char *ret;
 
+	temp_pos = (par_con->pos + 1);
 	i = 0;
-	par_con->arg[par_con->pos]
 	while(!isspace(par_con->arg[par_con->pos]))
 	{
-		
+		par_con->arg[par_con->pos++];
+		i++;
 	}
+	varname = ft_substr(&par_con->arg[par_con->pos], 0, i);
+	ret = mike_var_find_func(varname); //replace with mike's env finder later
+	i = 0;
+	while (ret[i] != '\0')
+	{
+		par_con->arg[par_con->pos] = ret[i];
+		par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
+		i++;
+	}
+	return (ret);
 }
 
 int	double_quote_state(t_parsing_context *par_con)
