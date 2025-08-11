@@ -12,6 +12,41 @@
 
 #include "parsing_header.h"
 
+void	init_parcon(t_parsing_context *par_con, t_token_list **head)
+{
+	par_con->head = head; // probably define everything except input and head beforehand, not here.
+	par_con->pos = 0;
+	par_con->quote = NOT_IN_QUOTES;
+	par_con->escaping = NOT_ESCAPING;
+	par_con->error = 0;
+	par_con->tail = NULL;
+	par_con->curr = (char *)malloc(sizeof(char) * 3e6);
+	if (!par_con->curr)
+		exit (1) //make error handling;
+
+}
+
+int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
+{
+	par_con->arg = input; //make sure this equals it to the start of the string/address
+
+	while(par_con->arg[par_con->pos] != '\0')
+	{
+		while (ft_isspace(par_con->arg[par_con->pos]))
+			par_con->arg[par_con->pos];
+		if (par_con->arg[par_con->pos] == '"')
+		{
+			par_con->pos++;
+			par_con->quote = IN_DOUBLE_QUOTE;
+			double_quote_state(par_con);
+			continue ;
+		}
+	}
+
+	free(par_con->arg);
+	return (0); //or exit state, figure this out later along the line
+}
+
 int	neo_parser_processor_v2(char *input, t_token_list **head)
 {
 	char	*curr;
@@ -148,6 +183,20 @@ int	single_quote_state(t_parsing_context *par_con)
 	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
 	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
 	par_con->curr_pos = 0;
+}
+
+
+int	double_quote_var(t_parsing_context *par_con)
+{
+	char	*varname;
+	int		i;
+
+	i = 0;
+	par_con->arg[par_con->pos]
+	while(!isspace(par_con->arg[par_con->pos]))
+	{
+		
+	}
 }
 
 int	double_quote_state(t_parsing_context *par_con)

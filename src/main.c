@@ -32,8 +32,14 @@ void	signal_handler(int signal)
 int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.html
 {
 	char	*input;
-	t_token_list	*head;
+	t_token_list		*head;
+	t_parsing_context	*par_con;
 
+	par_con = (t_parsing_context *)malloc(sizeof(t_parsing_context) * 1);
+	if (!par_con)
+		exit (1); //or equivalent exit func, need to return exit state for $?
+	
+	init_parcon(par_con, head);
 	head = NULL;
 	// tokenize input (think operators and identifiers, whitespace)
 	// check for commands, check if operators are control, otherwise split metachars
@@ -43,6 +49,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 
 	rl_catch_signals = 0;
 	signal(SIGINT, signal_handler);
+	init_parcon
 	while (1)
 	{
 		input = readline("minishell> ");

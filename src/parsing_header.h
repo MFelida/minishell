@@ -69,5 +69,6 @@ void	ft_bzero(void *s, size_t n);
 int	second_pass(t_parsing_context *par_con);
 void	quote_assign(t_token_list *head);
 int	node_trim_splitter(t_parsing_context *par_con, t_token_list *node);
+void	init_parcon(t_parsing_context *par_con, t_token_list **head);
 
 #endif
