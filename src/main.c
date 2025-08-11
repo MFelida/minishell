@@ -21,6 +21,7 @@
 void	signal_handler(int signal)
 {
 	(void)signal;
+	free_context_struct(par_con); // figure out how to do this cuz it doesn't work
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
