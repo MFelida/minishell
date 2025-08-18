@@ -50,7 +50,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 
 	rl_catch_signals = 0;
 	signal(SIGINT, signal_handler);
-	init_parcon
+	init_parcon;
 	while (1)
 	{
 		input = readline("minishell> ");
@@ -70,6 +70,8 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 	printf("Hello, World! BRUH\n");
 	return (EXIT_SUCCESS);
 }
+
+heredoc, account for cat << "eof", this does not expand variables, if it is just cat << eof, it expands the variable like $path for example
 
 int	neo_parser_processor_v2(char *input, t_token_list **head)
 {
