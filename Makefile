@@ -18,8 +18,11 @@ include $(CMD_DIR)/command.mk
 PF_DIR = $(SRCDIR)/fake-parser
 include $(PF_DIR)/fake-parser.mk
 
+ENV_DIR = $(SRCDIR)/env
+include $(ENV_DIR)/env.mk
+
 OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
-	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS)
+	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib
