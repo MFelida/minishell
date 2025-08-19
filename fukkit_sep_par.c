@@ -275,7 +275,13 @@ int	var_expansion(t_parsing_context *par_con)
 			par_con->curr[par_con->curr_pos++] = value[i++];
 		free(value);
 	}
+	var_re_parse(par_con);
 	return (0);
+}
+
+int var_re_parse(t_parsing_context *par_con)
+{
+	//make re-parsing func in case there's several tokens.
 }
 
 int	double_quote_var(t_parsing_context *par_con)
