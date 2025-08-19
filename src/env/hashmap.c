@@ -24,7 +24,7 @@ void	free_hm(t_hm *hm)
 	i = 0;
 	while (i < HM_SIZE)
 	{
-		ft_lstclear((t_list **) (*hm)[i], _free_hm_node);
+		ft_lstclear((t_list **) &(*hm)[i], _free_hm_node);
 		i++;
 	}
 }
