@@ -237,6 +237,46 @@ int	single_quote_state(t_parsing_context *par_con)
 	par_con->curr_pos = 0;
 }
 
+int	var_expansion(t_parsing_context *par_con)
+{
+	char *varname;
+	char *value;
+	int	start;
+	int	len;
+	int	i;
+
+	len = 0;
+	i = 0;
+	if (par_con->arg[par_con->pos + 1] == '?')
+	{
+		value = mike_exit_state_itoa(g_exit_state); //examle
+		par_con->pos += 2;
+	}
+	else
+	{
+		start = par_con->pos + 1;
+		while (ft_isalnum(par_con->arg[start + len] || par_con->arg[start + len] == '_'))
+			len++;
+		if (len == 0)
+		{
+			par_con->curr[par_con->curr_pos++] = '$';
+			par_con->pos++;
+			return (0);
+		}
+		varname = ft_substr(par_con->arg, start, len);
+		value = mike_var_find_func(varname);
+		free(varname);
+		par_con->pos = start + len;
+	}
+	if (value)
+	{
+		i = 0;
+		while (value[i])
+			par_con->curr[par_con->curr_pos++] = value[i++];
+		free(value);
+	}
+	return (0);
+}
 
 int	double_quote_var(t_parsing_context *par_con)
 {
@@ -253,7 +293,7 @@ int	double_quote_var(t_parsing_context *par_con)
 		i++;
 	}
 	varname = ft_substr(&par_con->arg[par_con->pos], 0, i);
-	ret = mike_var_find_func(varname); //replace with mike's env finder later
+	ret = ms_get_env(varname); //replace with mike's env finder later
 	i = 0;
 	while (ret[i] != '\0')
 	{
@@ -274,7 +314,7 @@ int	double_quote_state(t_parsing_context *par_con)
 			{
 				par_con->curr[par_con->curr_pos++] = '\0';
 				add_node(par_con, par_con->curr, par_con->head);
-				par_con->tail->type = MS_TOK_IDENTIFIER
+				par_con->tail->type = MS_TOK_IDENTIFIER;
 				// instantly assign identifier bc it is always a quote, when there's quotation, NOT DONE YET!!!!!!!!
 			}
 			ft_bzero(par_con->curr, ft_strlen(par_con->curr));
