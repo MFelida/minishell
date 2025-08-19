@@ -6,63 +6,44 @@
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/18 11:31:22 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/19 09:46:10 by mifelida     ########   odam.nl          //
+//   Updated: 2025/08/19 13:12:39 by mifelida     ########   odam.nl          //
 //                                                                            //
 // ************************************************************************** //
 
-#include "env.h"
+#include "hashmap.h"
 #include "libft.h"
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#define _P		67
-#define HM_SIZE	0x10000U
-
-static	t_env	env_hm;
-
-static uint16_t	_get_hash(const char *str)
+void	free_hm(t_hm *hm)
 {
-	long long	p;
-	uint16_t	res;
+	size_t	i;
 
-	p = 1;
-	res = 0;
-	while (*str)
+	i = 0;
+	while (i < HM_SIZE)
 	{
-		res += p * *str;
-		p *= _P;
-		str++;
+		ft_lstclear((t_list **) (*hm)[i], _free_hm_node);
+		i++;
 	}
-	return (res);
 }
 
-static size_t	_max_len(const char *str1, const char *str2)
+int	hm_set_value(t_hm *hm, const char *key, const char *value)
 {
-	size_t	len;
-
-	len = (ft_strlen(str1));
-	if (ft_strlen(str2) > len)
-		return (ft_strlen(str2));
-	return (len);
-}
-
-int	hm_set_value(const char *key, char *value)
-{
-	uint16_t	hash;
+	t_hm_node	**head;
 	t_hm_node	*node;
 	char		*temp;
 
-	hash = _get_hash(key);
-	node = (*map)[hash];
-	if (!node)
-	{
-		node = hm_node_new(key, value);
-		return (1);
-	}
+	head = &(*hm)[_get_hash(key)];
+	node = *head;
 	while (node && ft_strncmp(key, node->key, _max_len(key, node->key)))
 		node = node->next;
+	if (!node)
+	{
+		ft_lstadd_front((t_list **) head, (t_list *) _hm_new_node(key, value));
+		return (*head && ft_strncmp(key, (*head)->key, _max_len(key, (*head)->key)));
+	}
 	if (node->cap >= ft_strlen(value) + 1)
 		ft_strlcpy(node->value, value, ft_strlen(value) + 1);
 	else
@@ -77,20 +58,40 @@ int	hm_set_value(const char *key, char *value)
 	return (0);
 }
 
-char	*hm_get_value(const char *key)
+int	hm_unset(t_hm *hm, const char *key)
 {
 	uint16_t	hash;
+	t_hm_node	*prev;
 	t_hm_node	*node;
 
+	prev = NULL;
 	hash = _get_hash(key);
-	node = (*map)[hash];
-	if (!node)
-		return (NULL);
-	while (node)
+	node = (*hm)[hash];
+	while (node && ft_strncmp(key, node->key, _max_len(key, node->key)))
 	{
-		if (!ft_strncmp(key, node->key, _max_len(key, node->key)))
-			return (node->value);
+		prev = node;
 		node = node->next;
 	}
+	if (!node)
+		return (1);
+	if (!prev)
+		(*hm)[hash] = node->next;
+	else
+		prev->next = node->next;
+	_free_hm_node(node);
+	return (0);
+}
+
+const char	*hm_get_value(t_hm *hm, const char *key)
+{
+	t_hm_node	*node;
+
+	node = (*hm)[_get_hash(key)];
+	if (!node)
+		return (NULL);
+	while (node && ft_strncmp(key, node->key, _max_len(key, node->key)))
+		node = node->next;
+	if (node)
+		return (node->value);
 	return (NULL);
 }
