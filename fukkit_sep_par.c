@@ -38,12 +38,25 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 		{
 			par_con->pos++;
 			par_con->quote = IN_DOUBLE_QUOTE;
-			double_quote_state(par_con);
+			neo_double_quote_state(par_con);
+			continue ;
+		}
+		else if (par_con->arg[par_con->pos] == '\'')
+		{
+			par_con->pos++;
+			par_con->quote = IN_SINGLE_QUOTE;
+			single_quote_state(par_con);
+			continue ;
+		}
+		else
+		{
+			argument_state(par_con);
 			continue ;
 		}
 	}
 
 	free(par_con->arg);
+	second_pass(par_con);
 	return (0); //or exit state, figure this out later along the line
 }
 
@@ -121,19 +134,25 @@ int	neo_double_quote_state(t_parsing_context *par_con)
 			par_con->curr_pos = 0;
 			return (0);// return error values
 		}
+		else if (par_con->arg[par_con->pos] == '$')
+		{
+			double_quote_var(par_con);
+		}
 		else
 		{
 			par_con->curr[par_con->curr_pos++] = par_con->arg[par_con->pos++];
 			continue ;
 		}
 	}
-	add_node(par_con, par_con->curr, par_con->head);
-	// instantly assign identifier bc it is always a quote, when there's quotation, ~NOT DONE YET!!!!!!!!~ DONE NOW >:D 8/8/25
-	par_con->tail->type = MS_TOK_IDENTIFIER;
-	ft_bzero(par_con->curr, ft_strlen(par_con->curr));
-	par_con->curr_pos = 0;
-	//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
-
+	if (par_con->curr)
+	{
+		add_node(par_con, par_con->curr, par_con->head);
+		// instantly assign identifier bc it is always a quote, when there's quotation, ~NOT DONE YET!!!!!!!!~ DONE NOW >:D 8/8/25
+		par_con->tail->type = MS_TOK_IDENTIFIER;
+		ft_bzero(par_con->curr, ft_strlen(par_con->curr));
+		par_con->curr_pos = 0;
+		//ALSO MAYBE ACCOUNT FOR EMPTY CURR, AND HANDLE ERROR NOTATION FOR IT
+	}
 	return (0); // return error values
 }
 
