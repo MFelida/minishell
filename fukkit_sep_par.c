@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/07/22 13:47:36 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/08/20 14:26:19 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,19 @@ int	var_expansion(t_parsing_context *par_con)
 int var_re_parse(t_parsing_context *par_con)
 {
 	//make re-parsing func in case there's several tokens.
+	int	i;
+
+	i = 0;
+	while(par_con->tail->string[i] != '\0')
+	{
+		if (par_con->tail->string[i]) == ' ' || ismetachar(par_con->tail->string[i])
+			split the input, idk how you should split it yet
+	}
+}
+
+int	var_node_splitter(t_parsing_context *par_con)
+{
+	
 }
 
 int	double_quote_var(t_parsing_context *par_con)
