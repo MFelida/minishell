@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static t_open_fds	*g_open_fds = {0};
+
 t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
 {
 	t_redir			*new;
@@ -77,24 +79,15 @@ t_open_fds	*new_fd(const int	fd)
 	return (new);
 }
 
-void	del_fds_list(void *fds_list)
+static void	_del_open_fds(void *node)
 {
-	free(fds_list);
+	close(((t_open_fds *) node)->fd);
+	free(node);
 }
 
-void	close_fds(t_open_fds **fds)
+void	close_fds(void)
 {
-	t_open_fds	*temp;
-	if (!fds)
-		return ;
-	temp = *fds;
-	while (temp)
-	{
-		close(temp->fd);
-		temp = temp->next;
-	}
-	ft_lstclear((t_list **) fds, del_fds_list);
-	free(fds);
+	ft_lstclear((t_list **) &g_open_fds, _del_open_fds);
 }
 
 static t_redir_error	_do_redir(t_redir *redir)
@@ -109,6 +102,17 @@ static t_redir_error	_do_redir(t_redir *redir)
 	else
 		err |= _fd_to_fd(redir->src.fd, redir->dest.fd);
 	return (err);
+}
+
+int	ms_pipe(t_pipe *fds)
+{
+	if (pipe(fds->a))
+		return (-1);
+	if (g_open_fds == NULL)
+		ft_atexit(close_fds);
+	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->read));
+	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->write));
+	return (0);
 }
 
 t_redir_error	do_redirs(t_cmd_params *params)

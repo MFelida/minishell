@@ -1,27 +1,31 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   env.h                                             :+:    :+:             //
+//   print_env.c                                       :+:    :+:             //
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
-//   Created: 2025/08/18 10:35:44 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 17:55:33 by mifelida     ########   odam.nl          //
+//   Created: 2025/08/20 17:50:14 by mifelida     #+#    #+#                  //
+//   Updated: 2025/08/20 17:54:53 by mifelida     ########   odam.nl          //
 //                                                                            //
 // ************************************************************************** //
 
-#ifndef ENV_H
-# define ENV_H
+#include "env.h"
+#include "libft.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
-int			init_env(void);
-void		free_env(void);
-const char	*ms_getenv(const char *key);
-int			ms_setenv(const char *key, const char *value);
-int			ms_unset(const char *key);
-char		**ms_getenv_full(int sorted, int inc_empty);
-int			print_env(int sorted, int inc_empty);
+int	print_env(int sorted, int inc_empty)
+{
+	char	**tab;
+	size_t	i;
 
-#endif	// ENV_H
+	tab = ms_getenv_full(sorted, inc_empty);
+	if (!tab)
+		return (1);
+	i = 0;
+	while (tab[i])
+		ft_printf("%s\n", tab[i++]);
+	ft_split_free(tab);
+	return (0);
+}

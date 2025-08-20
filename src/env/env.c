@@ -6,10 +6,11 @@
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/19 13:24:50 by mifelida     ########   odam.nl          //
+//   Updated: 2025/08/20 16:59:41 by mifelida     ########   odam.nl          //
 //                                                                            //
 // ************************************************************************** //
 
+#include "env_utils.h"
 #include "hashmap.h"
 #include "libft.h"
 
@@ -44,6 +45,7 @@ int	init_env(void)
 		free(key);
 		i++;
 	}
+	ft_atexit(free_env);
 	return (0);
 }
 
@@ -60,4 +62,32 @@ int	ms_setenv(const char *key, const char *value)
 int	ms_unset(const char *key)
 {
 	return (hm_unset(&env_hm, key));
+}
+
+char	**ms_getenv_full(int sorted, int inc_empty)
+{
+	char		**res;
+	char		**temp;
+	t_hm_node	*node;
+	size_t		i;
+
+	res = ft_calloc(env_hm.size + 1, sizeof(char *));
+	if (!res)
+		return (NULL);
+	temp = res;
+	i = 0;
+	while (i < HM_SIZE)
+	{
+		node = env_hm.data[i++];
+		while (node)
+		{
+			if (inc_empty || ft_strlen(node->value) > 0)
+				if (_node_to_str(node, &*temp++))
+					return (ft_split_free(res), (NULL));
+			node = node->next;
+		}
+	}
+	if (sorted)
+		_sort(res);
+	return (res);
 }

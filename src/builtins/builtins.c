@@ -6,12 +6,13 @@
 //   By: mifelida <mifelida@student.codam.nl>        +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 14:36:02 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/19 15:05:36 by mifelida     ########   odam.nl          //
+//   Updated: 2025/08/20 10:57:28 by mifelida     ########   odam.nl          //
 //                                                                            //
 // ************************************************************************** //
 
 #include "builtins.h"
 #include "libft.h"
+#include "utils.h"
 
 #include <stddef.h>
 
@@ -26,7 +27,7 @@ enum e_builtin_idx
 	MS_N_BLTINS,
 };
 
-static const char*	builtin_names[] =
+static const char*	g_builtin_names[] =
 {
 	[MS_BLTIN_CD] = "cd",
 	[MS_BLTIN_ENV] = "env",
@@ -58,9 +59,9 @@ static t_builtin_fn	_get_builtin_fn(const char *str)
 	size_t	i;
 
 	i = 0;
-	while (i < MS_N_BLTINS && ft_strncmp(str, builtin_names[i], 50))
+	while (i < MS_N_BLTINS && ft_strncmp(str, g_builtin_names[i], 100))
 		i++;
-	if (i == MS_N_BLTINS)
+	if (i >= MS_N_BLTINS)
 		return (NULL);
 	return (g_builtins[i]);
 }
