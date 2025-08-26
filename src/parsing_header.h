@@ -52,6 +52,7 @@ typedef struct s_parsing_context
 	int				escaping;
 	char			*curr;
 	int				curr_pos;
+	int				start;
 }	t_parsing_context;
 
 typedef struct s_token_list

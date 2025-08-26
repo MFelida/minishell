@@ -72,7 +72,7 @@ int	main(void) // https://www.cs.sjsu.edu/faculty/pearce/java1/streams/tokens.ht
 }
 
 heredoc, account for cat << "eof", this does not expand variables, if it is just cat << eof, it expands the variable like $path for example
-'hello'bye"$USER"
+'hello'bye"$USER"gfcjtvg
 hello'bye' //hello gets concatenated to bye, if you use hello'bye' as a heredoc delimiter, it also won't expand variables
 
 int	neo_parser_processor_v2(char *input, t_token_list **head)

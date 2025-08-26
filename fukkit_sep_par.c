@@ -217,12 +217,12 @@ int	var_expansion(t_parsing_context *par_con)
 	}
 	if (value)
 	VV YOU DO INFACT WANNA DO THIS, append to curr first, then make sure to split it after and only then add it to nodes.
-	// {
-	// 	i = 0;
-	// 	while (value[i])
-	// 		par_con->curr[par_con->curr_pos++] = value[i++]; 
-	// 	free(value);
-	// }
+	{
+		i = 0;
+		while (value[i])
+			par_con->curr[par_con->curr_pos++] = value[i++]; 
+		free(value);
+	}
 	{
 		if (par_con->quote == NOT_IN_QUOTES)
 			var_re_parse(par_con, value); //expand and fully re-lex
