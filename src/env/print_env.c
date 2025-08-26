@@ -14,6 +14,7 @@
 #include "libft.h"
 
 #include <stddef.h>
+#include <stdio.h>
 
 int	print_env(int sorted, int inc_empty)
 {
@@ -25,7 +26,7 @@ int	print_env(int sorted, int inc_empty)
 		return (1);
 	i = 0;
 	while (tab[i])
-		ft_printf("%s\n", tab[i++]);
+		printf("%s\n", tab[i++]);
 	ft_split_free(tab);
 	return (0);
 }
