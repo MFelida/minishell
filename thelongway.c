@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/08/20 14:26:19 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:42:10 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,30 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 
 int metastate(t_parsing_context *par_con)
 {
-    ft_substr(par_con->arg, par_con->start, par_con->start - par_con->pos)
+    ft_substr(par_con->arg, par_con->start, (par_con->start - par_con->pos)); //maybe make a wrapper that sets the start to pos.
+	par_con->start = par_con->pos; //like this
+	if ((ismetachar(par_con->arg[par_con->pos + 1])) \
+	&& !ft_isspace(par_con->arg[par_con->pos]) \
+	&& !ft_isspace(par_con->arg[par_con->pos + 1])) 
+	{
+		//check if it's << etc, if it's only whitespace until on more metacharacters, do while ft_isspace like below.
+		par_con->pos += 2;
+	}
+	while (ft_isspace(par_con->arg[par_con->pos]))
+		par_con->pos++;
+}
+
+
+int	ismetachar(char c)
+{
+	int i;
+
+	i = 0;
+	while (i < 15)
+	{
+		if (c = METACHARS[i])
+			return (1);
+		i++;
+	}
+	return (0);
 }
