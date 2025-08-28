@@ -6,7 +6,7 @@
 //   By: mifelida <mifelida@student.codam.nl>        +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 14:23:40 by mifelida     #+#    #+#                  //
-/*   Updated: 2025/08/28 16:41:54 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/08/28 17:24:13 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -20,7 +20,7 @@
 
 static int	_is_valid_key(const char *key)
 {
-	if (!(ft_isalpha(*key) || *key == '_'))
+	if (!*key || !(ft_isalpha(*key) || *key == '_'))
 		return (0);
 	while (*++key && *key != '=')
 		if (!(ft_isalnum(*key) || *key == '_'))
@@ -62,7 +62,7 @@ int	ms_export(char **args)
 	if (!args[1])
 		print_env(1, 1);
 	i = 0;
-	while (args[i])
+	while (args[++i])
 	{
 		if (_is_option(args[i]))
 		{
@@ -74,14 +74,10 @@ int	ms_export(char **args)
 			ft_print_err("not a valid identifier", 3, "minishell", "export", args[i]);
 			return (MS_FAILURE);
 		}
-		i++;
 	}
-	i = 0;
+	i = 1;
 	while (args[i])
-	{
-		if (_export_setenv(args[i]))
+		if (_export_setenv(args[i++]))
 			return (MS_FAILURE);
-		i++;
-	}
-	return (MS_SUCCES);
+	return (MS_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:22:07 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/02 18:03:58 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/08/28 17:16:47 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 enum e_retvals
 {
-	MS_SUCCES = 0,
+	MS_SUCCESS = 0,
 	MS_FAILURE = 1,
 	MS_BUILTIN_MISUSE = 2,
 	MS_PERM_DENIED = 126,
