@@ -1,12 +1,12 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   export.c                                          :+:    :+:             //
+/*   export.c                                           :+:      :+:    :+:   */
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.codam.nl>        +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 14:23:40 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 17:58:33 by mifelida     ########   odam.nl          //
+/*   Updated: 2025/08/28 16:41:54 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -16,6 +16,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static int	_is_valid_key(const char *key)
 {
@@ -64,10 +65,15 @@ int	ms_export(char **args)
 	while (args[i])
 	{
 		if (_is_option(args[i]))
+		{
+			ft_print_err("export doesn't support any options", 3, "minishell", "export", args[i]);
 			return (MS_BUILTIN_MISUSE);
-		//	TODO: Print error messages
+		}
 		if (!_is_valid_key(args[i]))
+		{
+			ft_print_err("not a valid identifier", 3, "minishell", "export", args[i]);
 			return (MS_FAILURE);
+		}
 		i++;
 	}
 	i = 0;
