@@ -16,6 +16,7 @@
 typedef enum e_fp_ops
 {
 	FP_OP_CMD = 1,
+	FP_OP_BLTIN,
 	FP_OP_PIPE,
 	FP_OP_FILE_OUTPUT,
 	FP_OP_FILE_INPUT,

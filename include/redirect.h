@@ -21,5 +21,6 @@ t_open_fds		*new_fd(const int	fd);
 t_redir_error	do_redirs(t_cmd_params *params);
 void			close_fds(void);
 void			del_redir_list(t_redir	**redirs);
+int				ms_pipe(t_pipe *fds);
 
 #endif // !REDIRECT_H

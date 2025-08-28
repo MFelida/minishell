@@ -17,6 +17,7 @@
 
 char	*g_op_strings[] = {
 [FP_OP_CMD] = "cmd",
+[FP_OP_BLTIN] = "bltin",
 [FP_OP_PIPE] = "pipe",
 [FP_OP_FILE_OUTPUT] = "output",
 [FP_OP_FILE_INPUT] = "input",
@@ -29,11 +30,13 @@ t_parse_node	*get_input_node(int fd);
 t_parse_node	*get_output_node(int fd);
 t_parse_node	*get_append_node(int fd);
 t_parse_node	*get_cmd_node(int fd);
+t_parse_node	*get_bltin_node(int fd);
 
 typedef t_parse_node	*(*t_node_getter)(int);
 
 t_node_getter	g_node_getters[] = {
 	[FP_OP_CMD] = get_cmd_node,
+	[FP_OP_BLTIN] = get_bltin_node,
 	[FP_OP_PIPE] = get_pipe_node,
 	[FP_OP_FILE_OUTPUT] = get_output_node,
 	[FP_OP_FILE_INPUT] = get_input_node,

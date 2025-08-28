@@ -21,7 +21,7 @@ t_cmd_params	cmd_params_default(void)
 	extern char		**environ;
 
 	res.pid = -1;
-	res.envp = environ;
+	res.envp = NULL;
 	res.wstatus = -1;
 	res.next = NULL;
 	res.redirs = NULL;
@@ -44,6 +44,7 @@ static void	_free_cmd_param(void *d)
 void	free_cmd_params(t_cmd_params params)
 {
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
+	ft_split_free(params.envp);
 }
 
 char	**make_argv(t_parse_node *node)

@@ -36,12 +36,17 @@ static int	_export_setenv(const char *keyvalpair)
 {
 	char	*key;
 	char	*value;
+	size_t	len;
 
-	if (ft_strchr(keyvalpair, '='))
-		value = ft_strchr(keyvalpair, '=') + 1;
-	else
+	value = ft_strchr(keyvalpair, '=') + 1;
+	if (value <= (char *) 1)
+	{
 		value = "";
-	key = ft_substr(keyvalpair, 0, ft_strchr(keyvalpair, '=') - keyvalpair);
+		len = ft_strlen(keyvalpair);
+	}
+	else
+		len = value	- keyvalpair - 1;
+	key = ft_substr(keyvalpair, 0, len);
 	if (!key)
 		return (1);
 	ms_setenv(key, value);

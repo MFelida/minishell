@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "env.h"
 #include "fake_parser.h"
 #include "file_format.h"
 #include "libft.h"
@@ -57,7 +58,10 @@ t_parse_node	*get_id_node(char *str)
 	res->tok.type = FP_TOK_IDENTIFIER;
 	str[ft_strlen(str) - 1] = '\0';
 	str = ft_strchr(str, '-') + 2;
-	res->tok.id.value = ft_strdup(str);
+	if (*str == '$')
+		res->tok.id.value = ft_strdup(ms_getenv(str + 1));
+	else
+		res->tok.id.value = ft_strdup(str);
 	return (res);
 }
 
@@ -69,6 +73,32 @@ t_parse_node	*get_cmd_node(int fd)
 
 	res = malloc(sizeof(t_parse_node));
 	res->tok = (t_fp_token){.op.type = FP_TOK_OP, .op.op = FP_OP_CMD};
+	res->children = ft_calloc(50, sizeof (t_parse_node *));
+	i = 0;
+	while ((line = ft_gnl(fd)) && ft_strncmp(skip_ws(line), "\n", 1))
+	{
+		if (!ft_strncmp(skip_ws(line), "\n", 1))
+		{
+			free(line);
+			break;
+		}
+		res->children[i] = get_id_node(line);
+		free(line);
+		i++;
+	}
+	free(line);
+	res->children[i] = NULL;
+	return (res);
+}
+
+t_parse_node	*get_bltin_node(int fd)
+{
+	t_parse_node	*res;
+	char			*line;
+	int				i;
+
+	res = malloc(sizeof(t_parse_node));
+	res->tok = (t_fp_token){.op.type = FP_TOK_OP, .op.op = FP_OP_BLTIN};
 	res->children = ft_calloc(50, sizeof (t_parse_node *));
 	i = 0;
 	while ((line = ft_gnl(fd)) && ft_strncmp(skip_ws(line), "\n", 1))

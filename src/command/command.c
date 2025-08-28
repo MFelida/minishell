@@ -47,7 +47,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 			"%s: command not found\n",
 			params.cmd_args[0]);
 		_clean_before_exit(params);
-		exit(MS_CMD_NOT_FOUND);
+		ft_exit(MS_CMD_NOT_FOUND);
 	}
 	if (find_bin_ret < 0)
 	{
@@ -61,6 +61,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		ft_exit(MS_FAILURE);
 	}
 	close_fds();
+	params.envp	 = ms_getenv_full(0, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
@@ -105,17 +106,15 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	int				retval;
 	t_list			*last;
 
-	if (pipe(p.a) < 0)
+	if (ms_pipe(&p) < 0)
 		return (MS_CMD_ERROR_PIPE);
-	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.read));
-	ft_lstadd_back((t_list **) params.open_fds, (t_list *) new_fd(p.write));
 	writer = params;
+	reader = params;
 	last = ft_lstlast((t_list *) params.redirs);
 	if (add_redir(&writer,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
-	reader = params;
 	if (add_redir(&reader,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
@@ -188,7 +187,7 @@ int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 	t_fp_ops	op;
 
 	op = node->tok.op.op;
-	if (op == FP_OP_CMD)
+	if (op == FP_OP_CMD || op == FP_OP_BLTIN)
 		return (cmd_run(*params, node));
 	if (op == FP_OP_PIPE)
 		return (cmd_pipe(*params, node));
