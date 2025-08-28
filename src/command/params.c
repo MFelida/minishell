@@ -25,8 +25,6 @@ t_cmd_params	cmd_params_default(void)
 	res.wstatus = -1;
 	res.next = NULL;
 	res.redirs = NULL;
-	res.open_fds = malloc(sizeof(t_open_fds *));
-	*res.open_fds = NULL;
 	res.head = NULL;
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;

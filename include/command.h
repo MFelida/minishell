@@ -30,7 +30,6 @@ typedef struct s_cmd_params
 	struct s_cmd_params	*next;
 	struct s_cmd_params	**head;
 	t_redir				*redirs;
-	t_open_fds			**open_fds;
 	int					pid;
 	char				**cmd_args;
 	char				bin_path[PATH_MAX];

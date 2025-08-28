@@ -33,7 +33,6 @@
 	// 	__FILE_NAME__, func, strerror(errno));
 void	_clean_before_exit(t_cmd_params params)
 {
-	close_fds(params.open_fds);
 	free_cmd_params(params);
 }
 
@@ -54,19 +53,19 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	{
 		ft_fprintf(STDERR_FILENO, "%s: permission denied", params.cmd_args[0]);
 		_clean_before_exit(params);
-		exit(MS_PERM_DENIED);
+		ft_exit(MS_PERM_DENIED);
 	}
 	if (do_redirs(&params))
 	{
 		_clean_before_exit(params);
-		exit(MS_FAILURE);
+		ft_exit(MS_FAILURE);
 	}
-	close_fds(params.open_fds);
+	close_fds();
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
 		__FILE_NAME__, "execve", strerror(errno));
 	free_cmd_params(params);
-	exit(MS_FAILURE);
+	ft_exit(MS_FAILURE);
 }
 
 int	cmd_run(t_cmd_params params, t_parse_node *node)

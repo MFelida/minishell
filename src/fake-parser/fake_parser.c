@@ -173,7 +173,7 @@ t_parse_node	*get_parse_tree(char *file)
 	{
 		err_msg = strerror(errno);
 		ft_fprintf(2, "%s: %s: %s", __FILE_NAME__, file, err_msg);
-		exit(EXIT_FAILURE);
+		ft_exit(EXIT_FAILURE);
 	}
 	res = get_next_node(fd);
 	close(fd);

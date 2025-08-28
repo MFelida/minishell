@@ -108,8 +108,6 @@ int	ms_pipe(t_pipe *fds)
 {
 	if (pipe(fds->a))
 		return (-1);
-	if (g_open_fds == NULL)
-		ft_atexit(close_fds);
 	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->read));
 	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->write));
 	return (0);
