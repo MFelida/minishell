@@ -207,6 +207,6 @@ t_parse_node	*get_parse_tree(char *file)
 	}
 	res = get_next_node(fd);
 	close(fd);
-	fp_print(*res, 0);
+	// fp_print(*res, 0);
 	return (res);
 }

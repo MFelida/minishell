@@ -12,6 +12,7 @@
 
 #include "command.h"
 #include "command/utils.h"
+#include "env.h"
 #include "fake_parser.h"
 #include "libft.h"
 #include "redirect.h"
@@ -19,6 +20,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+
+void	init_minishell(void)
+{
+	init_env();
+	ft_atexit(close_fds);
+	// TODO: Setup signal handler
+}
 
 int	main(int argc, char *argv[])
 {
@@ -28,21 +36,20 @@ int	main(int argc, char *argv[])
 	t_cmd_params	last_cmd;
 	int				res;
 
+	init_minishell();
 	if (argc <= 1)
 	{
-		printf("Hello, World!\n");
-		return (EXIT_SUCCESS);
+		ft_exit(EXIT_FAILURE);
 	}
 	pt = get_parse_tree(argv[1]);
 	params = cmd_params_default();
 	param_list = NULL;
 	params.head = &param_list;
 	cmd_next_node(&params, pt);
-	close_fds(params.open_fds);
 	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) param_list);
 	waitpid(last_cmd.pid, &last_cmd.wstatus, 0);
 	waitpid(-1, NULL, 0);
 	res = WEXITSTATUS(last_cmd.wstatus);
 	free_cmd_params(params);
-	return (res);
+	ft_exit(res);
 }

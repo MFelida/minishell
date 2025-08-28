@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "command.h"
+#include "env.h"
 #include "exit_statuses.h"
 #include "fake_parser.h"
 #include "libft.h"
@@ -69,15 +70,13 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	ft_exit(MS_FAILURE);
 }
 
+// int	cmd_bltin(t_cmd_params params, t_parse_node *node)
+
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
 
 	params.cmd_args = make_argv(node);
-	for (int i = 0; params.cmd_args[i]; i++) {
-		printf("%s%s", i != 0 ? ";" : "", params.cmd_args[i]);
-	}
-	printf("\n");
 	if (!params.cmd_args)
 		return (1);
 	errno = 0;

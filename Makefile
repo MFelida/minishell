@@ -32,7 +32,7 @@ LIBDIR = lib
 LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
 LIBFLAGS = -L$(LIBDIR) -lft
 
-.PHONY: all re clean fclean debug asan
+.PHONY: all re clean fclean run debug asan
 
 all: CFLAGS += -O2
 all: $(NAME)
@@ -53,6 +53,11 @@ $(LIBDIR):
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
+
+ARGS = test/cmd.yml
+
+run: all
+	@./$(NAME) $(ARGS)
 
 debug: CFLAGS += -O0 -gdwarf-2
 debug: fclean $(NAME)
