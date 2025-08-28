@@ -1,12 +1,12 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   env.c                                             :+:    :+:             //
+/*   env.c                                              :+:      :+:    :+:   */
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 16:59:41 by mifelida     ########   odam.nl          //
+/*   Updated: 2025/08/28 16:50:15 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,11 +17,11 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static t_hm	env_hm = {0};
+static t_hm	g_env_hm = {0};
 
 void	free_env(void)
 {
-	free_hm(&env_hm);
+	free_hm(&g_env_hm);
 }
 
 int	init_env(void)
@@ -36,7 +36,7 @@ int	init_env(void)
 	{
 		value = ft_strchr(environ[i], '=') + 1;
 		key = ft_substr(environ[i], 0, value - environ[i] - 1);
-		if (hm_set_value(&env_hm, key, value))
+		if (hm_set_value(&g_env_hm, key, value))
 		{
 			free(key);
 			free_env();
@@ -45,23 +45,24 @@ int	init_env(void)
 		free(key);
 		i++;
 	}
+	hm_set_value(&g_env_hm, "?", "0");
 	ft_atexit(free_env);
 	return (0);
 }
 
 const char	*ms_getenv(const char *key)
 {
-	return (hm_get_value(&env_hm, key));
+	return (hm_get_value(&g_env_hm, key));
 }
 
 int	ms_setenv(const char *key, const char *value)
 {
-	return (hm_set_value(&env_hm, key, value));
+	return (hm_set_value(&g_env_hm, key, value));
 }
 
 int	ms_unset(const char *key)
 {
-	return (hm_unset(&env_hm, key));
+	return (hm_unset(&g_env_hm, key));
 }
 
 char	**ms_getenv_full(int sorted, int inc_empty)
@@ -71,14 +72,14 @@ char	**ms_getenv_full(int sorted, int inc_empty)
 	t_hm_node	*node;
 	size_t		i;
 
-	res = ft_calloc(env_hm.size + 1, sizeof(char *));
+	res = ft_calloc(g_env_hm.size + 1, sizeof(char *));
 	if (!res)
 		return (NULL);
 	temp = res;
 	i = 0;
 	while (i < HM_SIZE)
 	{
-		node = env_hm.data[i++];
+		node = g_env_hm.data[i++];
 		while (node)
 		{
 			if (inc_empty || ft_strlen(node->value) > 0)
