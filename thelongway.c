@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/08/27 15:42:10 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/01 16:15:33 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	init_parcon(t_parsing_context *par_con)
 		exit (1); //make error handling;
 }
 
-int	neo_parser_processor_v3(char *input, t_parsing_context **par_con)
+int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 {
 	char *test;
 	par_con->arg = input; //make sure this equals it to the start of the string/address
@@ -91,6 +91,7 @@ int metastate(t_parsing_context *par_con)
 		add_node(par_con, test, par_con->head);
 		free(test);
 	}
+	return (0);
 }
 
 int	ismetachar(char c)
@@ -108,7 +109,7 @@ int	ismetachar(char c)
 }
 
 
-char	*ft_substr_wrapper(t_parsing_context **par_con)
+char	*ft_substr_wrapper(t_parsing_context *par_con)
 {
 	char *ret;
 
@@ -118,8 +119,7 @@ char	*ft_substr_wrapper(t_parsing_context **par_con)
 		ret = NULL;
 
 	par_con->start = par_con->pos;
-	return ret;
-	
+	return (ret);
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
@@ -129,7 +129,7 @@ char	*ft_substr_wrapper(t_parsing_context **par_con)
 void	add_node(t_parsing_context *par_con,char *string, t_token_list *head)
 {
 	if (!head)
-		par_con->head = mk_node(string, head);
+		par_con->head = mk_node(string);
 	while (head->next != NULL)
 		head = head->next; //make sure this doesn't iterate the actual head in your struct, just the pointer to head handed over for this func.
 	head->next = mk_node(string);
@@ -150,11 +150,12 @@ t_token_list	*mk_node(char *string)
 
 void print_tokens(t_parsing_context *par_con) 
 {
-    t_token_list *cur = par_con->head;
-    while (cur) {
-        printf("[%s]\n", cur->string);
-        cur = cur->next;
-    }
+	t_token_list *cur = par_con->head;
+	while (cur)
+	{
+		printf("[%s]\n", cur->string);
+		cur = cur->next;
+	}
 }
 
 int	main(void)
@@ -170,4 +171,4 @@ int	main(void)
 	print_tokens(&par_con);
 
 }
-work to make it testable when u next work, other than that, w progress
+//work to make it testable when u next work, other than that, w progress
