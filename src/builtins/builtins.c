@@ -1,17 +1,20 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   builtins.c                                        :+:    :+:             //
+/*   builtins.c                                         :+:      :+:    :+:   */
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.codam.nl>        +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 14:36:02 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 10:57:28 by mifelida     ########   odam.nl          //
+/*   Updated: 2025/08/29 15:27:39 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
 #include "builtins.h"
+#include "command.h"
+#include "exit_statuses.h"
 #include "libft.h"
+#include "redirect.h"
 #include "utils.h"
 
 #include <stddef.h>
@@ -66,12 +69,21 @@ static t_builtin_fn	_get_builtin_fn(const char *str)
 	return (g_builtins[i]);
 }
 
-int	do_builtin(const char *builtin, char **args)
+int	do_builtin(const char *builtin, t_cmd_params params)
 {
 	t_builtin_fn	builtin_fn;
+	int				*stdio;
+	int				res;
 
 	builtin_fn = _get_builtin_fn(builtin);
 	if (!builtin_fn)
-		return (-1);
-	return (builtin_fn(args));
+	{
+		ft_print_err("Not a valid builtin", 2, "minishell", params.cmd_args[0]);
+		return (MS_FAILURE);
+	}
+	stdio = ms_save_stdio();
+	do_redirs(&params);
+	res = builtin_fn(params.cmd_args);
+	ms_restore_stdio(stdio);
+	return (res);
 }

@@ -21,8 +21,8 @@ include $(PF_DIR)/fake-parser.mk
 ENV_DIR = $(SRCDIR)/env
 include $(ENV_DIR)/env.mk
 
-#BLTIN_DIR = $(SRCDIR)/builtins
-#include $(BLTIN_DIR)/builtins.mk
+BLTIN_DIR = $(SRCDIR)/builtins
+include $(BLTIN_DIR)/builtins.mk
 
 OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
 	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS)

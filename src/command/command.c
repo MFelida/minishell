@@ -6,10 +6,11 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 18:07:47 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/08/29 15:30:32 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "builtins.h"
 #include "command.h"
 #include "env.h"
 #include "exit_statuses.h"
@@ -70,8 +71,21 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	ft_exit(MS_FAILURE);
 }
 
-// int	cmd_bltin(t_cmd_params params, t_parse_node *node)
+int	bltin_run(t_cmd_params params, t_parse_node *node)
+{
+	t_cmd_params	*params_node;
 
+	params.cmd_args = make_argv(node);
+	if (!params.cmd_args)
+		return (1);
+	params.wstatus = do_builtin(params.cmd_args[0], params);
+	params_node = malloc(sizeof(t_cmd_params));
+	if (!params_node)
+		return (1);
+	*params_node = params;
+	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
+	return (0);
+}
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
@@ -186,8 +200,10 @@ int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 	t_fp_ops	op;
 
 	op = node->tok.op.op;
-	if (op == FP_OP_CMD || op == FP_OP_BLTIN)
+	if (op == FP_OP_CMD)
 		return (cmd_run(*params, node));
+	if (op == FP_OP_BLTIN)
+		return (bltin_run(*params, node));
 	if (op == FP_OP_PIPE)
 		return (cmd_pipe(*params, node));
 	if (op == FP_OP_FILE_INPUT)

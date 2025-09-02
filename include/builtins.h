@@ -13,6 +13,7 @@
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-int	do_builtin(const char *builtin, char **args);
+#include "command.h"
+int	do_builtin(const char *builtin, t_cmd_params params);
 
 #endif	// BUILTINS_H

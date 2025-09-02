@@ -32,8 +32,8 @@ void	_sort(char **tab)
 	if (!tab || !tab[0] || !tab[1])
 		return ;
 	size = 0;
-	while (tab[size++])
-		;
+	while (tab[size])
+		size++;
 	while (size > 1)
 	{
 		i = 0;
@@ -51,7 +51,7 @@ int	_node_to_str(t_hm_node *node, char **dest)
 {
 	size_t	size;
 	
-	size = ft_strlen(node->key + node->cap + 3);
+	size = ft_strlen(node->key) + node->cap + 3;
 	*dest = malloc(size * sizeof(char));
 	if (!*dest)
 		return (1);

@@ -6,7 +6,7 @@
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  //
-/*   Updated: 2025/08/28 16:50:15 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:09:07 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -32,6 +32,7 @@ int	init_env(void)
 	char		*value;
 
 	i = 0;
+	g_env_hm.size = 0;
 	while (environ[i])
 	{
 		value = ft_strchr(environ[i], '=') + 1;
@@ -60,7 +61,7 @@ int	ms_setenv(const char *key, const char *value)
 	return (hm_set_value(&g_env_hm, key, value));
 }
 
-int	ms_unset(const char *key)
+int	ms_unsetenv(const char *key)
 {
 	return (hm_unset(&g_env_hm, key));
 }

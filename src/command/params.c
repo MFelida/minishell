@@ -18,7 +18,6 @@
 t_cmd_params	cmd_params_default(void)
 {
 	t_cmd_params	res;
-	extern char		**environ;
 
 	res.pid = -1;
 	res.envp = NULL;
@@ -46,6 +45,13 @@ void	free_cmd_params(t_cmd_params params)
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
 	ft_split_free(params.envp);
 }
+
+// t_cmd_params	copy_cmd_params(const t_cmd_params *params)
+// {
+// 	t_cmd_params	copy;
+//
+// 	copy = *params;
+// }
 
 char	**make_argv(t_parse_node *node)
 {

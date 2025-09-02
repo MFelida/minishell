@@ -104,6 +104,40 @@ static t_redir_error	_do_redir(t_redir *redir)
 	return (err);
 }
 
+int	*ms_save_stdio(void)
+{
+	int	*fds;
+	int	i;
+
+	fds = ft_calloc(4, sizeof(int));
+	if (!fds)
+		return (NULL);
+	i = 0;
+	while (i < 3)
+	{
+		fds[i] = dup(i);
+		i++;
+	}
+	return (fds);
+}
+
+int	ms_restore_stdio(int *fds)
+{
+	int	i;
+	int	res;
+
+	res = 0;
+	i = 0;
+	while (fds[i])
+	{
+		res |= dup2(fds[i], i) == i;
+		close(fds[i]);
+		i++;
+	}
+	free(fds);
+	return (res);
+}
+
 int	ms_pipe(t_pipe *fds)
 {
 	if (pipe(fds->a))
