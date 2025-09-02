@@ -11,6 +11,14 @@
 /* ************************************************************************** */
 
 #include "src/parsing_header.h"
+#include <unistd.h>
+
+int	ft_isspace(char c)
+{
+	if (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t')
+		return (1);
+	return (0);
+}
 
 void	init_parcon(t_parsing_context *par_con)
 {
@@ -34,14 +42,14 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 	while(par_con->arg[par_con->pos] != '\0')
 	{
 		if (ismetachar(par_con->arg[par_con->pos]))
-        {
-            metastate(par_con);
-            //we're gonna split on metacharacters, also split whitespace into its own nodes, this is specifically for
-            // when we expand a variable, if it's foo$bar it needs to append to foo. outside of double quote it also needs to append rightward.
-            //we will check if the previous node is whitespace or not and act accordingly on varriable expansion, maybe merg to prev if foo$bar
-            //metacharacters will be SUBSTRINGed into their own nodes. Then tokenization will be way easier.
-            //need to check pos + 1 when substringing in case it's << for example. good luck ama.
-        }
+		{
+			metastate(par_con);
+			//we're gonna split on metacharacters, also split whitespace into its own nodes, this is specifically for
+			// when we expand a variable, if it's foo$bar it needs to append to foo. outside of double quote it also needs to append rightward.
+			//we will check if the previous node is whitespace or not and act accordingly on varriable expansion, maybe merg to prev if foo$bar
+			//metacharacters will be SUBSTRINGed into their own nodes. Then tokenization will be way easier.
+			//need to check pos + 1 when substringing in case it's << for example. good luck ama.
+		}
 		else
 			par_con->pos++;
 	}
@@ -49,12 +57,12 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 	{
 		test = ft_substr_wrapper(par_con);
 		if (!test)
-			exit_func(par_con);
+			// exit_func(par_con);
 		add_node(par_con, test, par_con->head);
 		free(test);
 	}
 	//free(par_con->arg);
-	second_pass(par_con);
+	//second_pass(par_con);
 	return (0); //or exit state, figure this out later along the line
 }
 
@@ -65,19 +73,21 @@ int metastate(t_parsing_context *par_con)
 
 	test = ft_substr_wrapper(par_con);
 	if (!test)
-		exit_func(par_con); //maybe go back to readline, maybe just exit out since a literal bitesize malloc failed.
+		// exit_func(par_con); //maybe go back to readline, maybe just exit out since a literal bitesize malloc failed.
 	add_node(par_con, test, par_con->head); //like this
 	free(test);
-	if ((par_con->arg[par_con->pos + 1] != '\0') && \
-	(ismetachar(par_con->arg[par_con->pos + 1])) \
-	&& !ft_isspace(par_con->arg[par_con->pos]) \
-	&& !ft_isspace(par_con->arg[par_con->pos + 1])) 
+	if (par_con->arg[par_con->pos] != '\0' &&
+		par_con->arg[par_con->pos + 1] != '\0' &&
+		ismetachar(par_con->arg[par_con->pos + 1]) &&
+		!ft_isspace(par_con->arg[par_con->pos]) &&
+		!ft_isspace(par_con->arg[par_con->pos + 1]))
 	{
+		write(1, "test\n", 5);
 		//check if it's << etc, if it's only whitespace until on more metacharacters, do while ft_isspace like below.
 		par_con->pos += 2;
 		test = ft_substr_wrapper(par_con);
 		if (!test)
-			exit_func(par_con);
+			// exit_func(par_con);
 		add_node(par_con, test, par_con->head);
 		free(test);
 	}
@@ -165,10 +175,10 @@ int	main(void)
 
 	par_con = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
 	string = "test ing|test|ing";
-	
+
 	init_parcon(par_con);
-	neo_parser_processor_v3(string, &par_con);
-	print_tokens(&par_con);
+	neo_parser_processor_v3(string, par_con);
+	print_tokens(par_con);
 
 }
 //work to make it testable when u next work, other than that, w progress
