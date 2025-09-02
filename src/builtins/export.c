@@ -6,13 +6,14 @@
 //   By: mifelida <mifelida@student.codam.nl>        +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/19 14:23:40 by mifelida     #+#    #+#                  //
-/*   Updated: 2025/08/29 15:32:02 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/02 18:15:40 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
 #include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
+#include "utils.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -26,11 +27,6 @@ static int	_is_valid_key(const char *key)
 		if (!(ft_isalnum(*key) || *key == '_'))
 			return (0);
 	return (1);
-}
-
-static int	_is_option(const char *arg)
-{
-	return (*arg == '-');
 }
 
 static int	_export_setenv(const char *keyvalpair)

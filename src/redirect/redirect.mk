@@ -1,4 +1,4 @@
-REDIR_SRCFILES = redirect.c utils.c
+REDIR_SRCFILES = redirect.c redir_utils.c
 
 REDIR_OBJS = $(addprefix $(OBJDIR)/,$(REDIR_SRCFILES:.c=.o))
 
