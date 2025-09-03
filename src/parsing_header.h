@@ -61,7 +61,7 @@ typedef struct s_parsing_context
 	int				start;
 }	t_parsing_context;
 
-void			add_node(t_parsing_context *par_con, char *string, t_token_list *head);
+void			add_node(t_parsing_context *par_con, char *string);
 size_t			ft_strlcpy(char *dst, const char *src, size_t size);
 int				single_qoute_lex(char *input, t_token_list **head, char *curr);
 int				double_qoute_lex(char *input, t_token_list **head, char *curr);
@@ -77,6 +77,6 @@ int				ismetachar(char c);
 int				metastate(t_parsing_context *par_con);
 char			*ft_substr_wrapper(t_parsing_context *par_con);
 t_token_list	*mk_node(char *string);
-void	add_node(t_parsing_context *par_con,char *string, t_token_list *head);
+//void	add_node(t_parsing_context *par_con,char *string, t_token_list *head);
 
 #endif
