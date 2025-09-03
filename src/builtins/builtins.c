@@ -22,6 +22,7 @@
 enum e_builtin_idx
 {
 	MS_BLTIN_CD,
+	MS_BLTIN_ECHO,
 	MS_BLTIN_ENV,
 	MS_BLTIN_EXIT,
 	MS_BLTIN_EXPORT,
@@ -33,6 +34,7 @@ enum e_builtin_idx
 static const char*	g_builtin_names[] =
 {
 	[MS_BLTIN_CD] = "cd",
+	[MS_BLTIN_ECHO] = "echo",
 	[MS_BLTIN_ENV] = "env",
 	[MS_BLTIN_EXIT] = "exit",
 	[MS_BLTIN_PWD] = "pwd",
@@ -41,6 +43,7 @@ static const char*	g_builtin_names[] =
 };
 
 int	ms_cd(char **args);
+int	ms_echo(char **args);
 int	ms_env(char **args);
 int	ms_exit(char **args);
 int	ms_pwd(char **args);
@@ -50,6 +53,7 @@ int	ms_unset(char **args);
 static const t_builtin_fn	g_builtins[] =
 {
 	[MS_BLTIN_CD] = ms_cd,
+	[MS_BLTIN_ECHO] = ms_echo,
 	[MS_BLTIN_ENV] = ms_env,
 	[MS_BLTIN_EXIT] = ms_exit,
 	[MS_BLTIN_EXPORT] = ms_export,

@@ -16,8 +16,10 @@
 #include "redirect_types.h"
 #include "utils.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 static t_open_fds	*g_open_fds = {0};
@@ -49,11 +51,17 @@ static t_redir_error	_file_to_fd(t_redir_src file_redir, int fd)
 	
 	temp = open(file_redir.file, file_redir.mode, file_redir.flags);
 	if (temp < 0)
+	{
+		ft_print_err(strerror(errno), 2, "minishell", file_redir.file);
 		return (MS_REDIR_ERRNO);
+	}
 	err = dup2(temp, fd);
 	close(temp);
 	if (err < 0)
+	{
+		ft_print_err(strerror(errno), 1, "minishell");
 		return (MS_REDIR_ERRNO);
+	}
 	return (MS_REDIR_OK);
 }
 
@@ -63,7 +71,10 @@ static t_redir_error	_fd_to_fd(int from, int to)
 
 	err = dup2(from, to);
 	if (err < 0)
+	{
+		ft_print_err(strerror(errno), 1, "minishell");
 		return (MS_REDIR_ERRNO);
+	}
 	return (MS_REDIR_OK);
 }
 

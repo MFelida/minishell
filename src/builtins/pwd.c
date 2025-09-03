@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 14:35:37 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/02 18:25:46 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/03 15:35:38 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	ms_pwd(const char **args)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("pwd doesn't support any options", 3, "minishell", "pwd", args[i]);
+			ft_print_err("invalid option", 3, "minishell", "pwd", _invalid_option(args[i], "p"));
 			return (MS_BUILTIN_MISUSE);
 		}
 		i++;

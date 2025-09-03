@@ -1,12 +1,12 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   env.h                                             :+:    :+:             //
+/*   env.h                                              :+:      :+:    :+:   */
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/08/18 10:35:44 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 17:55:33 by mifelida     ########   odam.nl          //
+/*   Updated: 2025/09/03 14:31:48 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -20,8 +20,16 @@ int			init_env(void);
 void		free_env(void);
 const char	*ms_getenv(const char *key);
 int			ms_setenv(const char *key, const char *value);
-int			ms_unset(const char *key);
+int			ms_unsetenv(const char *key);
 char		**ms_getenv_full(int sorted, int inc_empty);
 int			print_env(int sorted, int inc_empty);
+
+enum e_print_env_options
+{
+	MS_ENV_PRINT_UNSORTED = 0,
+	MS_ENV_PRINT_SORTED = 1,
+	MS_ENV_PRINT_EXCL_EMPTY = 0,
+	MS_ENV_PRINT_INCL_EMPTY = 1,
+};
 
 #endif	// ENV_H

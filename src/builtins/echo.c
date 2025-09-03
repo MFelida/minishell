@@ -1,40 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/29 14:35:37 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/03 15:36:01 by mifelida         ###   ########.fr       */
+/*   Created: 2025/09/03 14:21:21 by mifelida          #+#    #+#             */
+/*   Updated: 2025/09/03 15:56:44 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "command.h"
-#include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
 #include "utils.h"
 
+#include "stdbool.h"
 #include <stddef.h>
+#include <unistd.h>
 
-int	ms_unset(const char **args)
+int	ms_echo(char **args)
 {
 	size_t	i;
+	size_t	first;
+	bool	nl;
 
 	i = 0;
-	while (args[++i])
+	nl = true;
+	while (args[++i] && _is_option(args[i]) && !_invalid_option(args[i], "n"))
+			nl = !ft_strchr(args[i], 'n');
+	first = i;
+	while (args[i])
 	{
-		if (_is_option(args[i]))
-		{
-			ft_print_err("invalid option", 3, "minishell", "unset", _invalid_option(args[i], ""));
-			return (MS_BUILTIN_MISUSE);
-		}
+		if (i > first)
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		ft_putstr_fd(args[i], 1);
+		i++;
 	}
-	i = 0;
-	while (args[++i])
-	{
-		ms_unsetenv(args[i]);
-	}
+	if (nl)
+		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (MS_SUCCESS);
 }

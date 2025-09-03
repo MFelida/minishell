@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/08/29 15:30:32 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/03 18:05:10 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 #include "redirect_types.h"
 #include "utils.h"
 
+#include <asm-generic/errno-base.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
@@ -31,8 +31,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-	// ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
-	// 	__FILE_NAME__, func, strerror(errno));
 void	_clean_before_exit(t_cmd_params params)
 {
 	free_cmd_params(params);
@@ -43,19 +41,16 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	int	find_bin_ret;
 
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
-	if (find_bin_ret > 0)
+	if (find_bin_ret)
 	{
-		ft_fprintf(STDERR_FILENO,
-			"%s: command not found\n",
-			params.cmd_args[0]);
+		if (errno == ENOENT)
+			ft_print_err("command not found...", 2, "minishell", params.cmd_args[0]);
+		else if (errno == EACCES)
+			ft_print_err("permission denied", 2, "minishell", params.cmd_args[0]);
+		else
+			ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 		_clean_before_exit(params);
-		ft_exit(MS_CMD_NOT_FOUND);
-	}
-	if (find_bin_ret < 0)
-	{
-		ft_fprintf(STDERR_FILENO, "%s: permission denied", params.cmd_args[0]);
-		_clean_before_exit(params);
-		ft_exit(MS_PERM_DENIED);
+		ft_exit(find_bin_ret);
 	}
 	if (do_redirs(&params))
 	{
@@ -65,8 +60,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	close_fds();
 	params.envp	 = ms_getenv_full(0, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
-	ft_fprintf(STDERR_FILENO, "%s: %s: %s\n",
-		__FILE_NAME__, "execve", strerror(errno));
+	ft_print_err(strerror(errno), 2, "cmd_exec", "execve");
 	free_cmd_params(params);
 	ft_exit(MS_FAILURE);
 }
@@ -78,7 +72,7 @@ int	bltin_run(t_cmd_params params, t_parse_node *node)
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
 		return (1);
-	params.wstatus = do_builtin(params.cmd_args[0], params);
+	params.wstatus = (do_builtin(params.cmd_args[0], params) & 0xFF) << 8;
 	params_node = malloc(sizeof(t_cmd_params));
 	if (!params_node)
 		return (1);
@@ -86,6 +80,7 @@ int	bltin_run(t_cmd_params params, t_parse_node *node)
 	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	return (0);
 }
+
 int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
@@ -97,8 +92,7 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	params.pid = fork();
 	if (params.pid < 0)
 	{
-		ft_fprintf(STDERR_FILENO,
-			"%s: %s: %s\n", __FILE_NAME__, "fork", strerror(errno));
+		ft_print_err(strerror(errno), 2, __FILE_NAME__, "fork");
 		return (1);
 	}
 	if (params.pid == 0)
