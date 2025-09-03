@@ -53,165 +53,18 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 		else
 			par_con->pos++;
 	}
-	if (par_con->pos > par_con->start) //check if there is input after metacharacters that still needs to be malloced
+	if (par_con->pos >= par_con->start)
 	{
 		test = ft_substr_wrapper(par_con);
-		if (!test)
-			// exit_func(par_con);
-		add_node(par_con, test);
-		free(test);
+		if (test && *test)
+			add_node(par_con, test);
+		if (test)
+			free(test);
 	}
 	//free(par_con->arg);
 	//second_pass(par_con);
 	return (0); //or exit state, figure this out later along the line
 }
-
-///////////////////////////////////////////////////////////////////////////ROBO
-// int metastate(t_parsing_context *par_con)
-// {
-//     char *test;
-//     char c;
-
-//     /* 1) substring before current pos (if any) */
-//     test = ft_substr_wrapper(par_con);
-//     if (test && *test)
-//     {
-//         add_node(par_con, test);
-//         free(test);
-//     }
-//     else if (test)
-//         free(test);
-
-//     /* 2) handle metachar(s) at current pos */
-//     c = par_con->arg[par_con->pos];
-//     if (c == '\0')
-//         return 0;
-
-//     /* Check for double metachar (like << or >>) safely:
-//        ensure pos+1 is inside string before referencing it. */
-//     if (par_con->arg[par_con->pos + 1] != '\0' &&
-//         ismetachar(par_con->arg[par_con->pos + 1]) &&
-//         !ft_isspace(par_con->arg[par_con->pos]) &&
-//         !ft_isspace(par_con->arg[par_con->pos + 1]))
-//     {
-//         char buf2[3] = { par_con->arg[par_con->pos], par_con->arg[par_con->pos + 1], '\0' };
-//         add_node(par_con, buf2);
-//         par_con->pos += 2;
-//         par_con->start = par_con->pos; /* mark substring start after consumed metachars */
-
-//         /* After consuming double metachar, there may be an immediate substring
-//            following — but we will let the main loop continue scanning. */
-//         return 0;
-//     }
-
-//     /* Single metachar */
-//     {
-//         char buf1[2] = { c, '\0' };
-//         add_node(par_con, buf1);
-//         par_con->pos++;              /* consume the metachar */
-//         par_con->start = par_con->pos; /* mark substring start after consumed char */
-//     }
-
-//     /* 3) skip whitespace following the metachar (if any) */
-//     while (par_con->arg[par_con->pos] != '\0' && ft_isspace(par_con->arg[par_con->pos]))
-//         par_con->pos++;
-
-//     /* If there was whitespace immediately after the metachar, create a whitespace token:
-//        ft_substr_wrapper uses start (which we set above) and pos, so call it to capture the span. */
-//     if (par_con->pos > 0 && ft_isspace(par_con->arg[par_con->pos - 1]))
-//     {
-//         test = ft_substr_wrapper(par_con);
-//         if (test && *test)
-//         {
-//             add_node(par_con, test);
-//             free(test);
-//         }
-//         else if (test)
-//             free(test);
-//     }
-
-//     return 0;
-// }
-
-// int	metastate(t_parsing_context *par_con)
-// {
-// 	char	*test;
-// 	char	*buf;
-
-// 	buf = malloc(3);
-// 	if (!buf)	
-// 		return (1); // or exit_func(par_con);
-
-// 	/* Step 1 — capture substring before metachar */
-// 	test = ft_substr_wrapper(par_con);
-// 	if (test && *test)
-// 		add_node(par_con, test);
-// 	if (test)
-// 		free(test);
-
-// 	/* Step 2 — handle metachar(s) */
-// 	if (par_con->arg[par_con->pos + 1] &&
-// 		ismetachar(par_con->arg[par_con->pos + 1]) &&
-// 		!ft_isspace(par_con->arg[par_con->pos]) &&
-// 		!ft_isspace(par_con->arg[par_con->pos + 1]))
-// 	{
-// 		buf[0] = par_con->arg[par_con->pos];
-// 		buf[1] = par_con->arg[par_con->pos + 1];
-// 		buf[2] = '\0';
-// 		add_node(par_con, buf);
-// 		par_con->pos += 2;
-// 		par_con->start = par_con->pos;
-// 		free(buf);
-// 		return (0);
-// 	}
-// 	buf[0] = par_con->arg[par_con->pos];
-// 	buf[1] = '\0';
-// 	add_node(par_con, buf);
-// 	par_con->pos++;
-// 	par_con->start = par_con->pos;
-
-// 	/* Step 3 — skip whitespace */
-// 	while (par_con->arg[par_con->pos] &&
-// 		ft_isspace(par_con->arg[par_con->pos]))
-// 		par_con->pos++;
-
-// 	/* Step 4 — optional whitespace token */
-// 	if (par_con->pos > 0 && ft_isspace(par_con->arg[par_con->pos - 1]))
-// 	{
-// 		test = ft_substr_wrapper(par_con);
-// 		if (test && *test)
-// 			add_node(par_con, test);
-// 		if (test)
-// 			free(test);
-// 	}
-// 	free(buf);
-// 	return (0);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 int metastate(t_parsing_context *par_con)
 {
@@ -220,7 +73,7 @@ int metastate(t_parsing_context *par_con)
 	//char	c;
 	char	*buf;
 
-	write(1, "entry\n", 7);
+	//write(1, "entry\n", 7);
 	buf = malloc(3);
 	if (!buf)
 		return (1);
@@ -295,7 +148,6 @@ char	*ft_substr_wrapper(t_parsing_context *par_con)
 		ret = ft_substr(par_con->arg, par_con->start, par_con->pos - par_con->start);
 	else
 		ret = NULL;
-
 	par_con->start = par_con->pos;
 	return (ret);
 }
@@ -344,48 +196,6 @@ t_token_list	*mk_node(char *string)
 	return (node);
 }
 
-// /* safe add_node / mk_node - requires <stdlib.h> and <string.h> or your ft_ equivalents */
-// void add_node(t_parsing_context *par_con, char *string)
-// {
-// 	t_token_list *new_node;
-
-// 	if (!string || *string == '\0')
-// 		return;
-// 	new_node = mk_node((char *)string);
-// 	if (!new_node)
-// 		return;
-// 	if (!par_con->head)
-// 	{
-// 		par_con->head = new_node;
-// 		par_con->tail = new_node;
-// 	}
-// 	else
-// 	{
-// 		par_con->tail->next = new_node;
-// 		par_con->tail = new_node;
-// 	}
-// 	/* debug: show what was added */
-// 	dprintf(2, "ADDED TOKEN: [%s]\n", new_node->string);
-// }
-
-// t_token_list *mk_node(char *string)
-// {
-// 	t_token_list *node;
-
-// 	node = malloc(sizeof(*node));
-// 	if (!node)
-// 		return NULL;
-// 	node->string = ft_strdup(string);   /* duplicate - safe even if caller frees */
-// 	if (!node->string)
-// 	{
-// 		free(node);
-// 		return NULL;
-// 	}
-// 	node->type = NULL;
-// 	node->next = NULL;
-// 	return node;
-// }
-
 void print_tokens(t_parsing_context *par_con) 
 {
 	t_token_list *cur = par_con->head;
@@ -409,4 +219,3 @@ int	main(void)
 	print_tokens(par_con);
 
 }
-//work to make it testable when u next work, other than that, w progress
