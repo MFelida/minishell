@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/01 16:15:33 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/04 13:47:38 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_isspace(char c)
 
 void	init_parcon(t_parsing_context *par_con)
 {
-	par_con->head = NULL; // probably define everything except input and head beforehand, not here.
+	par_con->head = NULL;
 	par_con->pos = 0;
 	par_con->quote = NOT_IN_QUOTES;
 	par_con->escaping = NOT_ESCAPING;
@@ -37,6 +37,8 @@ void	init_parcon(t_parsing_context *par_con)
 int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 {
 	char *test;
+
+	
 	par_con->arg = input; //make sure this equals it to the start of the string/address
 
 	while(par_con->arg[par_con->pos] != '\0')
@@ -122,6 +124,7 @@ int metastate(t_parsing_context *par_con)
 		if (test)
 			free(test);
 	}
+	second_pass(par_con);
 	return (0);
 }
 
@@ -150,6 +153,29 @@ char	*ft_substr_wrapper(t_parsing_context *par_con)
 		ret = NULL;
 	par_con->start = par_con->pos;
 	return (ret);
+}
+
+int	second_pass(t_parsing_context *par_con)
+{
+	t_token_list *node;
+
+	node = par_con->head;
+	while(node != NULL)
+	{
+		token_assignation(node);
+	}
+}
+
+void	token_assignation(t_token_list *node)
+{
+	int	i;
+
+	i = 0;
+	while (node->string[i])
+	{
+		if (ismetachar(node->string[i]))
+			node->type = t_ms_operators;
+	}
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
@@ -212,7 +238,7 @@ int	main(void)
 	char *string;
 
 	par_con = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
-	string = "<< test ing|test|ing";
+	string = "<< test ing|test|ing $test|VAR";
 
 	init_parcon(par_con);
 	neo_parser_processor_v3(string, par_con);
