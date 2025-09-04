@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/04 13:47:38 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/04 17:18:00 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,10 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 
 	while(par_con->arg[par_con->pos] != '\0')
 	{
-		if (ismetachar(par_con->arg[par_con->pos]))
-		{
+		if (par_con->arg[par_con->pos] == '\'' || par_con->arg[par_con->pos] == '"')
+			quote_state_switch(par_con);
+		if (ismetachar(par_con->arg[par_con->pos]) && par_con->quote == NOT_IN_QUOTES)
 			metastate(par_con);
-			//we're gonna split on metacharacters, also split whitespace into its own nodes, this is specifically for
-			// when we expand a variable, if it's foo$bar it needs to append to foo. outside of double quote it also needs to append rightward.
-			//we will check if the previous node is whitespace or not and act accordingly on varriable expansion, maybe merg to prev if foo$bar
-			//metacharacters will be SUBSTRINGed into their own nodes. Then tokenization will be way easier.
-			//need to check pos + 1 when substringing in case it's << for example. good luck ama.
-		}
 		else
 			par_con->pos++;
 	}
@@ -63,23 +58,43 @@ int	neo_parser_processor_v3(char *input, t_parsing_context *par_con)
 		if (test)
 			free(test);
 	}
-	//free(par_con->arg);
-	//second_pass(par_con);
+	free(par_con->arg);
+	second_pass(par_con);
 	return (0); //or exit state, figure this out later along the line
+}
+
+void	quote_state_switch(t_parsing_context *par_con)
+{
+	if (par_con->arg[par_con->pos] == '\'' && par_con->quote == NOT_IN_QUOTES)
+	{
+		par_con->quote = IN_SINGLE_QUOTE;
+		return ;
+	}
+	else if (par_con->arg[par_con->pos] == '\'' && par_con->quote == IN_SINGLE_QUOTE)
+	{
+		par_con->quote = NOT_IN_QUOTES;
+		return ;
+	}
+	else if (par_con->arg[par_con->pos] == '"' && par_con->quote == NOT_IN_QUOTES)
+	{
+		par_con->quote = IN_DOUBLE_QUOTE;
+		return ;
+	}
+	else if (par_con->arg[par_con->pos] == '"' && par_con->quote == IN_DOUBLE_QUOTE)
+	{
+		par_con->quote = NOT_IN_QUOTES;
+		return ;
+	}
 }
 
 int metastate(t_parsing_context *par_con)
 {
-    //ft_substr(par_con->arg, par_con->start, (par_con->start - par_con->pos)); //maybe make a wrapper that sets the start to pos.
 	char	*test;
-	//char	c;
 	char	*buf;
 
-	//write(1, "entry\n", 7);
 	buf = malloc(3);
 	if (!buf)
-		return (1);
-		//exit_func(par_con);
+		return (1);//exit_func(par_con);
 	test = ft_substr_wrapper(par_con);
 	if (test && *test)
 		add_node(par_con, test);
@@ -87,33 +102,15 @@ int metastate(t_parsing_context *par_con)
 		// exit_func(par_con); //maybe go back to readline, maybe just exit out since a literal bitesize malloc failed.
 	if (test)
 		free(test);
-	// c = par_con->arg[par_con->pos];
-	// if (c == '\0')
-	// 	return (0);
-	//write(1, "test\n", 5);
 	if (par_con->arg[par_con->pos + 1] &&
 		ismetachar(par_con->arg[par_con->pos + 1]) &&
 		!ft_isspace(par_con->arg[par_con->pos]) &&
 		!ft_isspace(par_con->arg[par_con->pos + 1]))
-	{
-		buf[0] = par_con->arg[par_con->pos];
-		buf[1] = par_con->arg[par_con->pos + 1];
-		buf[2] = '\0';
-		add_node(par_con, buf);
-		par_con->pos += 2;
-		par_con->start = par_con->pos;
-		free(buf);
-		return (0);
-	}
-	buf[0] = par_con->arg[par_con->pos];
-	buf[1] = '\0';
-	add_node(par_con, buf);
-	par_con->pos++;
-	par_con->start = par_con->pos;
+			return(double_meta_consumption(par_con, buf));
+
+	meta_consumption(par_con, buf);
 	while ( par_con->arg[par_con->pos] && ft_isspace(par_con->arg[par_con->pos]))
-	{
 		par_con->pos++;
-	}
 	if (par_con->pos > 0 && ft_isspace(par_con->arg[par_con->pos - 1]))
 	{
 		test = ft_substr_wrapper(par_con);
@@ -124,8 +121,29 @@ int metastate(t_parsing_context *par_con)
 		if (test)
 			free(test);
 	}
-	second_pass(par_con);
+	//second_pass(par_con);
 	return (0);
+}
+
+int	double_meta_consumption(t_parsing_context *par_con, char *buf)
+{
+	buf[0] = par_con->arg[par_con->pos];
+	buf[1] = par_con->arg[par_con->pos + 1];
+	buf[2] = '\0';
+	add_node(par_con, buf);
+	par_con->pos += 2;
+	par_con->start = par_con->pos;
+	free(buf);
+	return (0);
+}
+
+void	meta_consumption(t_parsing_context *par_con, char *buf)
+{
+	buf[0] = par_con->arg[par_con->pos];
+	buf[1] = '\0';
+	add_node(par_con, buf);
+	par_con->pos++;
+	par_con->start = par_con->pos;
 }
 
 int	ismetachar(char c)
@@ -163,19 +181,72 @@ int	second_pass(t_parsing_context *par_con)
 	while(node != NULL)
 	{
 		token_assignation(node);
+		node = node->next;
 	}
 }
 
 void	token_assignation(t_token_list *node)
 {
 	int	i;
+	int	fd_heredoc;
 
 	i = 0;
-	while (node->string[i])
+	node->type = malloc(sizeof(t_ms_token));
+	if (!node->type)
+		// exit_func(par_con); or something along those lines.
+	if (node_quote_check(node->string))
 	{
-		if (ismetachar(node->string[i]))
-			node->type = t_ms_operators;
+		node->type->id.type = MS_TOK_IDENTIFIER;
+		node->type->id.value = ft_variable_exp_strdup(node->string); yo //right here you wanna expand the variable, 
+		//then strcat or substr, so that the string is STRING>EXPANDEDVARIABLE<RESTOFSTRING
+		//and only then assign it to the id.value 
+		return ;
 	}
+	if (full_meta_check(node->string))
+	{
+		node->type->op.type = MS_TOK_OPERATOR;
+		node->type->op.op = op_finder(node->string);
+		if (node->type->op.op == MS_HEREDOC)
+		{
+			//identify EOF (which will be node->next's string)
+			//take into account if it's qouted or not bc weird behaviour and appending
+			// go back to readline until EOF
+			// send all the taken in lines into file
+			node->type->op.value = fd_heredoc;
+		}
+	}
+	if (is_cmd) //func thta checks for each builtin/cmd whatever
+	else
+		its an identifier without quotes.
+}
+
+int	full_meta_check(char *string)
+{
+	int	i;
+
+	i = 0;
+	while(string[i])
+	{
+		if (!ismetachar(string[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	node_quote_check(char *string)
+{
+	int	i;
+
+	i = 0;
+	while(string[i])
+		i++;
+	if (string[0] == '\'' && string[i] == '\'')
+		return (1);
+	else if (string[0] == '"' && string[i] == '"')
+		return (1);
+	else
+		return (0);
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
@@ -238,7 +309,7 @@ int	main(void)
 	char *string;
 
 	par_con = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
-	string = "<< test ing|test|ing $test|VAR";
+	string = "<< test ing|test|ing $test|VAR \"te|st\" | 'bru|h'";
 
 	init_parcon(par_con);
 	neo_parser_processor_v3(string, par_con);

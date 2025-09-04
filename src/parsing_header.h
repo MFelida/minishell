@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/01 16:14:00 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/04 16:55:44 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,9 @@ int				ismetachar(char c);
 int				metastate(t_parsing_context *par_con);
 char			*ft_substr_wrapper(t_parsing_context *par_con);
 t_token_list	*mk_node(char *string);
+void			meta_consumption(t_parsing_context *par_con, char *buf);
+int				double_meta_consumption(t_parsing_context *par_con, char *buf);
+void			quote_state_switch(t_parsing_context *par_con);
 //void	add_node(t_parsing_context *par_con,char *string, t_token_list *head);
 
 #endif
