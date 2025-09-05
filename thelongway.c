@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/04 17:18:00 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/05 16:49:33 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,8 @@ int	second_pass(t_parsing_context *par_con)
 		token_assignation(node);
 		node = node->next;
 	}
+	//check for errors maybe idk
+	third_pass(par_con);
 }
 
 void	token_assignation(t_token_list *node)
@@ -197,12 +199,11 @@ void	token_assignation(t_token_list *node)
 	if (node_quote_check(node->string))
 	{
 		node->type->id.type = MS_TOK_IDENTIFIER;
-		node->type->id.value = ft_variable_exp_strdup(node->string); yo //right here you wanna expand the variable, 
-		//then strcat or substr, so that the string is STRING>EXPANDEDVARIABLE<RESTOFSTRING
-		//and only then assign it to the id.value 
+		node->type->id.value = ft_variable_exp_strdup(node->string);
+		node->string = example_trim(node->string);//trim quotes, probably account for "$foo"bar type nodes in third pass on unquoted identifiers.
 		return ;
 	}
-	if (full_meta_check(node->string))
+	else if (full_meta_check(node->string))
 	{
 		node->type->op.type = MS_TOK_OPERATOR;
 		node->type->op.op = op_finder(node->string);
@@ -215,9 +216,29 @@ void	token_assignation(t_token_list *node)
 			node->type->op.value = fd_heredoc;
 		}
 	}
-	if (is_cmd) //func thta checks for each builtin/cmd whatever
+	else if (is_cmd(node->string)) //func thta checks for each builtin/cmd whatever
+	{
+		node->type->cmd.type =
+	}
 	else
-		its an identifier without quotes.
+	{
+		//its an identifier without quotes.
+		node->type->id.type = MS_TOK_IDENTIFIER;
+		node->type->id.value = ft_strdup(node->string);
+	}
+}
+
+char	*example_trim(char *string)
+{
+	char *ret;
+
+	ret = ft_substr(string, 1, ft_strlen(string) - 2);
+	return (ret);
+}
+
+int	is_cmd(char *string)
+{
+	// I guess just if/else statements out the wazoo, maybe return correct enum for identifier
 }
 
 int	full_meta_check(char *string)
@@ -247,6 +268,65 @@ int	node_quote_check(char *string)
 		return (1);
 	else
 		return (0);
+}
+
+char *ft_variable_exp_strdup(char *string)
+{
+	int		i;
+	int		boo;
+	char	*buf;
+	char	*var;
+
+	boo = 0;
+	i = 0;
+	while(string[i])
+	{
+		if (string[i] == '$')
+			boo = 1;
+		i++;
+	}
+	if (boo && string[0] == '"')
+	{
+		while (string[i + 1] != '$')
+			i++;
+		var = (&string[i + 1]); //or i+2 idk how mike's fetch works.
+		buf = ft_substr(string, 0, i);
+		buf = ft_strcat(buf, mike_var_fetch(var)); //make wrapper that allocates right amount?
+		i += 2;
+		while (!ismetachar(string[i]))
+			i++;
+		i++;
+		buf = ft_strcat(buf, &string[i]); //make wrapper that allocates right amount?
+	}
+	else
+		buf = ft_substr(string);
+	//maybe free string here? Idk
+	//also don't forget to malloc check, ideally just make a wrapper that malloc checks and exits
+	//coherently
+	return (buf);
+}
+
+void	third_pass(t_parsing_context *par_con)
+{
+	//WHOOPS IGNORE THE COMMENT BELOW, you still need to contextually assign cmds based on metachars,
+	//and figure out what the remaining cases are with unquoted, non cmd strings.
+	//for example one of them is "$FOO"bar, where bar needs to append to expanded foo WITHOUT quotes
+	//also take into account specific heredoc cases.
+	//PROBABLY CHECK FIRST FOR BUILTINS, that's an easy assign.
+	t_token_list	*node;
+
+	node = par_con->head;
+	while(node != NULL)
+	{
+		//idk how to check for foo"$ba"r yet either or what to do with it.
+		node = node->next;
+	}
+
+	//RETROSPECTIVELY, THIS VVVVV IS PROBABLY FOURTH_PASS
+	//tokens have been assigned, now you need to structure a syntax tree, 
+	//find out how to order each token correctly, actually building the tree
+	//itself shouldn't be too hard. gl.
+	
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
