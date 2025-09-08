@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 11:30:24 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/05 16:49:33 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/08 15:13:43 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,11 +187,11 @@ int	second_pass(t_parsing_context *par_con)
 	third_pass(par_con);
 }
 
-void	token_assignation(t_token_list *node)
+void	token_assignation(t_token_list *node) //https://www.ibm.com/docs/en/aix/7.1.0?topic=concepts-shells-terminology
 {
 	int	i;
 	int	fd_heredoc;
-
+						//STILL NEED TO EXPAND LOOSE VARIABLES OUTSIDE OF QUOTES AND HANDLE HEREDOC EOF
 	i = 0;
 	node->type = malloc(sizeof(t_ms_token));
 	if (!node->type)
@@ -216,16 +216,32 @@ void	token_assignation(t_token_list *node)
 			node->type->op.value = fd_heredoc;
 		}
 	}
-	else if (is_cmd(node->string)) //func thta checks for each builtin/cmd whatever
-	{
-		node->type->cmd.type =
-	}
+	// else if (is_cmd(node->string)) //func thta checks for each builtin/cmd whatever
+	// {
+	// 	node->type->cmd.type =
+	// }
 	else
 	{
 		//its an identifier without quotes.
-		node->type->id.type = MS_TOK_IDENTIFIER;
+		node->type->id.type = MS_TOK_IDENTIFIER; //maybe rpelace with "word" enum for clarity in parsing between uknown, and known identifiers.
 		node->type->id.value = ft_strdup(node->string);
 	}
+}
+
+int	op_finder(char *string)
+{
+	if (ft_strncmp(string, "<", ft_strlen(string)) == 0)
+		return (MS_FILE_INPUT);
+	else if (ft_strncmp(string, ">", ft_strlen(string)) == 0)
+		return (MS_FILE_OUTPUT);
+	else if (ft_strncmp(string, ">>", ft_strlen(string)) == 0)
+		return (MS_FILE_APPEND);
+	else if (ft_strncmp(string, "<<", ft_strlen(string)) == 0)
+		return (MS_HEREDOC);//don't forget to check next node for eof
+	else if (ft_strncmp(string, "|", ft_strlen(string)) == 0)
+		return (MS_PIPE);
+	else if (ft_strncmp(string, "$", ft_strlen(string)) == 0)
+		return (MS_ENV_VAR); //don't forget to check next node.
 }
 
 char	*example_trim(char *string)
@@ -239,6 +255,22 @@ char	*example_trim(char *string)
 int	is_cmd(char *string)
 {
 	// I guess just if/else statements out the wazoo, maybe return correct enum for identifier
+	//builtins are commands
+	if (ft_strncmp(string, "echo", ft_strlen(string)) == 0)
+		return (MS_CMD_ECHO);
+	else if (ft_strncmp(string, "cd", ft_strlen(string)) == 0)
+		return (MS_CMD_CD);
+	else if (ft_strncmp(string, "pwd", ft_strlen(string)) == 0)
+		return (MS_CMD_PWD);
+	else if (ft_strncmp(string, "export", ft_strlen(string)) == 0)
+		return (MS_CMD_EXPORT);
+	else if (ft_strncmp(string, "unset", ft_strlen(string)) == 0)
+		return (MS_CMD_UNSET);
+	else if (ft_strncmp(string, "env", ft_strlen(string)) == 0)
+		return (MS_CMD_ENV);
+	else if (ft_strncmp(string, "exit", ft_strlen(string)) == 0)
+		return (MS_CMD_EXIT);
+	//figure out how to do MS_CMD_BIN
 }
 
 int	full_meta_check(char *string)

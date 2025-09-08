@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:24:31 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/11 14:00:20 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/08 15:03:12 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef enum e_ms_cmd_type
 	MS_CMD_PWD,
 	MS_CMD_EXPORT,
 	MS_CMD_UNSET,
-	MS_CMD_ENC,
+	MS_CMD_ENV, //changed from enc to env bc I think it was a typo
 	MS_CMD_EXIT,
 	MS_CMD_BIN,
 }	t_ms_cmd_type;
