@@ -18,7 +18,7 @@
 
 #include <stddef.h>
 
-int	ms_env(const char **args, ...)
+int	ms_env(const char **args, t_cmd_params *params, ...)
 {
 	size_t	i;
 
@@ -28,9 +28,10 @@ int	ms_env(const char **args, ...)
 		if (_is_option(args[i]))
 		{
 			ft_print_err("invalid option", 3, "minishell", "env", _invalid_option(args[i], ""));
-			return (MS_BUILTIN_MISUSE);
+			return (MS_CMD_ERROR_OK);
 		}
 	}
 	print_env(MS_ENV_PRINT_UNSORTED, MS_ENV_PRINT_EXCL_EMPTY);
-	return (MS_SUCCESS);
+	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
+	return (MS_CMD_ERROR_OK);
 }

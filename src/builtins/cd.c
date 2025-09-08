@@ -12,10 +12,12 @@
 
 #include "command.h"
 #include "exit_statuses.h"
+#include "utils.h"
 
-int	ms_cd(t_cmd_params params, ...)
+int	ms_cd(char **args, t_cmd_params *params, ...)
 {
-	if (params.cmd_args)
-		return (MS_FAILURE);
-	return (MS_SUCCESS);
+	if (!args)
+		return (MS_CMD_ERROR_OK);
+	params->wstatus = _set_wstatus(MS_FAILURE, 0);
+	return (MS_CMD_ERROR_OK);
 }

@@ -42,13 +42,13 @@ static const char*	g_builtin_names[] =
 	[MS_BLTIN_UNSET] = "unset",
 };
 
-int	ms_cd(char **args, ...);
-int	ms_echo(char **args, ...);
-int	ms_env(char **args, ...);
-int	ms_exit(char **args, ...);
-int	ms_pwd(char **args, ...);
-int	ms_export(char **args, ...);
-int	ms_unset(char **args, ...);
+int	ms_cd(char **args, t_cmd_params *params ,...);
+int	ms_echo(char **args, t_cmd_params *params, ...);
+int	ms_env(char **args, t_cmd_params *params, ...);
+int	ms_exit(char **args, t_cmd_params *params, ...);
+int	ms_pwd(char **args, t_cmd_params *params, ...);
+int	ms_export(char **args, t_cmd_params *params, ...);
+int	ms_unset(char **args, t_cmd_params *params, ...);
 
 static const t_builtin_fn	g_builtins[] =
 {
@@ -87,7 +87,7 @@ int	do_builtin(const char *builtin, t_cmd_params *params)
 	}
 	stdio = ms_save_stdio();
 	do_redirs(params);
-	res = builtin_fn(params->cmd_args, &params);
+	res = builtin_fn(params->cmd_args, params);
 	ms_restore_stdio(stdio);
 	return (res);
 }

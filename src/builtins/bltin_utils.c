@@ -19,6 +19,11 @@ int	_is_option(const char *arg)
 	return (*arg == '-');
 }
 
+int	_set_wstatus(int exit_status, int sig)
+{
+	return ((exit_status << 8) | sig);
+}
+
 const char	*_invalid_option(const char *arg, const char *valid_opts)
 {
 	static char buff[3] = "-\0";

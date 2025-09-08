@@ -11,8 +11,10 @@
 /* ************************************************************************** */
 
 #include "command.h"
+#include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
+#include "utils.h"
 
 #include <limits.h>
 #include <stdarg.h>
@@ -47,27 +49,28 @@ static bool	_is_numeric(const char *arg)
 		|| (is_neg && ft_strncmp(arg, LLONG_MIN_S, sizeof(LLONG_MIN_S)) <= 0));
 }
 
-int	ms_exit(const char **args, ...)
+int	ms_exit(const char **args, t_cmd_params *params, ...)
 {
-	va_list	va;
-	t_cmd_params	*params;
+	const char	*exit_str;
 
-	va_start(va, args);
-	params = va_arg(va, t_cmd_params *);
-	va_end(va);
-	if (!(params->context & MS_CMD_CONTEXT_PIPE))
-		params->context |= MS_CMD_CONTEXT_SHOULD_EXIT;
-	if (!args[1])
-		return (MS_SUCCESS);
-	if (!_is_numeric(args[1]))
+	if (args[1] == NULL)
+		params->wstatus = _set_wstatus(ft_atoi(ms_getenv("?")), 0);
+	else if (!_is_numeric(args[1]))
 	{
 		ft_print_err("numeric argument required", 3, "minishell", "exit", args[1]);
-		return (MS_BUILTIN_MISUSE);
+		params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 	}
-	if (args[2])
+	else if (args[2])
 	{
 		ft_print_err("too many arguments", 2, "minishell", "exit");
-		return (MS_FAILURE);
+		params->wstatus = _set_wstatus(MS_FAILURE, 0);
+		return (MS_CMD_ERROR_OK);
 	}
-	return (MS_SUCCESS);
+	exit_str = args[1];
+	if (ft_strlen(exit_str) > 8)
+		exit_str += ft_strlen(exit_str) - 8;
+	params->wstatus = _set_wstatus(ft_atoi(exit_str), 0);
+	if (params->context & MS_CMD_CONTEXT_PIPE)
+		return (MS_CMD_ERROR_OK);
+	return (MS_CMD_ERROR_SHOULD_EXIT);
 }

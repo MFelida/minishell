@@ -10,6 +10,7 @@
 //                                                                            //
 // ************************************************************************** //
 
+#include "command.h"
 #include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
@@ -59,31 +60,48 @@ static int	_export_setenv(const char *keyvalpair)
 	return (0);
 }
 
-int	ms_export(char **args, ...)
+static int	_validate_args(char **args, t_cmd_params *params)
 {
 	size_t	i;
 
-	if (!args[1])
-		print_env(MS_ENV_PRINT_SORTED, MS_ENV_PRINT_INCL_EMPTY);
 	i = 0;
 	while (args[++i])
 	{
 		if (_is_option(args[i]))
 		{
 			ft_print_err("invalid option", 3, "minishell", "export", _invalid_option(args[i], ""));
-			return (MS_BUILTIN_MISUSE);
+			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
+			return (1);
 		}
-		if (!_is_valid_key(args[i]))
+		else if (!_is_valid_key(args[i]))
 		{
 			ft_print_err("not a valid identifier", 3, "minishell", "export", args[i]);
-			return (MS_FAILURE);
+			params->wstatus = _set_wstatus(MS_FAILURE, 0);
+			return (1);
 		}
 	}
+	return (0);
+}
+
+int	ms_export(char **args, t_cmd_params *params, ...)
+{
+	size_t	i;
+
+	if (!args[1])
+		print_env(MS_ENV_PRINT_SORTED, MS_ENV_PRINT_INCL_EMPTY);
+	if (_validate_args(args, params))
+		return (MS_CMD_ERROR_OK);
 	i = 1;
 	while (args[i])
+	{
 		if (_export_setenv(args[i++]))
-			return (MS_FAILURE);
+		{
+			params->wstatus = _set_wstatus(MS_FAILURE, 0);
+			return (MS_CMD_ERROR_FAILURE);
+		}
+	}
 	// TODO: REMOVE BEFORE FINISHING
 	ft_atexit((void (*)(void)) print_env);
-	return (MS_SUCCESS);
+	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
+	return (MS_CMD_ERROR_OK);
 }

@@ -73,8 +73,7 @@ int	bltin_run(t_cmd_params params, t_parse_node *node)
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
 		return (MS_CMD_ERROR_MALLOC);
-	params.wstatus = (do_builtin(params.cmd_args[0], &params) & 0xFF) << 8;
-	res = MS_CMD_ERROR_OK;
+	res = (do_builtin(params.cmd_args[0], &params) & 0xFF) << 8;
 	params_node = malloc(sizeof(t_cmd_params));
 	if (!params_node)
 		res |= (MS_CMD_ERROR_MALLOC);
@@ -83,8 +82,6 @@ int	bltin_run(t_cmd_params params, t_parse_node *node)
 		*params_node = params;
 		ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	}
-	if (params.context & MS_CMD_CONTEXT_SHOULD_EXIT)
-		res |= MS_CMD_ERROR_SHOULD_EXIT;
 	return (res);
 }
 

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "command.h"
 #include "exit_statuses.h"
 #include "libft.h"
 #include "utils.h"
@@ -18,7 +19,7 @@
 #include <stddef.h>
 #include <unistd.h>
 
-int	ms_echo(char **args, ...)
+int	ms_echo(char **args, t_cmd_params *params, ...)
 {
 	size_t	i;
 	size_t	first;
@@ -38,5 +39,6 @@ int	ms_echo(char **args, ...)
 	}
 	if (nl)
 		ft_putchar_fd('\n', STDOUT_FILENO);
-	return (MS_SUCCESS);
+	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
+	return (MS_CMD_ERROR_OK);
 }

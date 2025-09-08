@@ -13,9 +13,11 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-typedef	int(*t_builtin_fn)(char **, ...);
+#include "command.h"
+typedef	int(*t_builtin_fn)(char **, t_cmd_params *params, ...);
 
 int			_is_option(const char *arg);
 const char	*_invalid_option(const char *arg, const char *valid_opts);
+int			_set_wstatus(int exit_status, int sig);
 
 #endif	// UTILS_H

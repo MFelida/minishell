@@ -21,7 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 
-int	ms_pwd(const char **args, ...)
+int	ms_pwd(const char **args, t_cmd_params *params, ...)
 {
 	char	buff[PATH_MAX + 1];
 	size_t	i;
@@ -32,15 +32,16 @@ int	ms_pwd(const char **args, ...)
 		if (_is_option(args[i]))
 		{
 			ft_print_err("invalid option", 3, "minishell", "pwd", _invalid_option(args[i], "p"));
-			return (MS_BUILTIN_MISUSE);
+			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
+			return (MS_CMD_ERROR_OK);
 		}
 		i++;
 	}
 	if (!getcwd(buff, PATH_MAX))
 	{
 		ft_print_err(strerror(errno), 2, "minishell", "pwd");
-		return (MS_FAILURE);
+		return (MS_CMD_ERROR_FAILURE);
 	}
 	ft_printf("%s\n", buff);
-	return (MS_SUCCESS);
+	return (MS_CMD_ERROR_OK);
 }

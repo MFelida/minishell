@@ -18,7 +18,7 @@
 
 #include <stddef.h>
 
-int	ms_unset(const char **args, ...)
+int	ms_unset(const char **args, t_cmd_params *params, ...)
 {
 	size_t	i;
 
@@ -28,7 +28,8 @@ int	ms_unset(const char **args, ...)
 		if (_is_option(args[i]))
 		{
 			ft_print_err("invalid option", 3, "minishell", "unset", _invalid_option(args[i], ""));
-			return (MS_BUILTIN_MISUSE);
+			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
+			return (MS_CMD_ERROR_OK);
 		}
 	}
 	i = 0;
@@ -36,5 +37,6 @@ int	ms_unset(const char **args, ...)
 	{
 		ms_unsetenv(args[i]);
 	}
-	return (MS_SUCCESS);
+	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
+	return (MS_CMD_ERROR_OK);
 }
