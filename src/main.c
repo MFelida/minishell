@@ -49,6 +49,7 @@ int	main(int argc, char *argv[])
 	params.head = &param_list;
 	if (!(cmd_next_node(&params, pt) & MS_CMD_ERROR_SHOULD_EXIT))
 	{
+		close_fds();
 		last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) param_list);
 		waitpid(last_cmd.pid, &last_cmd.wstatus, 0);
 		if (WIFSIGNALED(last_cmd.wstatus))
