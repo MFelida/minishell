@@ -20,7 +20,6 @@
 #include "redirect_types.h"
 #include "utils.h"
 
-#include <asm-generic/errno-base.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -31,9 +30,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void	_clean_before_exit(t_cmd_params params)
+static void	_clean_before_exit(t_cmd_params params)
 {
 	free_cmd_params(params);
+	del_redir_list(&params.redirs);
 }
 
 _Noreturn void	cmd_exec(t_cmd_params params)
@@ -61,7 +61,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	params.envp	 = ms_getenv_full(0, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_print_err(strerror(errno), 2, "cmd_exec", "execve");
-	free_cmd_params(params);
+	_clean_before_exit(params);
 	ft_exit(MS_FAILURE);
 }
 
