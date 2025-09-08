@@ -21,6 +21,7 @@ t_cmd_params	cmd_params_default(void)
 
 	res.pid = -1;
 	res.envp = NULL;
+	res.context = 0;
 	res.wstatus = -1;
 	res.next = NULL;
 	res.redirs = NULL;

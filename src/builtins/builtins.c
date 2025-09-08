@@ -42,13 +42,13 @@ static const char*	g_builtin_names[] =
 	[MS_BLTIN_UNSET] = "unset",
 };
 
-int	ms_cd(char **args);
-int	ms_echo(char **args);
-int	ms_env(char **args);
-int	ms_exit(char **args);
-int	ms_pwd(char **args);
-int	ms_export(char **args);
-int	ms_unset(char **args);
+int	ms_cd(char **args, ...);
+int	ms_echo(char **args, ...);
+int	ms_env(char **args, ...);
+int	ms_exit(char **args, ...);
+int	ms_pwd(char **args, ...);
+int	ms_export(char **args, ...);
+int	ms_unset(char **args, ...);
 
 static const t_builtin_fn	g_builtins[] =
 {
@@ -73,7 +73,7 @@ static t_builtin_fn	_get_builtin_fn(const char *str)
 	return (g_builtins[i]);
 }
 
-int	do_builtin(const char *builtin, t_cmd_params params)
+int	do_builtin(const char *builtin, t_cmd_params *params)
 {
 	t_builtin_fn	builtin_fn;
 	int				*stdio;
@@ -82,12 +82,12 @@ int	do_builtin(const char *builtin, t_cmd_params params)
 	builtin_fn = _get_builtin_fn(builtin);
 	if (!builtin_fn)
 	{
-		ft_print_err("Not a valid builtin", 2, "minishell", params.cmd_args[0]);
+		ft_print_err("Not a valid builtin", 2, "minishell", params->cmd_args[0]);
 		return (MS_FAILURE);
 	}
 	stdio = ms_save_stdio();
-	do_redirs(&params);
-	res = builtin_fn(params.cmd_args);
+	do_redirs(params);
+	res = builtin_fn(params->cmd_args, &params);
 	ms_restore_stdio(stdio);
 	return (res);
 }

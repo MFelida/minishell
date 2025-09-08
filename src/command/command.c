@@ -68,17 +68,24 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 int	bltin_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
+	int				res;
 
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
-		return (1);
-	params.wstatus = (do_builtin(params.cmd_args[0], params) & 0xFF) << 8;
+		return (MS_CMD_ERROR_MALLOC);
+	params.wstatus = (do_builtin(params.cmd_args[0], &params) & 0xFF) << 8;
+	res = MS_CMD_ERROR_OK;
 	params_node = malloc(sizeof(t_cmd_params));
 	if (!params_node)
-		return (1);
-	*params_node = params;
-	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
-	return (0);
+		res |= (MS_CMD_ERROR_MALLOC);
+	else
+	{
+		*params_node = params;
+		ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
+	}
+	if (params.context & MS_CMD_CONTEXT_SHOULD_EXIT)
+		res |= MS_CMD_ERROR_SHOULD_EXIT;
+	return (res);
 }
 
 int	cmd_run(t_cmd_params params, t_parse_node *node)
@@ -88,6 +95,7 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
 		return (1);
+	params.context |= MS_CMD_CONTEXT_SIMPLE;
 	errno = 0;
 	params.pid = fork();
 	if (params.pid < 0)
@@ -115,6 +123,7 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 
 	if (ms_pipe(&p) < 0)
 		return (MS_CMD_ERROR_PIPE);
+	params.context |= MS_CMD_CONTEXT_PIPE;
 	writer = params;
 	reader = params;
 	last = ft_lstlast((t_list *) params.redirs);
@@ -127,7 +136,7 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(&writer, node->children[0])
-		|| cmd_next_node(&reader, node->children[1]);
+		| cmd_next_node(&reader, node->children[1]);
 	free(ft_lstlast((t_list *) reader.redirs));
 	free(ft_lstlast((t_list *) writer.redirs));
 	if (last)

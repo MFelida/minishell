@@ -21,7 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 
-int	ms_pwd(const char **args)
+int	ms_pwd(const char **args, ...)
 {
 	char	buff[PATH_MAX + 1];
 	size_t	i;

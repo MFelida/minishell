@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <unistd.h>
 
-int	ms_echo(char **args)
+int	ms_echo(char **args, ...)
 {
 	size_t	i;
 	size_t	first;

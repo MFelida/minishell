@@ -13,7 +13,7 @@
 #include "command.h"
 #include "exit_statuses.h"
 
-int	ms_cd(t_cmd_params params)
+int	ms_cd(t_cmd_params params, ...)
 {
 	if (params.cmd_args)
 		return (MS_FAILURE);

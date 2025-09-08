@@ -59,7 +59,7 @@ static int	_export_setenv(const char *keyvalpair)
 	return (0);
 }
 
-int	ms_export(char **args)
+int	ms_export(char **args, ...)
 {
 	size_t	i;
 

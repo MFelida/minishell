@@ -15,8 +15,10 @@
 #include "libft.h"
 
 #include <limits.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 #define LLONG_MAX_S "9223372036854775807"
 #define LLONG_MIN_S "-9223372036854775808"
@@ -35,16 +37,26 @@ static bool	_is_numeric(const char *arg)
 	}
 	while (arg[i])
 	{
-		if (((!is_neg && i >= sizeof(LLONG_MAX_S)) || (is_neg && i >= sizeof(LLONG_MIN_S))) || !ft_isdigit(arg[i]))
+		if (((!is_neg && i >= sizeof(LLONG_MAX_S))
+				|| (is_neg && i >= sizeof(LLONG_MIN_S)))
+			|| !ft_isdigit(arg[i]))
 			return (false);
 		i++;
 	}
-	return ((!is_neg && ft_strncmp(arg, LLONG_MAX_S, sizeof(LLONG_MAX_S)))
-		|| (is_neg && ft_strncmp(arg, LLONG_MIN_S, sizeof(LLONG_MIN_S))));
+	return ((!is_neg && ft_strncmp(arg, LLONG_MAX_S, sizeof(LLONG_MAX_S)) <= 0)
+		|| (is_neg && ft_strncmp(arg, LLONG_MIN_S, sizeof(LLONG_MIN_S)) <= 0));
 }
 
-int	ms_exit(const char **args)
+int	ms_exit(const char **args, ...)
 {
+	va_list	va;
+	t_cmd_params	*params;
+
+	va_start(va, args);
+	params = va_arg(va, t_cmd_params *);
+	va_end(va);
+	if (!(params->context & MS_CMD_CONTEXT_PIPE))
+		params->context |= MS_CMD_CONTEXT_SHOULD_EXIT;
 	if (!args[1])
 		return (MS_SUCCESS);
 	if (!_is_numeric(args[1]))

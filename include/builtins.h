@@ -14,6 +14,6 @@
 # define BUILTINS_H
 
 #include "command.h"
-int	do_builtin(const char *builtin, t_cmd_params params);
+int	do_builtin(const char *builtin, t_cmd_params *params);
 
 #endif	// BUILTINS_H

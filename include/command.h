@@ -19,11 +19,21 @@
 # include <linux/limits.h>
 # include <sys/resource.h>
 
-typedef enum e_cmd_error
+enum e_cmd_error
 {
-	MS_CMD_ERROR_OK,
-	MS_CMD_ERROR_PIPE,
-}	t_cmd_error;
+	MS_CMD_ERROR_OK = 0,
+	MS_CMD_ERROR_PIPE = 0x01 << 1,
+	MS_CMD_ERROR_MALLOC = 0x01 << 2,
+	MS_CMD_ERROR_SHOULD_EXIT = 0x01 << 3,
+};
+
+enum e_cmd_context
+{
+	MS_CMD_CONTEXT_SIMPLE = 0x01 << 0,
+	MS_CMD_CONTEXT_COMPOUND = 0x01 << 1,
+	MS_CMD_CONTEXT_PIPE = 0x01 << 2,
+	MS_CMD_CONTEXT_SHOULD_EXIT = 0x01 << 3,
+};
 
 typedef struct s_cmd_params
 {
@@ -33,6 +43,7 @@ typedef struct s_cmd_params
 	int					pid;
 	char				**cmd_args;
 	char				bin_path[PATH_MAX];
+	enum e_cmd_context	context;
 	struct rusage		rusage;
 	int					wstatus;
 	char				**envp;

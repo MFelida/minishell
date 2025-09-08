@@ -18,7 +18,7 @@
 
 #include <stddef.h>
 
-int	ms_unset(const char **args)
+int	ms_unset(const char **args, ...)
 {
 	size_t	i;
 
