@@ -331,7 +331,7 @@ char *ft_variable_exp_strdup(char *string)
 		buf = ft_strcat(buf, &string[i]); //make wrapper that allocates right amount?
 	}
 	else
-		buf = ft_substr(string);
+		buf = ft_substr(string, 0, ft_strlen(string));
 	//maybe free string here? Idk
 	//also don't forget to malloc check, ideally just make a wrapper that malloc checks and exits
 	//coherently
@@ -346,12 +346,19 @@ void	third_pass(t_parsing_context *par_con)
 	//also take into account specific heredoc cases.
 	//PROBABLY CHECK FIRST FOR BUILTINS, that's an easy assign.
 	t_token_list	*node;
+	size_t			node_count;
 
 	node = par_con->head;
 	while(node != NULL)
 	{
 		//idk how to check for foo"$ba"r yet either or what to do with it.
+		if (node->type == MS_TOK_OPERATOR)
+		{
+			arrange_command(par_con, node_count); boekenlegger type beat so I see it next time;
+			node_count = 0;
+		}
 		node = node->next;
+		node_count++;
 	}
 
 	//RETROSPECTIVELY, THIS VVVVV IS PROBABLY FOURTH_PASS
