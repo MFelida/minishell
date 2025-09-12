@@ -30,7 +30,7 @@ OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
 LIBFILES = libft.a
 LIBDIR = lib
 LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
-LIBFLAGS = -L$(LIBDIR) -lft
+LIBFLAGS = -L$(LIBDIR) -lft -lc
 
 .PHONY: all re clean fclean run debug asan
 
