@@ -11,24 +11,50 @@
 /* ************************************************************************** */
 
 #include "command.h"
+#include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
 #include "utils.h"
 
+#include <dirent.h>
 #include <errno.h>
 #include <linux/limits.h>
 #include <stddef.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
+
+static int	_validate_pwd(const char *env_pwd)
+{
+	char	buff[PATH_MAX + 1];
+	struct stat	env_stat;
+	struct stat	cwd_stat;
+
+	if (!getcwd(buff, PATH_MAX))
+	{
+		ft_print_err(strerror(errno), 2, "minishell", "pwd");
+		return (0);
+	}
+	if (stat(buff, &cwd_stat))
+	{
+		ft_print_err(strerror(errno), 2, "minishell", "pwd");
+		return (0);
+	}
+	if (stat(env_pwd, &env_stat))
+		return (0);
+	return (env_stat.st_ino == cwd_stat.st_ino);
+}
 
 // TODO: Don't use getcwd, print from $PWD to respect logical path (symbolic links)
 int	ms_pwd(const char **args, t_cmd_params *params, ...)
 {
-	char	buff[PATH_MAX + 1];
-	size_t	i;
+	char		buff[PATH_MAX + 1];
+	const char	*pwd;
+	size_t		i;
 
-	i = 1;
-	while (args[i])
+	i = 0;
+	while (args[++i])
 	{
 		if (_is_option(args[i]))
 		{
@@ -36,13 +62,17 @@ int	ms_pwd(const char **args, t_cmd_params *params, ...)
 			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 			return (MS_CMD_ERROR_OK);
 		}
-		i++;
 	}
-	if (!getcwd(buff, PATH_MAX))
+	pwd = buff;
+	if (ms_getenv("PWD") && _validate_pwd(ms_getenv("PWD")))
+		pwd = ms_getenv("PWD");
+	else if (!getcwd(buff, PATH_MAX))
 	{
 		ft_print_err(strerror(errno), 2, "minishell", "pwd");
+		params->wstatus = _set_wstatus(MS_FAILURE, 0);
 		return (MS_CMD_ERROR_FAILURE);
 	}
-	ft_printf("%s\n", buff);
+	ft_printf("%s\n", pwd);
+	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
 	return (MS_CMD_ERROR_OK);
 }
