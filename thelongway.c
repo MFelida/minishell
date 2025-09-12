@@ -347,7 +347,10 @@ void	third_pass(t_parsing_context *par_con)
 	//PROBABLY CHECK FIRST FOR BUILTINS, that's an easy assign.
 	t_token_list	*node;
 	size_t			node_count;
+	size_t			starting_node;
 
+	node_count = 0;
+	starting_node = 0;
 	node = par_con->head;
 	while(node != NULL)
 	{
@@ -356,6 +359,7 @@ void	third_pass(t_parsing_context *par_con)
 		{
 			arrange_command(par_con, node_count); boekenlegger type beat so I see it next time;
 			node_count = 0;
+			
 		}
 		node = node->next;
 		node_count++;
@@ -366,6 +370,35 @@ void	third_pass(t_parsing_context *par_con)
 	//find out how to order each token correctly, actually building the tree
 	//itself shouldn't be too hard. gl.
 	
+}
+
+t_parse_tree	*new_tree(t_ms_token tok)
+{
+	t_parse_tree *new;
+	new = (t_parse_tree *)malloc(sizeof(*new));
+	new->tok = tok;
+	new->child_nodes = NULL;
+	return (new);
+}
+
+void	new_child(t_parse_tree *tree, t_parse_tree *sapling)
+{
+	size_t count;
+
+	count = 0;
+	if (tree->child_nodes)
+	{
+		while (tree->child_nodes[count])
+			count++;
+	}
+	tree->child_nodes = ft_realloc(tree->child_nodes, sizeof(t_parse_tree *) * (count + 2));
+	tree->child_nodes[count] = sapling;
+	tree->child_nodes[count + 1] = NULL;
+}
+
+void	arrange_command(t_parsing_context *par_con, int	node_count)
+{
+	while(node != )
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
