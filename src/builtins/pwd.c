@@ -21,6 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 
+// TODO: Don't use getcwd, print from $PWD to respect logical path (symbolic links)
 int	ms_pwd(const char **args, t_cmd_params *params, ...)
 {
 	char	buff[PATH_MAX + 1];
