@@ -16,7 +16,7 @@
 
 int	_is_option(const char *arg)
 {
-	return (*arg == '-');
+	return (arg[0] == '-' && arg[1] != '\0');
 }
 
 int	_set_wstatus(int exit_status, int sig)
