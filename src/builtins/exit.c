@@ -34,9 +34,11 @@ static bool	_is_numeric(const char *arg)
 	i = 0;
 	if (*arg == '-')
 	{
-		i = 1;
+		arg++;
 		is_neg = 1;
 	}
+	while (*arg == '0')
+		arg++;
 	while (arg[i])
 	{
 		if (((!is_neg && i >= sizeof(LLONG_MAX_S))
@@ -46,7 +48,7 @@ static bool	_is_numeric(const char *arg)
 		i++;
 	}
 	return ((!is_neg && ft_strncmp(arg, LLONG_MAX_S, sizeof(LLONG_MAX_S)) <= 0)
-		|| (is_neg && ft_strncmp(arg, LLONG_MIN_S, sizeof(LLONG_MIN_S)) <= 0));
+		|| (is_neg && ft_strncmp(arg, &LLONG_MIN_S[1], sizeof(LLONG_MIN_S)) <= 0));
 }
 
 int	ms_exit(const char **args, t_cmd_params *params, ...)
