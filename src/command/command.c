@@ -70,6 +70,7 @@ int	bltin_run(t_cmd_params params, t_parse_node *node)
 	t_cmd_params	*params_node;
 	int				res;
 
+	params.context |= MS_CMD_CONTEXT_BLTIN;
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
 		return (MS_CMD_ERROR_MALLOC);

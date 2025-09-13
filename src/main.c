@@ -51,11 +51,16 @@ int	main(int argc, char *argv[])
 	{
 		close_fds();
 		last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) param_list);
-		waitpid(last_cmd.pid, &last_cmd.wstatus, 0);
-		if (WIFSIGNALED(last_cmd.wstatus))
-			ms_setenv("?", exit_status = ft_itoa(MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus)));
-		else
+		if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
 			ms_setenv("?", exit_status = ft_itoa(WEXITSTATUS(last_cmd.wstatus)));
+		else
+		{
+			waitpid(last_cmd.pid, &last_cmd.wstatus, 0);
+			if (WIFSIGNALED(last_cmd.wstatus))
+				ms_setenv("?", exit_status = ft_itoa(MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus)));
+			else
+				ms_setenv("?", exit_status = ft_itoa(WEXITSTATUS(last_cmd.wstatus)));
+		}
 		free(exit_status);
 		waitpid(-1, NULL, 0);
 	}

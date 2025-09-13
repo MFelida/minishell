@@ -35,6 +35,7 @@ enum e_cmd_context
 	MS_CMD_CONTEXT_SIMPLE = 0x01 << 0,
 	MS_CMD_CONTEXT_COMPOUND = 0x01 << 1,
 	MS_CMD_CONTEXT_PIPE = 0x01 << 2,
+	MS_CMD_CONTEXT_BLTIN = 0x01 << 3,
 };
 
 typedef struct s_cmd_params
