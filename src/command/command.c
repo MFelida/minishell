@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/03 18:05:10 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/15 18:28:23 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,16 +129,21 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
+	retval = cmd_next_node(&writer, node->children[0]);
+	if (last)
+		ft_lstclear((t_list **) &last->next, free);
 	if (add_redir(&reader,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
-	retval = cmd_next_node(&writer, node->children[0])
-		| cmd_next_node(&reader, node->children[1]);
-	free(ft_lstlast((t_list *) reader.redirs));
-	free(ft_lstlast((t_list *) writer.redirs));
+	retval |= cmd_next_node(&reader, node->children[1]);
 	if (last)
-		last->next = NULL;
+		ft_lstclear((t_list **) &last->next, free);
+	else
+	{
+		ft_lstclear((t_list **) &writer.redirs, free);
+		ft_lstclear((t_list **) &reader.redirs, free);
+	}
 	return (retval);
 }
 
