@@ -107,7 +107,15 @@ int	ms_cd(char **args, t_cmd_params *params, ...)
 	if (_validate_input(args, params))
 		return (MS_CMD_ERROR_OK);
 	if (args[1] == NULL)
+	{
+		if (ms_getenv("HOME") == NULL)
+		{
+			ft_print_err("HOME not set", 2, "minishell", "cd");
+			params->wstatus = _set_wstatus(1, 0);
+			return (MS_CMD_ERROR_OK);
+		}
 		ft_strlcpy(path, ms_getenv("HOME"), PATH_MAX + 1);
+	}
 	else if (*args[1] == '/')
 		ft_strlcpy(path, args[1], PATH_MAX + 1);
 	else
