@@ -29,6 +29,7 @@ void	init_parcon(t_parsing_context *par_con)
 	par_con->error = 0;
 	par_con->tail = NULL;
 	par_con->curr = (char *)malloc(sizeof(char) * 3e6);
+	par_con->root = NULL;
     par_con->start = par_con->pos;
 	if (!par_con->curr)
 		exit (1); //make error handling;
@@ -191,7 +192,7 @@ void	token_assignation(t_token_list *node) //https://www.ibm.com/docs/en/aix/7.1
 {
 	int	i;
 	int	fd_heredoc;
-						//STILL NEED TO EXPAND LOOSE VARIABLES OUTSIDE OF QUOTES AND HANDLE HEREDOC EOF
+						//STILL NEED TO HANDLE HEREDOC EOF
 	i = 0;
 	node->type = malloc(sizeof(t_ms_token));
 	if (!node->type)
@@ -294,9 +295,9 @@ int	node_quote_check(char *string)
 	i = 0;
 	while(string[i])
 		i++;
-	if (string[0] == '\'' && string[i] == '\'')
+	if (string[0] == '\'' && string[i - 1] == '\'')
 		return (1);
-	else if (string[0] == '"' && string[i] == '"')
+	else if (string[0] == '"' && string[i - 1] == '"')
 		return (1);
 	else
 		return (0);
@@ -323,13 +324,13 @@ char *ft_variable_exp_strdup(char *string)
 			i++;
 		var = (&string[i + 1]); //or i+2 idk how mike's fetch works.
 		buf = ft_substr(string, 0, i);
-		buf = ft_strcat(buf, mike_var_fetch(var)); //make wrapper that allocates right amount?
+		//buf = ft_strcat(buf, mike_var_fetch(var)); //make wrapper that allocates right amount?
 		i += 2;
 		while (!ismetachar(string[i]))
 			i++;
 		i++;
-		buf = ft_strcat(buf, &string[i]); //make wrapper that allocates right amount?
-	}
+		buf = strcat(buf, &string[i]); //make wrapper that allocates right amount?
+	}     // ^^make ft_strcat	
 	else
 		buf = ft_substr(string, 0, ft_strlen(string));
 	//maybe free string here? Idk
@@ -346,30 +347,63 @@ void	third_pass(t_parsing_context *par_con)
 	//also take into account specific heredoc cases.
 	//PROBABLY CHECK FIRST FOR BUILTINS, that's an easy assign.
 	t_token_list	*node;
+	t_token_list	*starting_node;
+	t_parse_tree	*command_node;
+	t_parse_tree	*operator_node;
 	size_t			node_count;
-	size_t			starting_node;
 
 	node_count = 0;
-	starting_node = 0;
 	node = par_con->head;
+	starting_node = node;
 	while(node != NULL)
 	{
 		//idk how to check for foo"$ba"r yet either or what to do with it.
-		if (node->type == MS_TOK_OPERATOR)
+		if (node->type->type == MS_TOK_OPERATOR)
 		{
-			arrange_command(par_con, node_count); boekenlegger type beat so I see it next time;
+			command_node = assemble_command_node(par_con, starting_node, node_count);
+			operator_node = new_tree((t_ms_token){.op = node->type->op}); //check if this is norm ok
+			new_child(operator_node, command_node);
+			attach_to_tree(par_con, operator_node);
+			starting_node = node->next;
 			node_count = 0;
-			
 		}
+		else
+			node_count++;
 		node = node->next;
-		node_count++;
 	}
+	if (node_count > 0)
+	{
+		command_node = assemble_command_node(par_con, starting_node, node_count);
+		attach_to_tree(par_con, command_node);
+	}
+}
 
-	//RETROSPECTIVELY, THIS VVVVV IS PROBABLY FOURTH_PASS
-	//tokens have been assigned, now you need to structure a syntax tree, 
-	//find out how to order each token correctly, actually building the tree
-	//itself shouldn't be too hard. gl.
-	
+t_parse_tree	*assemble_command_node(t_parsing_context *par_con, t_token_list *start, size_t count)
+{
+	t_parse_tree 	*operator_node;
+	t_parse_tree	*child_node;
+	t_token_list 	*curr;
+	size_t 			i;
+
+	i = 0;
+	operator_node = new_tree((t_ms_token){.type = MS_TOK_COMMAND}); //see if this is norm ok
+	curr = start;
+	while (i < count)
+	{
+		child_node = new_tree((t_ms_token){.id = curr->type->id}); //see if this is norm ok
+		new_child(operator_node, child_node);
+		curr = curr->next;
+		i++;
+	}
+	return (operator_node);
+}
+
+void	attach_to_tree(t_parsing_context *par_con, t_parse_tree *node)
+{
+	if (!par_con->root)
+		par_con->root = node;
+	else
+		new_child(par_con->root, node);
 }
 
 t_parse_tree	*new_tree(t_ms_token tok)
@@ -391,14 +425,9 @@ void	new_child(t_parse_tree *tree, t_parse_tree *sapling)
 		while (tree->child_nodes[count])
 			count++;
 	}
-	tree->child_nodes = ft_realloc(tree->child_nodes, sizeof(t_parse_tree *) * (count + 2));
+	tree->child_nodes = realloc(tree->child_nodes, sizeof(t_parse_tree *) * (count + 2)); //make ft_realloc
 	tree->child_nodes[count] = sapling;
 	tree->child_nodes[count + 1] = NULL;
-}
-
-void	arrange_command(t_parsing_context *par_con, int	node_count)
-{
-	while(node != )
 }
 
 ///////////////////////////////// TESTING SECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/
@@ -455,16 +484,41 @@ void print_tokens(t_parsing_context *par_con)
 	}
 }
 
-int	main(void)
+void print_ast(t_parse_tree *node, int depth)
 {
-	t_parsing_context *par_con;
-	char *string;
-
-	par_con = (t_parsing_context *)malloc(1 * sizeof(t_parsing_context));
-	string = "<< test ing|test|ing $test|VAR \"te|st\" | 'bru|h'";
-
-	init_parcon(par_con);
-	neo_parser_processor_v3(string, par_con);
-	print_tokens(par_con);
-
+    if (!node)
+        return;
+    for (int i = 0; i < depth; i++)
+        printf("  ");
+    if (node->tok.type == MS_TOK_OPERATOR)
+        printf("Operator: %d\n", node->tok.op.op);
+    else if (node->tok.type == MS_TOK_COMMAND)
+        printf("Command Node\n");
+    else if (node->tok.type == MS_TOK_IDENTIFIER)
+        printf("Identifier: %s\n", node->tok.id.value);
+    if (node->child_nodes)
+    {
+        for (size_t i = 0; node->child_nodes[i]; i++)
+            print_ast(node->child_nodes[i], depth + 1);
+    }
 }
+
+// int main(void)
+// {
+//     t_parsing_context *par_con;
+//     char *string;
+
+//     par_con = (t_parsing_context *)malloc(sizeof(t_parsing_context));
+//     string = "<< test ing|test|ing $test|VAR \"te|st\" | 'bru|h'";
+
+//     init_parcon(par_con);
+//     neo_parser_processor_v3(string, par_con);
+
+//     printf("Tokens:\n");
+//     print_tokens(par_con);
+
+//     printf("\nAST:\n");
+//     print_ast(par_con->root, 0);
+
+//     return 0;
+// }

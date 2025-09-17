@@ -53,6 +53,7 @@ typedef struct s_parsing_context
 	int				pos;
 	t_token_list	*head;
 	t_token_list	*tail;
+	t_parse_tree	*root;
 	int				quote;
 	int				error; //might be necessary Idk
 	int				escaping;
@@ -81,5 +82,21 @@ void			meta_consumption(t_parsing_context *par_con, char *buf);
 int				double_meta_consumption(t_parsing_context *par_con, char *buf);
 void			quote_state_switch(t_parsing_context *par_con);
 //void	add_node(t_parsing_context *par_con,char *string, t_token_list *head);
+void 			print_tokens(t_parsing_context *par_con);
+void			print_ast(t_parse_tree *node, int depth);
+void			token_assignation(t_token_list *node);
+int				op_finder(char *string);
+char			*example_trim(char *string);
+int				is_cmd(char *string);
+int				full_meta_check(char *string);
+int				node_quote_check(char *string);
+char			*ft_variable_exp_strdup(char *string);
+void			third_pass(t_parsing_context *par_con);
+t_parse_tree	*assemble_command_node(t_parsing_context *par_con, t_token_list *start, size_t count);
+void			attach_to_tree(t_parsing_context *par_con, t_parse_tree *node);
+t_parse_tree	*new_tree(t_ms_token tok);
+void			new_child(t_parse_tree *tree, t_parse_tree *sapling);
+void			third_pass(t_parsing_context *par_con);
+void    		token_assignation(t_token_list *node);
 
 #endif
