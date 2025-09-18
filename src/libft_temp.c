@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft_temp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:47:28 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/08 14:05:58 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/18 11:36:40 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,4 +102,27 @@ void	ft_bzero(void *s, size_t n)
 		ptr[i] = '\0';
 		i++;
 	}
+}
+
+int	ft_isalnum(int c)
+{
+	if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z'))
+	{
+		return (1);
+	}
+	if (c >= 'A' && c <= 'Z')
+	{
+		return (1);
+	}
+	else
+	{
+		return (0);
+	}
+}
+
+int	ft_isspace(char c)
+{
+	if (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t')
+		return (1);
+	return (0);
 }

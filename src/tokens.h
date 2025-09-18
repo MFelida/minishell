@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:24:31 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/08 15:03:12 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/18 07:57:26 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef union s_ms_token
 	t_ms_token_type	type;
 	t_ms_op_token	op;
 	t_ms_id_token	id;
-	t_ms_cmd_type	cmd;
+	t_ms_cmd_token	cmd; //changed from type to token bc it was weird
 }	t_ms_token;
 
 typedef struct s_parse_tree
