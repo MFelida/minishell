@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_header.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/18 11:42:57 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/18 13:03:22 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,6 @@
 	int				ft_isspace(char c);
 	int				ismetachar(char c);
 	int				first_pass(char *input, t_parsing_context *par_con);
-
+	void			trim_space_nodes(t_parsing_context *par_con);
+	
 	#endif
