@@ -27,7 +27,7 @@
 
 int	valid_pwd(const char *env_pwd)
 {
-	char	buff[PATH_MAX + 1];
+	char		buff[PATH_MAX + 1];
 	struct stat	env_stat;
 	struct stat	cwd_stat;
 
@@ -38,7 +38,7 @@ int	valid_pwd(const char *env_pwd)
 	}
 	if (stat(buff, &cwd_stat))
 	{
-		ft_print_err(strerror(errno), 2, "minishell", "pwd");
+		ft_print_err(strerror(errno), 3, "minishell", "pwd", buff);
 		return (0);
 	}
 	if (stat(env_pwd, &env_stat))
