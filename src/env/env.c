@@ -10,12 +10,14 @@
 //                                                                            //
 // ************************************************************************** //
 
+#include "env.h"
 #include "env_utils.h"
 #include "hashmap.h"
 #include "libft.h"
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static t_hm	g_env_hm = {0};
 
@@ -45,6 +47,12 @@ int	init_env(void)
 		}
 		free(key);
 		i++;
+	}
+	if (!hm_get_value(&g_env_hm, "PWD") || !valid_pwd(hm_get_value(&g_env_hm, "PWD")))
+	{
+		value = getcwd(NULL, 0);
+		hm_set_value(&g_env_hm, "PWD", value);
+		free(value);
 	}
 	hm_set_value(&g_env_hm, "?", "0");
 	ft_atexit(free_env);
