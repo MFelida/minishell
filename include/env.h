@@ -16,6 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+int			valid_pwd(const char *env_pwd);
 int			init_env(void);
 void		free_env(void);
 const char	*ms_getenv(const char *key);

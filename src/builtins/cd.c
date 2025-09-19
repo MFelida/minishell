@@ -22,9 +22,21 @@
 #include <string.h>
 #include <unistd.h>
 
-int	_validate_input(char **args, t_cmd_params	*params);
+int		_validate_input(char **args, t_cmd_params	*params);
 void	_process_dotdot(char *path);
 void	_process_dot(char *path);
+
+static char	*_get_pwd(char *dest)
+{
+	if (ms_getenv("PWD") && valid_pwd(ms_getenv("PWD")))
+		ft_strlcpy(dest, ms_getenv("PWD"), PATH_MAX + 1);
+	else if (!getcwd(dest, PATH_MAX))
+	{
+		ft_print_err(strerror(errno), 3, "minishell", "cd", "getcwd");
+		return (NULL);
+	}
+	return (dest);
+}
 
 static int	_get_path(char *dest, const char *arg)
 {
@@ -41,7 +53,8 @@ static int	_get_path(char *dest, const char *arg)
 		ft_strlcpy(dest, arg, PATH_MAX + 1);
 	else
 	{
-		ft_strlcpy(dest, ms_getenv("PWD"),PATH_MAX + 1);
+		if (!_get_pwd(dest))
+			return (MS_FAILURE);
 		ft_strlcat(dest, "/", PATH_MAX + 1);
 		ft_strlcat(dest, arg, PATH_MAX + 1);
 	}

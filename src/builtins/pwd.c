@@ -25,7 +25,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-static int	_validate_pwd(const char *env_pwd)
+int	valid_pwd(const char *env_pwd)
 {
 	char	buff[PATH_MAX + 1];
 	struct stat	env_stat;
@@ -64,7 +64,7 @@ int	ms_pwd(const char **args, t_cmd_params *params, ...)
 		}
 	}
 	pwd = buff;
-	if (ms_getenv("PWD") && _validate_pwd(ms_getenv("PWD")))
+	if (ms_getenv("PWD") && valid_pwd(ms_getenv("PWD")))
 		pwd = ms_getenv("PWD");
 	else if (!getcwd(buff, PATH_MAX))
 	{
