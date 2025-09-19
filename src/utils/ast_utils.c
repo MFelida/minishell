@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:21:58 by ama               #+#    #+#             */
-/*   Updated: 2025/09/18 12:33:40 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/19 09:19:56 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 t_parse_tree	*assemble_command_node(t_token_list *start, size_t count)
 {
-	t_parse_tree 	*operator_node;
+	t_parse_tree	*operator_node;
 	t_parse_tree	*child_node;
-	t_token_list 	*curr;
-	size_t 			i;
+	t_token_list	*curr;
+	size_t			i;
 
 	i = 0;
 	operator_node = new_tree((t_ms_token){.type = MS_TOK_COMMAND}); //see if this is norm ok
@@ -42,7 +42,8 @@ void	attach_to_tree(t_parsing_context *par_con, t_parse_tree *node)
 
 t_parse_tree	*new_tree(t_ms_token tok)
 {
-	t_parse_tree *new;
+	t_parse_tree	*new;
+
 	new = (t_parse_tree *)malloc(sizeof(*new));
 	new->tok = tok;
 	new->child_nodes = NULL;
@@ -51,7 +52,7 @@ t_parse_tree	*new_tree(t_ms_token tok)
 
 void	new_child(t_parse_tree *tree, t_parse_tree *sapling)
 {
-	size_t count;
+	size_t	count;
 
 	count = 0;
 	if (tree->child_nodes)

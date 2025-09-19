@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/18 13:06:09 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:40:00 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(void)
 			//print_ast(par_con->root, 0);
 		}
 		//printf("your command: %s\n", input);
-		free(input);
+		// free(input);
 	}
 	printf("Hello, World! BRUH\n");
 	return (EXIT_SUCCESS);

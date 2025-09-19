@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:25:57 by ama               #+#    #+#             */
-/*   Updated: 2025/09/18 12:40:38 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/19 11:22:40 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 int	op_finder(char *string)
 {
-	if (ft_strncmp(string, "||", ft_strlen(string)) == 0)
+	if (ft_strncmp(string, "||", 2) == 0)
 	//error out or handle bonus
 		return (MS_TOK_ERROR);
-	else if (ft_strncmp(string, "&&", ft_strlen(string)) == 0)
+	else if (ft_strncmp(string, "&&", 2) == 0)
 	//error out or handle bonus
 		return (MS_TOK_ERROR);
 	if (ft_strncmp(string, "<", ft_strlen(string)) == 0)

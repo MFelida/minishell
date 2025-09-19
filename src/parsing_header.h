@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/18 13:03:22 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/19 11:31:37 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,5 +101,17 @@
 	int				ismetachar(char c);
 	int				first_pass(char *input, t_parsing_context *par_con);
 	void			trim_space_nodes(t_parsing_context *par_con);
+	void			re_organize_node(t_parsing_context *par_con,\
+						t_token_list *cur, t_token_list *prev, t_token_list *to_free);
+	void			space_node_free(t_token_list *to_free);
+	void			exit_func(t_parsing_context *par_con);
+	void			free_parse_tree(t_parse_tree *node);
+	void			free_token_list(t_token_list *head);
+
+		///////////////////// testers
+	void			test_first_pass(t_parsing_context *par_con);
+	void			test_second_pass(t_parsing_context *par_con);
+	void			test_third_pass(t_parsing_context *par_con);
+	void			print_ast(t_parse_tree *node, int depth);
 	
 	#endif

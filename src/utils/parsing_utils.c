@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:58:39 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/18 13:04:23 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:41:49 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	trim_space_nodes(t_parsing_context *par_con)
 				par_con->head = cur->next;
 			to_free = cur;
 			cur = cur->next;
-			free(to_free->string);
-			free(to_free->type);
-			free(to_free);
+			space_node_free(to_free);
 		}
 		else
 		{
@@ -40,4 +38,11 @@ void	trim_space_nodes(t_parsing_context *par_con)
 			cur = cur->next;
 		}
 	}
+}
+
+void	space_node_free(t_token_list *to_free)
+{
+	free(to_free->string);
+	free(to_free->type);
+	free(to_free);
 }
