@@ -1,6 +1,6 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -xc
-CPPFLAGS = -Iinclude -Ilibft
+CFLAGS = -Wall -Wextra -Werror
+CPPFLAGS = -xc -Iinclude -Ilibft
 
 NAME = minishell
 
@@ -33,7 +33,7 @@ OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
 LIBFILES = libft.a
 LIBDIR = lib
 LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
-LIBFLAGS = -L$(LIBDIR) -lft -lc
+LIBFLAGS = -L$(LIBDIR) -lft -lc -lreadline
 
 .PHONY: all re clean fclean run debug asan
 
@@ -41,7 +41,7 @@ all: CFLAGS += -O2
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -o $(NAME) $(OBJS) $(LIBFLAGS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(LIBS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
