@@ -18,6 +18,9 @@ include $(CMD_DIR)/command.mk
 ENV_DIR = $(SRCDIR)/env
 include $(ENV_DIR)/env.mk
 
+EXEC_DIR = $(SRCDIR)/exec
+include $(EXEC_DIR)/exec.mk
+
 PF_DIR = $(SRCDIR)/fake-parser
 include $(PF_DIR)/fake-parser.mk
 
@@ -25,7 +28,7 @@ REDIR_DIR = $(SRCDIR)/redirect
 include $(REDIR_DIR)/redirect.mk
 
 OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
-	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS)
+	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS) $(EXEC_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib
