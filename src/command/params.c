@@ -1,12 +1,12 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                       ::::::::             //
-//   params.c                                          :+:    :+:             //
+/*   params.c                                           :+:      :+:    :+:   */
 //                                                    +:+                     //
 //   By: mifelida <mifelida@student.email.com>       +#+                      //
 //                                                  +#+                       //
 //   Created: 2025/07/22 14:50:55 by mifelida     #+#    #+#                  //
-//   Updated: 2025/07/22 15:42:35 by mifelida     ########   odam.nl          //
+/*   Updated: 2025/09/23 11:40:45 by mifelida         ###   ########.fr       */
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,6 +18,7 @@
 t_cmd_params	cmd_params_default(void)
 {
 	t_cmd_params	res;
+	static t_cmd_params	*params_list = NULL;
 
 	res.pid = -1;
 	res.envp = NULL;
@@ -25,7 +26,7 @@ t_cmd_params	cmd_params_default(void)
 	res.wstatus = -1;
 	res.next = NULL;
 	res.redirs = NULL;
-	res.head = NULL;
+	res.head = &params_list;
 	res.rusage = (struct rusage){0};
 	res.cmd_args = NULL;
 	res.bin_path[0] = '\0';

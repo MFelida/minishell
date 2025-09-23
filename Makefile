@@ -9,20 +9,20 @@ SRCDIR = src
 
 OBJDIR = obj
 
-REDIR_DIR = $(SRCDIR)/redirect
-include $(REDIR_DIR)/redirect.mk
+BLTIN_DIR = $(SRCDIR)/builtins
+include $(BLTIN_DIR)/builtins.mk
 
 CMD_DIR = $(SRCDIR)/command
 include $(CMD_DIR)/command.mk
 
-PF_DIR = $(SRCDIR)/fake-parser
-include $(PF_DIR)/fake-parser.mk
-
 ENV_DIR = $(SRCDIR)/env
 include $(ENV_DIR)/env.mk
 
-BLTIN_DIR = $(SRCDIR)/builtins
-include $(BLTIN_DIR)/builtins.mk
+PF_DIR = $(SRCDIR)/fake-parser
+include $(PF_DIR)/fake-parser.mk
+
+REDIR_DIR = $(SRCDIR)/redirect
+include $(REDIR_DIR)/redirect.mk
 
 OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
 	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS)
