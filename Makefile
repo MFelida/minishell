@@ -1,33 +1,77 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -Iinclude
+CPPFLAGS = -xc -Iinclude -Ilibft
 
 NAME = minishell
 
 SRCFILES = main.c
 SRCDIR = src
-SRCS = $(adprefix $(SRCDIR)/,$(SRCFILES))
 
 OBJDIR = obj
-OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o))
 
-.PHONY: all re clean fclean
+BLTIN_DIR = $(SRCDIR)/builtins
+include $(BLTIN_DIR)/builtins.mk
 
+CMD_DIR = $(SRCDIR)/command
+include $(CMD_DIR)/command.mk
+
+ENV_DIR = $(SRCDIR)/env
+include $(ENV_DIR)/env.mk
+
+EXEC_DIR = $(SRCDIR)/exec
+include $(EXEC_DIR)/exec.mk
+
+PF_DIR = $(SRCDIR)/fake-parser
+include $(PF_DIR)/fake-parser.mk
+
+REDIR_DIR = $(SRCDIR)/redirect
+include $(REDIR_DIR)/redirect.mk
+
+OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
+	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS) $(EXEC_OBJS)
+
+LIBFILES = libft.a
+LIBDIR = lib
+LIBS = $(addprefix $(LIBDIR)/,$(LIBFILES))
+LIBFLAGS = -L$(LIBDIR) -lft -lc -lreadline
+
+.PHONY: all re clean fclean run debug asan
+
+all: CFLAGS += -O2
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -o $(NAME) -lreadline $(OBJS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFLAGS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(LIBS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(LIBS): | $(LIBDIR)
+	@git submodule update --init --recursive
+	@make -C libft all
+	@cd $(LIBDIR); ln -sf ../libft/libft.a
+
+$(LIBDIR):
+	@mkdir -p $(LIBDIR)
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
+
+ARGS = test/cmd.yml
+
+run: all
+	@./$(NAME) $(ARGS)
+
+debug: CFLAGS += -O0 -gdwarf-2
+debug: fclean $(NAME)
 
 clean:
 	@rm -rfv $(OBJDIR)
 
 fclean: clean
 	@rm -rfv $(NAME)
+
+asan: CC += -fsanitize=address
+asan: debug
 
 re: fclean all
