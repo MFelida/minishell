@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_header.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/24 08:27:29 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/24 13:36:54 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@
 	int				ft_isalnum(int c);
 	int				ft_isspace(char c);
 	int				ismetachar(char c);
-	int				first_pass(char *input, t_parsing_context *par_con);
+	int				first_pass(t_parsing_context *par_con);
 	void			trim_space_nodes(t_parsing_context *par_con);
 	void			re_organize_node(t_parsing_context *par_con,\
 						t_token_list *cur, t_token_list *prev, t_token_list *to_free);
@@ -115,6 +115,12 @@
 	void			node_meta_assign(t_token_list *node);
 	void			node_cmd_assign(t_token_list *node);
 	void			node_id_assign(t_token_list *node);
+	int				is_non_space_double_meta(t_parsing_context *par_con);
+	int				var_state(t_parsing_context *par_con, char *test, char *buf);
+	int				space_state(t_parsing_context *par_con, char *test);
+	void			operator_state(t_parsing_context *par_con, t_token_list *node, \
+						t_token_list *starting_node, size_t node_count);
+	void			extra_node_tree(t_parsing_context *par_con, t_token_list *starting_node, size_t node_count);
 		///////////////////// testers
 	void			test_first_pass(t_parsing_context *par_con);
 	void			test_second_pass(t_parsing_context *par_con);

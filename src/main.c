@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/19 10:40:00 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:37:18 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 
 int	main(void)
 {
-	char	*input;
 	t_parsing_context	*par_con;
 
 	par_con = (t_parsing_context *)malloc(sizeof(t_parsing_context) * 1);
@@ -31,16 +30,16 @@ int	main(void)
 	//still gotta handle signals
 	while (1)
 	{
-		input = readline("minishell> ");
-		if (!input)
+		par_con->arg = readline("minishell> ");
+		if (!par_con->arg)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (*input)
+		if (*par_con->arg)
 		{
-			add_history(input);
-			first_pass(input, par_con);
+			add_history(par_con->arg);
+			first_pass(par_con);
 			//printf("Syntax Tree:\n");
 			//print_ast(par_con->root, 0);
 		}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:25:57 by ama               #+#    #+#             */
-/*   Updated: 2025/09/24 07:49:18 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/24 09:50:34 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,11 @@ char	*ft_substr_wrapper(t_parsing_context *par_con)
 	char *ret;
 
 	if (par_con->pos > par_con->start)
+	{
 		ret = ft_substr(par_con->arg, par_con->start, par_con->pos - par_con->start);
+		if (!ret)
+			; //figure out how to error handle, malloc failed so need to go back to readline
+	}
 	else
 		ret = NULL;
 	par_con->start = par_con->pos;
@@ -146,11 +150,20 @@ void	quote_state_switch(t_parsing_context *par_con)
 	}
 }
 
+int	is_non_space_double_meta(t_parsing_context *par_con)
+{
+	if (par_con->arg[par_con->pos + 1] &&
+		ismetachar(par_con->arg[par_con->pos + 1]) &&
+		!ft_isspace(par_con->arg[par_con->pos]) &&
+		!ft_isspace(par_con->arg[par_con->pos + 1]))
+			return (1);
+	return (0);
+}
+
 int metastate(t_parsing_context *par_con)
 {
 	char	*test;
 	char	*buf;
-	size_t  start;
 
 	buf = malloc(3);
 	if (!buf)
@@ -158,41 +171,47 @@ int metastate(t_parsing_context *par_con)
 	test = ft_substr_wrapper(par_con);
 	if (test && *test)
 		add_node(par_con, test);
-	// else;
-		// exit_func(par_con); //maybe go back to readline, maybe just exit out since a literal bitesize malloc failed.
 	if (test)
 		free(test);
-	if (par_con->arg[par_con->pos + 1] &&
-		ismetachar(par_con->arg[par_con->pos + 1]) &&
-		!ft_isspace(par_con->arg[par_con->pos]) &&
-		!ft_isspace(par_con->arg[par_con->pos + 1]))
+	if (is_non_space_double_meta(par_con))
 			return(double_meta_consumption(par_con, buf));
 	if (par_con->arg[par_con->pos] == '$')
-	{
-		start = par_con->pos;
-		par_con->pos++;
-		while(par_con->arg[par_con->pos] && (ft_isalnum(par_con->arg[par_con->pos])))
-			par_con->pos++;
-		test = ft_substr(par_con->arg, start, par_con->pos - start);
-		add_node(par_con, test);
-		free(test);
-		free(buf);
-		return (0);
-	}
+		return (var_state(par_con, test, buf));
 	meta_consumption(par_con, buf);
 	while ( par_con->arg[par_con->pos] && ft_isspace(par_con->arg[par_con->pos]))
 		par_con->pos++;
 	if (par_con->pos > 0 && ft_isspace(par_con->arg[par_con->pos - 1]))
-	{
-		test = ft_substr_wrapper(par_con);
-		if (test && *test)
-			add_node(par_con, test);
-		//else;
-			//exit_func(par_con);
-		if (test)
-			free(test);
-	}
+		space_state(par_con, test);
 	//second_pass(par_con);
+	free(buf);
+	return (0);
+}
+
+int	space_state(t_parsing_context *par_con, char *test)
+{
+	test = ft_substr_wrapper(par_con);
+	if (test && *test)
+		add_node(par_con, test);
+	//else;
+		//exit_func(par_con);
+	if (test)
+		free(test);
+	return (0);
+}
+
+int	var_state(t_parsing_context *par_con, char *test, char *buf)
+{
+	size_t	start;
+
+	start = par_con->pos;
+	par_con->pos++;
+	while(par_con->arg[par_con->pos] && (ft_isalnum(par_con->arg[par_con->pos])))
+		par_con->pos++;
+	test = ft_substr(par_con->arg, start, par_con->pos - start);
+	if (!test)
+		return (-1); //free par_con and go back to readline after printing error, probably make memory error func
+	add_node(par_con, test);
+	free(test);
 	free(buf);
 	return (0);
 }

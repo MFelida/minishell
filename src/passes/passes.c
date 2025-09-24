@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   passes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:17:45 by ama               #+#    #+#             */
-/*   Updated: 2025/09/24 08:29:09 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/24 13:37:02 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../parsing_header.h"
 
-int	first_pass(char *input, t_parsing_context *par_con)
+int	first_pass(t_parsing_context *par_con)
 {
 	char	*test;
 
-	par_con->arg = input; //make sure this equals it to the start of the string/address
 	while (par_con->arg[par_con->pos])
 	{
 		if (par_con->arg[par_con->pos] == '\''
@@ -49,6 +48,7 @@ int	second_pass(t_parsing_context *par_con)
 	trim_space_nodes(par_con);
 	if (par_con->head == NULL)
 	{
+		return (1);
 		// free_token_list(par_con->head); //this might've broken stuff
 	}
 	node = par_con->head;
@@ -70,8 +70,6 @@ void	third_pass(t_parsing_context *par_con)
 {
 	t_token_list	*node;
 	t_token_list	*starting_node;
-	t_parse_tree	*command_node;
-	t_parse_tree	*operator_node;
 	size_t			node_count;
 
 	node_count = 0;
@@ -81,10 +79,7 @@ void	third_pass(t_parsing_context *par_con)
 	{
 		if (node->type->type == MS_TOK_OPERATOR)
 		{
-			command_node = assemble_command_node(starting_node, node_count);
-			operator_node = new_tree(return_op_token(node->type->op.op));
-			new_child(operator_node, command_node);
-			attach_to_tree(par_con, operator_node);
+			operator_state(par_con, node, starting_node, node_count);
 			starting_node = node->next;
 			node_count = 0;
 		}
@@ -93,11 +88,8 @@ void	third_pass(t_parsing_context *par_con)
 		node = node->next;
 	}
 	if (node_count > 0)
-	{
-		command_node = assemble_command_node(starting_node, node_count);
-		attach_to_tree(par_con, command_node);
-	}
-	//test_third_pass(par_con);
+		extra_node_tree(par_con, starting_node, node_count);
+	test_third_pass(par_con);
 	//lead into mike's part
 	//free_parse_tree(par_con->root);
 }
