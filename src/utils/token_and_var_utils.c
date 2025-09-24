@@ -15,12 +15,9 @@
 
 void	token_assignation(t_token_list *node)
 {
-	int fd_heredoc;
-						//STILL NEED TO HANDLE HEREDOC EOF
-	fd_heredoc = -1; //for now, talk to mike abt what to do with it
 	node->type = ft_calloc(sizeof(t_ms_token), 1);
 	if (node->type == NULL)
-		;// exit_func(par_con); or something along those lines.
+		return ;// exit_func(par_con); or something along those lines.
 	if (node_quote_check(node->string))
 		return (node_string_assign(node));
 	else if (full_meta_check(node->string))
@@ -111,7 +108,7 @@ t_ms_token return_id_token(const char *string)
 	t_ms_token token;
 
 	if (!string)
-		return (token);
+		return ((t_ms_token){.type = MS_TOK_ERROR});
 	token.type = MS_TOK_IDENTIFIER;
 	token.id.value = ft_strdup(string);
 	return (token);

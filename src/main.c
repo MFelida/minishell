@@ -10,12 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "execute.h"
+#include "parsing_header.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-#include "parsing_header.h"
 #include <unistd.h>
 
 int	main(void)
@@ -40,6 +42,7 @@ int	main(void)
 		{
 			add_history(par_con->arg);
 			first_pass(par_con);
+			exec_parsetree((t_parse_node *) par_con->root);
 			//printf("Syntax Tree:\n");
 			//print_ast(par_con->root, 0);
 		}

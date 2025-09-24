@@ -89,7 +89,7 @@ void	third_pass(t_parsing_context *par_con)
 	}
 	if (node_count > 0)
 		extra_node_tree(par_con, starting_node, node_count);
-	test_third_pass(par_con);
+	// test_third_pass(par_con);
 	//lead into mike's part
 	//free_parse_tree(par_con->root);
 }

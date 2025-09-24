@@ -104,7 +104,7 @@ char	*ft_substr_wrapper(t_parsing_context *par_con)
 	{
 		ret = ft_substr(par_con->arg, par_con->start, par_con->pos - par_con->start);
 		if (!ret)
-			; //figure out how to error handle, malloc failed so need to go back to readline
+			return NULL; //figure out how to error handle, malloc failed so need to go back to readline
 	}
 	else
 		ret = NULL;
