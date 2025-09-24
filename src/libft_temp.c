@@ -6,7 +6,7 @@
 /*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:47:28 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/18 11:36:40 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/23 15:35:02 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,4 +125,25 @@ int	ft_isspace(char c)
 	if (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t')
 		return (1);
 	return (0);
+}
+
+void	*ft_calloc(size_t nmeb, size_t size)
+{
+	size_t			i;
+	void			*value;
+	unsigned char	*ptr;
+
+	if (size != 0 && nmeb > ((size_t) -1) / size)
+		return (NULL);
+	i = 0;
+	value = malloc(nmeb * size);
+	if (value == NULL)
+		return (NULL);
+	ptr = (unsigned char *)value;
+	while (i < (size * nmeb))
+	{
+		ptr[i] = 0;
+		i++;
+	}
+	return (value);
 }

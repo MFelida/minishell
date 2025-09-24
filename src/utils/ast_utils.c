@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:21:58 by ama               #+#    #+#             */
-/*   Updated: 2025/09/19 09:19:56 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:28:17 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,18 @@ t_parse_tree	*assemble_command_node(t_token_list *start, size_t count)
 	size_t			i;
 
 	i = 0;
-	operator_node = new_tree((t_ms_token){.type = MS_TOK_COMMAND}); //see if this is norm ok
 	curr = start;
-	while (i < count)
+	if (curr->type->type == MS_TOK_COMMAND)
 	{
-		child_node = new_tree((t_ms_token){.id = curr->type->id}); //see if this is norm ok
+		operator_node = new_tree(return_cmd_token(curr));
+		curr = curr->next;
+		count--;
+	}
+	else
+		operator_node = new_tree(return_op_token(curr->type->op.op));
+	while (i < count || (count == 0 && i == 0))
+	{
+		child_node = new_tree(return_id_token(curr->type->id.value));
 		new_child(operator_node, child_node);
 		curr = curr->next;
 		i++;
@@ -45,6 +52,8 @@ t_parse_tree	*new_tree(t_ms_token tok)
 	t_parse_tree	*new;
 
 	new = (t_parse_tree *)malloc(sizeof(*new));
+	if (!new)
+		return (NULL);
 	new->tok = tok;
 	new->child_nodes = NULL;
 	return (new);

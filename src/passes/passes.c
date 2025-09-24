@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   passes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:17:45 by ama               #+#    #+#             */
-/*   Updated: 2025/09/19 13:17:42 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:29:09 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../parsing_header.h"
 
-//#include <stdio.h>
-
-int	first_pass(char *input, t_parsing_context *par_con) //probably change name to "first pass" =w=
+int	first_pass(char *input, t_parsing_context *par_con)
 {
 	char	*test;
 
@@ -51,7 +49,7 @@ int	second_pass(t_parsing_context *par_con)
 	trim_space_nodes(par_con);
 	if (par_con->head == NULL)
 	{
-		free_token_list(par_con->head); //this might've broken stuff
+		// free_token_list(par_con->head); //this might've broken stuff
 	}
 	node = par_con->head;
 	while (node != NULL)
@@ -84,7 +82,7 @@ void	third_pass(t_parsing_context *par_con)
 		if (node->type->type == MS_TOK_OPERATOR)
 		{
 			command_node = assemble_command_node(starting_node, node_count);
-			operator_node = new_tree((t_ms_token){.op = node->type->op}); //check if this is norm ok
+			operator_node = new_tree(return_op_token(node->type->op.op));
 			new_child(operator_node, command_node);
 			attach_to_tree(par_con, operator_node);
 			starting_node = node->next;

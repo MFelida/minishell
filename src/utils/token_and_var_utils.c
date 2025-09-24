@@ -6,7 +6,7 @@
 /*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:27:17 by ama               #+#    #+#             */
-/*   Updated: 2025/09/18 12:43:31 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/24 08:22:25 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,41 +18,41 @@ void	token_assignation(t_token_list *node)
 	int fd_heredoc;
 						//STILL NEED TO HANDLE HEREDOC EOF
 	fd_heredoc = -1; //for now, talk to mike abt what to do with it
-	node->type = malloc(sizeof(t_ms_token));
-	if (!node->type)
-		// exit_func(par_con); or something along those lines.
-	ft_bzero(node->type, sizeof(t_ms_token));
+	node->type = ft_calloc(sizeof(t_ms_token), 1);
+	if (node->type == NULL)
+		;// exit_func(par_con); or something along those lines.
 	if (node_quote_check(node->string))
-	{
-		node->type->id.type = MS_TOK_IDENTIFIER;
-		node->type->id.value = ft_variable_exp_strdup(node->string);
-		//node->string = example_trim(node->string);//trim quotes, probably account for "$foo"bar type nodes in third pass on unquoted identifiers.
-		return ;
-	}
+		return (node_string_assign(node));
 	else if (full_meta_check(node->string))
-	{
-		node->type->op.type = MS_TOK_OPERATOR;
-		node->type->op.op = op_finder(node->string);
-		if (node->type->op.op == MS_HEREDOC)
-		{
-			//identify EOF (which will be node->next's string)
-			//take into account if it's qouted or not bc weird behaviour and appending
-			// go back to readline until EOF
-			// send all the taken in lines into file
-			node->type->op.value = fd_heredoc;
-		}
-	}
-	else if (is_cmd(node->string)) //func thta checks for each builtin/cmd whatever
-	{
-		node->type->cmd.type = MS_TOK_COMMAND;
-		node->type->cmd.cmd = is_cmd(node->string);
-	}
+		return (node_meta_assign(node));
+	else if (is_cmd(node->string))
+		return (node_cmd_assign(node));
 	else
-	{
-		//its an identifier without quotes.
-		node->type->id.type = MS_TOK_IDENTIFIER; //maybe rpelace with "word" enum for clarity in parsing between uknown, and known identifiers.
-		node->type->id.value = ft_strdup(node->string);
-	}
+		return (node_id_assign(node));
+}
+
+void	node_string_assign(t_token_list *node)
+{
+	node->type->id.type = MS_TOK_IDENTIFIER;
+	node->type->id.value = ft_variable_exp_strdup(node->string);
+}
+
+void	node_meta_assign(t_token_list *node)
+{
+	node->type->op.type = MS_TOK_OPERATOR;
+	node->type->op.op = op_finder(node->string); //handle heredoc by if node->type->op.op == HEREDOC_TOKEN, suck up next node as eof
+}
+
+void	node_cmd_assign(t_token_list *node)
+{
+	node->type->cmd.type = MS_TOK_COMMAND;
+	node->type->cmd.cmd = is_cmd(node->string);
+}
+
+void	node_id_assign(t_token_list *node)
+{
+	node->type->id.type = MS_TOK_IDENTIFIER;
+	node->type->id.value = ft_strdup(node->string);
 }
 
 char *ft_variable_exp_strdup(char *string)
@@ -64,10 +64,9 @@ char *ft_variable_exp_strdup(char *string)
 	size_t	start;
 
 	i = 0;
-	buff = (char *)malloc(sizeof(char) * 1);
+	buff = (char *)ft_calloc(sizeof(char), 1);
 	if (!buff)
 		return (NULL); //exit_func(par_con);
-	buff[0] = '\0';
 	while (string[i])
 	{
 		if (string[i] == '$')
@@ -93,4 +92,36 @@ char *ft_variable_exp_strdup(char *string)
 		}
 	}
 	return (buff);
+}
+
+t_ms_token	return_cmd_token(t_token_list *node)
+{
+	t_ms_token	token;
+	
+	token.type = MS_TOK_COMMAND;
+	if (node->type->cmd.cmd < MS_CMD_BIN)
+		token.cmd.cmd = node->type->cmd.cmd;
+	else
+		token.cmd.cmd = MS_CMD_ERROR;
+	return (token);
+}
+
+t_ms_token return_id_token(const char *string)
+{
+	t_ms_token token;
+
+	if (!string)
+		return (token);
+	token.type = MS_TOK_IDENTIFIER;
+	token.id.value = ft_strdup(string);
+	return (token);
+}
+
+t_ms_token	return_op_token(int	type)
+{
+	t_ms_token token;
+	
+	token.type = MS_TOK_OPERATOR;
+	token.op.op = type;
+	return (token);
 }

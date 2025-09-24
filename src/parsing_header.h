@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_header.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/19 11:31:37 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:27:29 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 	#include <stdlib.h>
 	#include <stddef.h>
 
-	#define METACHARS "<|>?*[]${}()&;= "
-
+	#define METACHARS "<|>?*[]${}()& " //removed '=' bc it messed with export and subject says not mandatory
+	#define WHITESPACE "\n\t\f\r\v"								// also removed ';' now
 	typedef struct s_token_list
 	{
 		struct s_token_list *next;
@@ -107,7 +107,14 @@
 	void			exit_func(t_parsing_context *par_con);
 	void			free_parse_tree(t_parse_tree *node);
 	void			free_token_list(t_token_list *head);
-
+	t_ms_token		return_cmd_token(t_token_list *node);
+	t_ms_token		return_id_token(const char *string);
+	t_ms_token		return_op_token(int type);
+	void			*ft_calloc(size_t nmeb, size_t size);
+	void			node_string_assign(t_token_list *node);
+	void			node_meta_assign(t_token_list *node);
+	void			node_cmd_assign(t_token_list *node);
+	void			node_id_assign(t_token_list *node);
 		///////////////////// testers
 	void			test_first_pass(t_parsing_context *par_con);
 	void			test_second_pass(t_parsing_context *par_con);
