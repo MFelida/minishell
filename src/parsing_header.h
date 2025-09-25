@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:59:36 by amel-fou          #+#    #+#             */
-/*   Updated: 2025/09/24 13:36:54 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/25 15:53:13 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@
 	void			free_parse_tree(t_parse_tree *node);
 	void			free_token_list(t_token_list *head);
 	t_ms_token		return_cmd_token(t_token_list *node);
-	t_ms_token		return_id_token(const char *string);
+	t_ms_token		return_id_token(char *string);
 	t_ms_token		return_op_token(int type);
 	void			*ft_calloc(size_t nmeb, size_t size);
 	void			node_string_assign(t_token_list *node);

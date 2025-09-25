@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_and_var_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:27:17 by ama               #+#    #+#             */
-/*   Updated: 2025/09/24 08:22:25 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/25 15:52:44 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	node_cmd_assign(t_token_list *node)
 {
 	node->type->cmd.type = MS_TOK_COMMAND;
 	node->type->cmd.cmd = is_cmd(node->string);
+	node->type->cmd.value = ft_strdup(node->string);
 }
 
 void	node_id_assign(t_token_list *node)
@@ -96,21 +97,22 @@ t_ms_token	return_cmd_token(t_token_list *node)
 	t_ms_token	token;
 	
 	token.type = MS_TOK_COMMAND;
-	if (node->type->cmd.cmd < MS_CMD_BIN)
+	if (node->type->cmd.cmd <= MS_CMD_BIN)
 		token.cmd.cmd = node->type->cmd.cmd;
 	else
 		token.cmd.cmd = MS_CMD_ERROR;
+	token.cmd.value = node->string;
 	return (token);
 }
 
-t_ms_token return_id_token(const char *string)
+t_ms_token return_id_token(char *string)
 {
 	t_ms_token token;
 
 	if (!string)
 		return ((t_ms_token){.type = MS_TOK_ERROR});
 	token.type = MS_TOK_IDENTIFIER;
-	token.id.value = ft_strdup(string);
+	token.id.value = string;
 	return (token);
 }
 

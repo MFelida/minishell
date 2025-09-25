@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:24:31 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/24 10:06:30 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/25 15:03:37 by amel-fou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_ms_cmd_token
 {
 	t_ms_token_type	type;
 	t_ms_cmd_type	cmd;
+	char			*value;
 }	t_ms_cmd_token;
 
 typedef union s_ms_token
