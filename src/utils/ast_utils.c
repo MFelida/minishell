@@ -6,7 +6,7 @@
 /*   By: ama <ama@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 07:21:58 by ama               #+#    #+#             */
-/*   Updated: 2025/09/24 08:28:17 by ama              ###   ########.fr       */
+/*   Updated: 2025/09/25 18:47:19 by ama              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,7 @@ t_parse_tree	*assemble_command_node(t_token_list *start, size_t count)
 	i = 0;
 	curr = start;
 	if (curr->type->type == MS_TOK_COMMAND)
-	{
 		operator_node = new_tree(return_cmd_token(curr));
-		curr = curr->next;
-		count--;
-	}
 	else
 		operator_node = new_tree(return_op_token(curr->type->op.op));
 	while (i < count || (count == 0 && i == 0))
