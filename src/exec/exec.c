@@ -14,7 +14,6 @@
 #include "env.h"
 #include "exit_statuses.h"
 #include "libft.h"
-#include "parsing_header.h"
 #include "redirect.h"
 #include "tokens.h"
 
@@ -41,10 +40,14 @@ int	exec_parsetree(t_parse_tree	*pt)
 	exit_status = NULL;
 	ret = cmd_next_node(&params, pt);
 	close_fds();
-	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) *params.head);
 	if (ret & MS_CMD_ERROR_FAILURE)
-		exit_status = ft_strdup("1");
-	else if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
+	{
+		ms_setenv("?", "1");
+		free_cmd_params(params);
+		return (ret);
+	}
+	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) *params.head);
+	if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
 		exit_status = ft_itoa(WEXITSTATUS(last_cmd.wstatus));
 	else
 	{
@@ -64,7 +67,7 @@ int	exec_parsetree(t_parse_tree	*pt)
 	}
 	else
 		ms_setenv("?", "1");
-	while (waitpid(-1 , NULL, WNOHANG) > 0)
+	while (waitpid(-1 , NULL, WNOHANG) >= 0)
 		; // TODO: SIGNAL STUFF
 	free_cmd_params(params);
 	return (ret);
