@@ -75,7 +75,7 @@ int	bltin_run(t_cmd_params params, t_parse_tree *node)
 	params.cmd_args = make_argv(node);
 	if (!params.cmd_args)
 		return (MS_CMD_ERROR_MALLOC);
-	res = (do_builtin(params.cmd_args[0], &params) & 0xFF) << 8;
+	res = do_builtin(params.cmd_args[0], &params);
 	params_node = malloc(sizeof(t_cmd_params));
 	if (!params_node)
 		res |= (MS_CMD_ERROR_MALLOC);
