@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "command.h"
 #include "env.h"
 #include "execute.h"
+#include "libft.h"
 #include "parsing_header.h"
 
 #include <stdio.h>
@@ -21,24 +23,31 @@
 #include <signal.h>
 #include <unistd.h>
 
-int	init_minishell(void)
+#ifndef DEBUG
+void	init_minishell(void)
 {
 	init_env();
 }
+#else
+void	init_minishell(void)
+{
+	printf("%d\n", getpid());
+	init_env();
+}
+#endif
 
 int	main(void)
 {
 	t_parsing_context	*par_con;
+	int					ret;
 
 	par_con = (t_parsing_context *)malloc(sizeof(t_parsing_context) * 1);
 	if (!par_con)
 		exit (1); //or equivalent exit func, need to return exit state for $?
-	
-	init_parcon(par_con);
-	init_env();
-	//still gotta handle signals
+	init_minishell();
 	while (1)
 	{
+		init_parcon(par_con);
 		par_con->arg = readline("minishell> ");
 		if (!par_con->arg)
 		{
@@ -49,15 +58,18 @@ int	main(void)
 		{
 			add_history(par_con->arg);
 			first_pass(par_con);
-			exec_parsetree(par_con->root);
+			ret = exec_parsetree(par_con->root);
 			//printf("Syntax Tree:\n");
 			//print_ast(par_con->root, 0);
 		}
+		free(par_con);
 		//printf("your command: %s\n", input);
 		// free(input);
+		if (ret & MS_CMD_ERROR_SHOULD_EXIT)
+			break;
 	}
-	printf("Hello, World! BRUH\n");
-	return (EXIT_SUCCESS);
+	// printf("Hello, World! BRUH\n");
+	return (ft_atoi(ms_getenv("?")));
 }
 
 // heredoc, account for cat << "eof", this does not expand variables, if it is just cat << eof, it expands the variable like $path for example
