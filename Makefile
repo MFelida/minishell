@@ -1,6 +1,6 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -xc -Iinclude -Ilibft
+CPPFLAGS = -xc -Iinclude -Isrc -Ilibft
 
 NAME = minishell
 
@@ -69,6 +69,7 @@ run: all
 	@./$(NAME) $(ARGS)
 
 debug: CFLAGS += -O0 -gdwarf-2
+debug: CPPFLAGS += -DDEBUG
 debug: fclean $(NAME)
 
 clean:

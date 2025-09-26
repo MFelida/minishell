@@ -13,9 +13,10 @@
 #include "command.h"
 #include "env.h"
 #include "exit_statuses.h"
-#include "fake_parser.h"
 #include "libft.h"
+#include "parsing_header.h"
 #include "redirect.h"
+#include "tokens.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -28,7 +29,7 @@ static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 	return (*ret);
 }
 
-int	exec_parsetree(t_parse_node	*pt)
+int	exec_parsetree(t_parse_tree	*pt)
 {
 	t_cmd_params	params;
 	t_cmd_params	last_cmd;

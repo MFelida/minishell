@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "env.h"
 #include "execute.h"
 #include "parsing_header.h"
 
@@ -20,6 +21,11 @@
 #include <signal.h>
 #include <unistd.h>
 
+int	init_minishell(void)
+{
+	init_env();
+}
+
 int	main(void)
 {
 	t_parsing_context	*par_con;
@@ -29,6 +35,7 @@ int	main(void)
 		exit (1); //or equivalent exit func, need to return exit state for $?
 	
 	init_parcon(par_con);
+	init_env();
 	//still gotta handle signals
 	while (1)
 	{
@@ -42,7 +49,7 @@ int	main(void)
 		{
 			add_history(par_con->arg);
 			first_pass(par_con);
-			exec_parsetree((t_parse_node *) par_con->root);
+			exec_parsetree(par_con->root);
 			//printf("Syntax Tree:\n");
 			//print_ast(par_con->root, 0);
 		}
