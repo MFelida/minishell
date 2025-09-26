@@ -57,6 +57,7 @@ static void	_free_cmd_param(void *d)
 void	free_cmd_params(t_cmd_params params)
 {
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
+	params.head = NULL;
 	ft_split_free(params.envp);
 }
 
