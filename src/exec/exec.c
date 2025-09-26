@@ -40,11 +40,11 @@ int	exec_parsetree(t_parse_tree	*pt)
 	params = cmd_params_default();
 	exit_status = NULL;
 	ret = cmd_next_node(&params, pt);
-	if (ret & MS_CMD_ERROR_FAILURE)
-		return (ret);
 	close_fds();
 	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) *params.head);
-	if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
+	if (ret & MS_CMD_ERROR_FAILURE)
+		exit_status = ft_strdup("1");
+	else if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
 		exit_status = ft_itoa(WEXITSTATUS(last_cmd.wstatus));
 	else
 	{
