@@ -26,7 +26,7 @@ int	_set_wstatus(int exit_status, int sig)
 
 const char	*_invalid_option(const char *arg, const char *valid_opts)
 {
-	static char buff[3] = "-\0";
+	static char buff[3] = "-0";
 
 	while (*++arg)
 	{

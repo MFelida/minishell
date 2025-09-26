@@ -24,7 +24,10 @@
 
 static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 {
-	*ret = waitpid(params->pid, &params->wstatus, options);
+	if (!params)
+		*ret = waitpid(-1, NULL, options);
+	else
+		*ret = waitpid(params->pid, &params->wstatus, options);
 	return (*ret);
 }
 
@@ -67,7 +70,7 @@ int	exec_parsetree(t_parse_tree	*pt)
 	}
 	else
 		ms_setenv("?", "1");
-	while (waitpid(-1 , NULL, WNOHANG) >= 0)
+	while (_ms_waitpid(&wait_ret, NULL, WNOHANG) >= 0)
 		; // TODO: SIGNAL STUFF
 	free_cmd_params(params);
 	return (ret);
