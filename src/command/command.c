@@ -204,8 +204,8 @@ int	cmd_output_append(t_cmd_params params, t_parse_tree *node)
 
 int	cmd_next_node(t_cmd_params *params, t_parse_tree *node)
 {
-	t_ms_token_type	type;
-	t_ms_operators	op;
+	enum e_ms_token_type	type;
+	enum e_ms_operators	op;
 
 	type = node->tok.type;
 	if (type == MS_TOK_ERROR || type == MS_TOK_IDENTIFIER)
