@@ -10,6 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokens.h"
+#include "parse_tree.h"
 
-int	exec_parsetree(t_parse_tree	*pt);
+int	exec_parsetree(t_parse_node	*pt);

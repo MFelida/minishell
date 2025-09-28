@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-#include "fake_parser.h"
+#include "parser.h"
 #include "libft.h"
 
 static void	_indent(int tab_depth)
@@ -23,14 +23,14 @@ static void	_indent(int tab_depth)
 
 void	fp_print(t_parse_node node, int tab_depth)
 {
-	if (node.tok.op.op == FP_OP_PIPE)
+	if (node.tok.op.op == MS_OP_PIPE)
 	{
 		_indent(tab_depth);
 		printf("pipe:\n");
 		fp_print(*node.children[0], tab_depth + 1);
 		fp_print(*node.children[1], tab_depth + 1);
 	}
-	if (node.tok.op.op == FP_OP_CMD)
+	if (node.tok.op.op == MS_OP_CMD)
 	{
 		_indent(tab_depth);
 		printf("cmd:\n");
@@ -40,7 +40,7 @@ void	fp_print(t_parse_node node, int tab_depth)
 			printf("%s\n", (*node.children++)->tok.id.value);
 		}
 	}
-	if (node.tok.op.op == FP_OP_FILE_INPUT)
+	if (node.tok.op.op == MS_OP_FILE_INPUT)
 	{
 		_indent(tab_depth);
 		printf("input:\n");
@@ -48,7 +48,7 @@ void	fp_print(t_parse_node node, int tab_depth)
 		printf("%s\n", node.children[0]->tok.id.value);
 		fp_print(*node.children[1], tab_depth + 1);
 	}
-	if (node.tok.op.op == FP_OP_FILE_OUTPUT)
+	if (node.tok.op.op == MS_OP_FILE_OUTPUT)
 	{
 		_indent(tab_depth);
 		printf("output:\n");
@@ -56,7 +56,7 @@ void	fp_print(t_parse_node node, int tab_depth)
 		_indent(tab_depth + 1);
 		printf("%s\n", node.children[1]->tok.id.value);
 	}
-	if (node.tok.op.op == FP_OP_FILE_APPEND)
+	if (node.tok.op.op == MS_OP_FILE_APPEND)
 	{
 		_indent(tab_depth);
 		printf("append:\n");

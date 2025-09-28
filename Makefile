@@ -21,23 +21,14 @@ include $(ENV_DIR)/env.mk
 EXEC_DIR = $(SRCDIR)/exec
 include $(EXEC_DIR)/exec.mk
 
-PARSER_DIR = $(SRCDIR)/real-parser
-include $(PARSER_DIR)/parser.mk
-
-PASS_DIR = $(SRCDIR)/passes
-include $(PASS_DIR)/passes.mk
-
-PF_DIR = $(SRCDIR)/fake-parser
-include $(PF_DIR)/fake-parser.mk
+PARSE_DIR = $(SRCDIR)/parser
+include $(PARSE_DIR)/parser.mk
 
 REDIR_DIR = $(SRCDIR)/redirect
 include $(REDIR_DIR)/redirect.mk
 
-UTILS_DIR = $(SRCDIR)/utils
-include $(UTILS_DIR)/utils.mk
-
 OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
-	$(REDIR_OBJS) $(CMD_OBJS) $(PF_OBJS) $(ENV_OBJS) $(BLTIN_OBJS) $(EXEC_OBJS) $(PARSER_OBJS) $(UTILS_OBJS)
+	$(REDIR_OBJS) $(CMD_OBJS) $(ENV_OBJS) $(BLTIN_OBJS) $(EXEC_OBJS) $(PARSE_OBJS) $(UTILS_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib

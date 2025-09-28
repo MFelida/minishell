@@ -13,8 +13,9 @@
 #include "command.h"
 #include "env.h"
 #include "execute.h"
+#include "parse_tree.h"
+#include "parser.h"
 #include "libft.h"
-#include "parsing_header.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,51 +28,42 @@
 void	init_minishell(void)
 {
 	init_env();
+	ms_setenv("PS1", "minishell$ ");
+	ms_setenv("?", "0");
 }
 #else
 void	init_minishell(void)
 {
 	printf("%d\n", getpid());
 	init_env();
+	ms_setenv("PS1", "minishell$ ");
+	ms_setenv("?", "0");
 }
 #endif
 
 int	main(void)
 {
-	t_parsing_context	*par_con;
-	int					ret;
+	int				ret;
+	char			*input;
 
-	par_con = (t_parsing_context *)malloc(sizeof(t_parsing_context) * 1);
-	if (!par_con)
-		exit (1); //or equivalent exit func, need to return exit state for $?
 	init_minishell();
-	while (1)
+	ret = 0;
+	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
 	{
-		init_parcon(par_con);
-		par_con->arg = readline("minishell> ");
-		if (!par_con->arg)
+		input = readline(ms_getenv("PS1"));
+		if (!input)
+			break ;
+		if (!*input)
+			continue ;
+		if (!ft_strncmp("exit", input, ft_strlen("exit") + 1))
 		{
-			printf("exit\n");
+			free(input);
 			break ;
 		}
-		if (*par_con->arg)
-		{
-			add_history(par_con->arg);
-			first_pass(par_con);
-			ret = exec_parsetree(par_con->root);
-			//printf("Syntax Tree:\n");
-			//print_ast(par_con->root, 0);
-		}
-		free(par_con);
-		//printf("your command: %s\n", input);
-		// free(input);
-		if (ret & MS_CMD_ERROR_SHOULD_EXIT)
-			break;
+		add_history(input);
+		get_parse_tree(input);
+		// ret = exec_parsetree(parse_tree);
 	}
-	// printf("Hello, World! BRUH\n");
-	return (ft_atoi(ms_getenv("?")));
+	printf("exit\n");
+	ft_exit(ft_atoi(ms_getenv("?")));
 }
-
-// heredoc, account for cat << "eof", this does not expand variables, if it is just cat << eof, it expands the variable like $path for example
-// 'hello'bye"$USER"gfcjtvg
-// hello'bye' //hello gets concatenated to bye, if you use hello'bye' as a heredoc delimiter, it also won't expand variables

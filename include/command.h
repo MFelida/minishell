@@ -14,7 +14,7 @@
 # define COMMAND_H
 
 # include "redirect_types.h"
-# include "tokens.h"
+# include "parse_tree.h"
 
 # include <linux/limits.h>
 # include <sys/resource.h>
@@ -52,7 +52,7 @@ typedef struct s_cmd_params
 	char				**envp;
 }	t_cmd_params;
 
-int				cmd_next_node(t_cmd_params *params, t_parse_tree *node);
+int				cmd_next_node(t_cmd_params *params, t_parse_node *node);
 t_cmd_params	cmd_params_default(void);
 void			free_cmd_params(t_cmd_params params);
 

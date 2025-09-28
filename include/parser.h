@@ -13,4 +13,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
+# include "parse_tree.h"
+
+t_parse_node	*make_parse_tree(char *input);
+
 #endif
