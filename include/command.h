@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:19 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/23 11:40:56 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:29:54 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_cmd_params
 	struct rusage		rusage;
 	int					wstatus;
 	char				**envp;
+	t_parse_node		*pt;
 }	t_cmd_params;
 
 int				cmd_next_node(t_cmd_params *params, t_parse_node *node);

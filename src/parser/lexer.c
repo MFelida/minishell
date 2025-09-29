@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/28 12:04:32 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 15:57:42 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:11:47 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,5 +278,14 @@ t_lex_tok	*lex_input(char *input)
 		free_lex_list(&res);
 		return (NULL);
 	}
+	// for (t_lex_tok *t = res; t != NULL; t = t->next)
+	// {
+	// 	if (t->type == MS_LEX_TOK_WS)
+	// 		printf("WS\n");
+	// 	if (t->type == MS_LEX_TOK_ID || t->type == MS_LEX_TOK_VAR)
+	// 		printf("type: %d, value: %s\n", t->type, t->id);
+	// 	if (t->type == MS_LEX_TOK_OP)
+	// 		printf("type: %d, op: %d\n", t->type, t->op);
+	// }
 	return (res);
 }

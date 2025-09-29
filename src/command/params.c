@@ -33,13 +33,13 @@ t_cmd_params	cmd_params_default(void)
 	return (res);
 }
 
-static int	_count_chld_nodes(t_parse_tree *parent)
+static int	_count_chld_nodes(t_parse_node *parent)
 {
 	int				res;
-	t_parse_tree	**chld_arr;
+	t_parse_node	**chld_arr;
 
 	res = 0;
-	chld_arr = parent->child_nodes;
+	chld_arr = parent->children;
 	while (*(chld_arr++) != NULL)
 		res++;
 	return (res);
@@ -68,7 +68,7 @@ void	free_cmd_params(t_cmd_params params)
 // 	copy = *params;
 // }
 
-char	**make_argv(t_parse_tree *node)
+char	**make_argv(t_parse_node *node)
 {
 	char	**res;
 	int		argc;
@@ -79,9 +79,9 @@ char	**make_argv(t_parse_tree *node)
 	if (!res)
 		return (NULL);
 	i = 0;
-	while (node->child_nodes[i])
+	while (node->children[i])
 	{
-		res[i] = node->child_nodes[i]->tok.id.value;
+		res[i] = node->children[i]->tok.id.value;
 		i++;
 	}
 	return (res);

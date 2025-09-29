@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fake_parser.h                                      :+:      :+:    :+:   */
+/*   parse_tree.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:09:07 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 18:13:23 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/28 22:08:02 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef enum e_ms_ops
 	MS_OP_FILE_OUTPUT,
 	MS_OP_FILE_INPUT,
 	MS_OP_FILE_APPEND,
+	MS_OP_HEREDOC,
 	MS_OP_ERROR = 0,
 }	t_ms_ops;
 

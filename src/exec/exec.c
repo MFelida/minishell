@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 11:17:03 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/23 12:34:06 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:31:00 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "exit_statuses.h"
 #include "libft.h"
 #include "redirect.h"
-#include "tokens.h"
+#include "parse_tree.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -31,7 +31,7 @@ static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 	return (*ret);
 }
 
-int	exec_parsetree(t_parse_tree	*pt)
+int	exec_parsetree(t_parse_node	*pt)
 {
 	t_cmd_params	params;
 	t_cmd_params	last_cmd;
@@ -40,6 +40,7 @@ int	exec_parsetree(t_parse_tree	*pt)
 	int				ret;
 
 	params = cmd_params_default();
+	params.pt = pt;
 	exit_status = NULL;
 	ret = cmd_next_node(&params, pt);
 	close_fds();

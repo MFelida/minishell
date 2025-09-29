@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/15 18:28:23 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:33:37 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include "command.h"
 #include "env.h"
 #include "exit_statuses.h"
-#include "fake_parser.h"
+#include "parse_tree.h"
 #include "libft.h"
+#include "parser.h"
 #include "redirect.h"
 #include "redirect_types.h"
-#include "tokens.h"
 #include "utils.h"
 
 #include <errno.h>
@@ -61,12 +61,13 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	close_fds();
 	params.envp	 = ms_getenv_full(0, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
+	free_parse_tree(&params.pt);
 	ft_print_err(strerror(errno), 2, "cmd_exec", "execve");
 	_clean_before_exit(params);
 	ft_exit(MS_FAILURE);
 }
 
-int	bltin_run(t_cmd_params params, t_parse_tree *node)
+int	bltin_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
 	int				res;
@@ -87,7 +88,7 @@ int	bltin_run(t_cmd_params params, t_parse_tree *node)
 	return (res);
 }
 
-int	cmd_run(t_cmd_params params, t_parse_tree *node)
+int	cmd_run(t_cmd_params params, t_parse_node *node)
 {
 	t_cmd_params	*params_node;
 
@@ -112,7 +113,7 @@ int	cmd_run(t_cmd_params params, t_parse_tree *node)
 	return (0);
 }
 
-int	cmd_pipe(t_cmd_params params, t_parse_tree	*node)
+int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 {
 	t_cmd_params	writer;
 	t_cmd_params	reader;
@@ -130,14 +131,14 @@ int	cmd_pipe(t_cmd_params params, t_parse_tree	*node)
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.write}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
-	retval = cmd_next_node(&writer, node->child_nodes[0]);
+	retval = cmd_next_node(&writer, node->children[0]);
 	if (last)
 		ft_lstclear((t_list **) &last->next, free);
 	if (add_redir(&reader,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
-	retval |= cmd_next_node(&reader, node->child_nodes[1]);
+	retval |= cmd_next_node(&reader, node->children[1]);
 	if (last)
 		ft_lstclear((t_list **) &last->next, free);
 	else
@@ -148,25 +149,25 @@ int	cmd_pipe(t_cmd_params params, t_parse_tree	*node)
 	return (retval);
 }
 
-int	cmd_input_redir(t_cmd_params params, t_parse_tree *node)
+int	cmd_input_redir(t_cmd_params params, t_parse_node *node)
 {
 	int		retval;
 	t_list	*last;
 
 	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->child_nodes[0]->tok.id.value, .mode = O_RDONLY},
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[0]->tok.id.value, .mode = O_RDONLY},
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDIN_FILENO});
 	if (retval)
 		return (retval);
-	retval = cmd_next_node(&params, node->child_nodes[1]);
+	retval = cmd_next_node(&params, node->children[1]);
 	free(ft_lstlast((t_list *) params.redirs));
 	if (last)
 		last->next = NULL;
 	return (retval);
 }
 
-int	cmd_output_redir(t_cmd_params params, t_parse_tree *node)
+int	cmd_output_redir(t_cmd_params params, t_parse_node *node)
 {
 	int		retval;
 	t_list	*last;
@@ -174,17 +175,17 @@ int	cmd_output_redir(t_cmd_params params, t_parse_tree *node)
 	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->child_nodes[1]->tok.id.value, .mode = O_WRONLY | O_CREAT | O_TRUNC, .flags = 0644});
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[0]->tok.id.value, .mode = O_WRONLY | O_CREAT | O_TRUNC, .flags = 0644});
 	if (retval)
 		return (retval);
-	retval =  cmd_next_node(&params, node->child_nodes[0]);
+	retval =  cmd_next_node(&params, node->children[1]);
 	free(ft_lstlast((t_list *) params.redirs));
 	if (last)
 		last->next = NULL;
 	return (retval);
 }
 
-int	cmd_output_append(t_cmd_params params, t_parse_tree *node)
+int	cmd_output_append(t_cmd_params params, t_parse_node *node)
 {
 	int		retval;
 	t_list	*last;
@@ -192,38 +193,40 @@ int	cmd_output_append(t_cmd_params params, t_parse_tree *node)
 	last = ft_lstlast((t_list *) params.redirs);
 	retval = add_redir(&params,
 					(t_redir_src){.type = MS_REDIR_FD, .fd = STDOUT_FILENO},
-					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->child_nodes[1]->tok.id.value, .mode = O_APPEND | O_CREAT | O_WRONLY, .flags = 0644});
+					(t_redir_dest){.type = MS_REDIR_FILE, .file = node->children[0]->tok.id.value, .mode = O_APPEND | O_CREAT | O_WRONLY, .flags = 0644});
 	if (retval)
 		return (retval);
-	retval = cmd_next_node(&params, node->child_nodes[0]);
+	retval = cmd_next_node(&params, node->children[1]);
 	free(ft_lstlast((t_list *) params.redirs));
 	if (last)
 		last->next = NULL;
 	return (retval);
 }
 
-int	cmd_next_node(t_cmd_params *params, t_parse_tree *node)
+int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 {
-	enum e_ms_token_type	type;
-	enum e_ms_operators	op;
+	t_ms_token_type	type;
+	t_ms_ops	op;
 
 	type = node->tok.type;
 	if (type == MS_TOK_ERROR || type == MS_TOK_IDENTIFIER)
 		return (MS_CMD_ERROR_FAILURE);
-	if (type == MS_TOK_COMMAND)
-		return (bltin_run(*params, node));
-	if (type != MS_TOK_OPERATOR)
+	if (type != MS_TOK_OP)
 		return (MS_CMD_ERROR_FAILURE);
 	op = node->tok.op.op;
 	if (op == MS_OP_ERROR)
 		return (MS_CMD_ERROR_FAILURE);
-	if (op == MS_FILE_INPUT)
+	if (op == MS_OP_BLTIN)
+		return (bltin_run(*params, node));
+	if (op == MS_OP_CMD)
+		return (cmd_run(*params, node));
+	if (op == MS_OP_FILE_INPUT)
 		return (cmd_input_redir(*params, node));
-	if (op == MS_FILE_OUTPUT)
+	if (op == MS_OP_FILE_OUTPUT)
 		return (cmd_output_redir(*params, node));
-	if (op == MS_FILE_APPEND)
+	if (op == MS_OP_FILE_APPEND)
 		return (cmd_output_append(*params, node));
-	if (op == MS_PIPE)
+	if (op == MS_OP_PIPE)
 		return (cmd_pipe(*params, node));
 	return (MS_CMD_ERROR_FAILURE);
 }

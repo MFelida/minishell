@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 
+#include "parse_tree.h"
 #include "parser.h"
 #include "libft.h"
 
@@ -30,7 +31,7 @@ void	fp_print(t_parse_node node, int tab_depth)
 		fp_print(*node.children[0], tab_depth + 1);
 		fp_print(*node.children[1], tab_depth + 1);
 	}
-	if (node.tok.op.op == MS_OP_CMD)
+	if (node.tok.op.op == MS_OP_CMD || node.tok.op.op == MS_OP_BLTIN)
 	{
 		_indent(tab_depth);
 		printf("cmd:\n");
@@ -52,16 +53,16 @@ void	fp_print(t_parse_node node, int tab_depth)
 	{
 		_indent(tab_depth);
 		printf("output:\n");
-		fp_print(*node.children[0], tab_depth + 1);
 		_indent(tab_depth + 1);
-		printf("%s\n", node.children[1]->tok.id.value);
+		printf("%s\n", node.children[0]->tok.id.value);
+		fp_print(*node.children[1], tab_depth + 1);
 	}
 	if (node.tok.op.op == MS_OP_FILE_APPEND)
 	{
 		_indent(tab_depth);
 		printf("append:\n");
-		fp_print(*node.children[0], tab_depth + 1);
 		_indent(tab_depth + 1);
-		printf("%s\n", node.children[1]->tok.id.value);
+		printf("%s\n", node.children[0]->tok.id.value);
+		fp_print(*node.children[1], tab_depth + 1);
 	}
 }

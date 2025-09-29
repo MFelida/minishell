@@ -1,4 +1,4 @@
-PARSE_SRCFILES = parser.c lexer.c print_tree.c expand.c
+PARSE_SRCFILES = parser.c lexer.c print_tree.c expand.c parser_strerror.c
 
 PARSE_OBJS = $(addprefix $(OBJDIR)/,$(PARSE_SRCFILES:.c=.o))
 

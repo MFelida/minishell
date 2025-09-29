@@ -73,6 +73,11 @@ static t_builtin_fn	_get_builtin_fn(const char *str)
 	return (g_builtins[i]);
 }
 
+int	is_builtin(const char *name)
+{
+	return (!!_get_builtin_fn(name));
+}
+
 int	do_builtin(const char *builtin, t_cmd_params *params)
 {
 	t_builtin_fn	builtin_fn;

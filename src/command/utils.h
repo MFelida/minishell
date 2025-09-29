@@ -14,9 +14,9 @@
 # define UTILS_H
 
 #include "command.h"
-#include "tokens.h"
+#include "parse_tree.h"
 
 int		find_bin(char *dest, const char *name);
-char	**make_argv(t_parse_tree *node);
+char	**make_argv(t_parse_node *node);
 
 #endif

@@ -15,6 +15,7 @@
 
 # include "parse_tree.h"
 
-t_parse_node	*make_parse_tree(char *input);
+t_parse_node	*get_parse_tree(char *input);
+void			free_parse_tree(t_parse_node **root);
 
 #endif

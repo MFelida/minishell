@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/24 13:37:18 by amel-fou         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:31:19 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	main(void)
 {
 	int				ret;
 	char			*input;
+	t_parse_node	*pt;
 
 	init_minishell();
 	ret = 0;
@@ -61,8 +62,9 @@ int	main(void)
 			break ;
 		}
 		add_history(input);
-		get_parse_tree(input);
-		// ret = exec_parsetree(parse_tree);
+		pt = get_parse_tree(input);
+		ret = exec_parsetree(pt);
+		free_parse_tree(&pt);
 	}
 	printf("exit\n");
 	ft_exit(ft_atoi(ms_getenv("?")));
