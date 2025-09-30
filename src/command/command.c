@@ -44,9 +44,9 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	if (find_bin_ret)
 	{
-		if (errno == ENOENT)
+		if (find_bin_ret == MS_CMD_NOT_FOUND)
 			ft_print_err("command not found...", 2, "minishell", params.cmd_args[0]);
-		else if (errno == EACCES)
+		else if (find_bin_ret == MS_PERM_DENIED)
 			ft_print_err("permission denied", 2, "minishell", params.cmd_args[0]);
 		else
 			ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);

@@ -40,7 +40,9 @@ static int	_find_on_path(char	*dest, const char *name)
 		if (access(dest, F_OK))
 			continue ;
 		ft_split_free(path_split);
-		return (access(dest, X_OK));
+		if (access(dest, X_OK))
+			return (MS_PERM_DENIED);
+		return (0);
 	}
 	ft_split_free(path_split);
 	return (MS_CMD_NOT_FOUND);
@@ -51,8 +53,10 @@ int	find_bin(char *dest, const char *name)
 	if (ft_strchr(name, '/'))
 	{
 		ft_strlcpy(dest, name, PATH_MAX);
-		if (access(dest, F_OK) || access(dest, X_OK))
+		if (access(dest, F_OK))
 			return (1);
+		if (access(dest, X_OK))
+			return (MS_PERM_DENIED);
 		return (0);
 	}
 	return (_find_on_path(dest, name));
