@@ -29,6 +29,8 @@ static int	_find_on_path(char	*dest, const char *name)
 	if (!path_var)
 		return (1);
 	path_split = ft_split(path_var, ':');
+	if (!path_split)
+		return (1);
 	i = -1;
 	while (path_split[++i])
 	{
