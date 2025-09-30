@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <linux/limits.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -72,7 +73,7 @@ int	ms_pwd(const char **args, t_cmd_params *params, ...)
 		params->wstatus = _set_wstatus(MS_FAILURE, 0);
 		return (MS_CMD_ERROR_FAILURE);
 	}
-	ft_printf("%s\n", pwd);
+	printf("%s\n", pwd);
 	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
 	return (MS_CMD_ERROR_OK);
 }
