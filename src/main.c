@@ -6,7 +6,7 @@
 /*   By: amel-fou <amel-fou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:25:36 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 23:31:19 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:44:08 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,25 @@
 #include <signal.h>
 #include <unistd.h>
 
+sig_atomic_t	g_signal = 0;
+
 #ifndef DEBUG
 void	init_minishell(void)
 {
 	init_env();
 	ms_setenv("PS1", "minishell$ ");
 	ms_setenv("?", "0");
+	setup_sighandlers();
 }
 #else
 void	init_minishell(void)
 {
 	printf("%d\n", getpid());
 	init_env();
-	ms_setenv("PS1", "minishell$ ");
+	if (ms_is_interactive())
+		ms_setenv("PS1", "minishell$ ");
 	ms_set_exitstatus(0);
+	setup_sighandlers();
 }
 #endif
 
@@ -47,6 +52,7 @@ int	main(void)
 	char			*input;
 	t_parse_node	*pt;
 
+	printf("%d\n", ms_is_interactive());
 	init_minishell();
 	ret = 0;
 	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
@@ -56,11 +62,6 @@ int	main(void)
 			break ;
 		if (!*input)
 			continue ;
-		if (!ft_strncmp("exit", input, ft_strlen("exit") + 1))
-		{
-			free(input);
-			break ;
-		}
 		add_history(input);
 		pt = get_parse_tree(input);
 		if (!pt)

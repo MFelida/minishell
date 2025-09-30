@@ -6,12 +6,13 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 11:17:03 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 23:31:00 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:33:45 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.h"
 #include "env.h"
+#include "execute.h"
 #include "exit_statuses.h"
 #include "libft.h"
 #include "redirect.h"
@@ -54,7 +55,7 @@ int	exec_parsetree(t_parse_node	*pt)
 	else
 	{
 		while (_ms_waitpid(&wait_ret, &last_cmd, WNOHANG) == 0)
-			; // TODO: signal stuff
+			forward_sigint(&params);
 		if (wait_ret < 0)
 			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
 		else if (WIFSIGNALED(last_cmd.wstatus))

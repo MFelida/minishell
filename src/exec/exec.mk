@@ -1,4 +1,4 @@
-EXEC_SRCFILES = exec.c
+EXEC_SRCFILES = exec.c signals.c
 
 EXEC_OBJS = $(addprefix $(OBJDIR)/,$(EXEC_SRCFILES:.c=.o))
 
