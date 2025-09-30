@@ -47,7 +47,7 @@ void	_sort(char **tab)
 	}
 }
 
-int	_node_to_str(t_hm_node *node, char **dest)
+int	_node_to_str(t_hm_node *node, char **dest, int unquoted)
 {
 	size_t	size;
 	
@@ -59,9 +59,11 @@ int	_node_to_str(t_hm_node *node, char **dest)
 	if (ft_strlen(node->value) > 0)
 	{
 		ft_strlcat(*dest, "=", size);
-		ft_strlcat(*dest, "\"", size);
+		if (!unquoted)
+			ft_strlcat(*dest, "\"", size);
 		ft_strlcat(*dest, node->value, size);
-		ft_strlcat(*dest, "\"", size);
+		if (!unquoted)
+			ft_strlcat(*dest, "\"", size);
 	}
 	return (0);
 }

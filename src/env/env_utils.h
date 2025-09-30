@@ -16,6 +16,6 @@
 #include "hashmap.h"
 
 void	_sort(char **tab);
-char	*_node_to_str(t_hm_node *node, char **dest);
+char	*_node_to_str(t_hm_node *node, char **dest, int unquoted);
 
 #endif	// ENV_UTILS_H

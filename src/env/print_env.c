@@ -21,7 +21,7 @@ int	print_env(int sorted, int inc_empty)
 	char	**tab;
 	size_t	i;
 
-	tab = ms_getenv_full(sorted, inc_empty);
+	tab = ms_getenv_full(sorted, inc_empty, 0);
 	if (!tab)
 		return (1);
 	i = 0;

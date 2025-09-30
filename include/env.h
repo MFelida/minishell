@@ -21,8 +21,9 @@ int			init_env(void);
 void		free_env(void);
 const char	*ms_getenv(const char *key);
 int			ms_setenv(const char *key, const char *value);
+int			ms_set_exitstatus(const int status);
 int			ms_unsetenv(const char *key);
-char		**ms_getenv_full(int sorted, int inc_empty);
+char		**ms_getenv_full(int sorted, int inc_empty, int unquoted);
 int			print_env(int sorted, int inc_empty);
 
 enum e_print_env_options

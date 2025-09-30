@@ -37,7 +37,7 @@ void	init_minishell(void)
 	printf("%d\n", getpid());
 	init_env();
 	ms_setenv("PS1", "minishell$ ");
-	ms_setenv("?", "0");
+	ms_set_exitstatus(0);
 }
 #endif
 

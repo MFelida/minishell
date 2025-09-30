@@ -37,14 +37,11 @@ static int	_export_setenv(const char *keyvalpair)
 	size_t	len;
 	int		append;
 
-	append = 0;
 	value = ft_strchr(keyvalpair, '=') + 1;
 	if (value <= (char *) 1)
 		return (ms_setenv(keyvalpair, ""));
-	append = value[-2] == '+';
-	len = value	- keyvalpair - 1;
-	if (append)
-		--len;
+	append = ft_strnstr(keyvalpair, "+=", ft_strlen(keyvalpair)) == ft_strchr(keyvalpair, '=') - 1;
+	len = value	- keyvalpair - 1 - append;
 	key = ft_substr(keyvalpair, 0, len);
 	if (!key)
 		return (1);

@@ -35,14 +35,16 @@ int	init_env(void)
 
 	i = 0;
 	g_env_hm.size = 0;
+	ft_atexit(free_env);
 	while (environ[i])
 	{
 		value = ft_strchr(environ[i], '=') + 1;
 		key = ft_substr(environ[i], 0, value - environ[i] - 1);
+		if (!key)
+			return (1);
 		if (hm_set_value(&g_env_hm, key, value))
 		{
 			free(key);
-			free_env();
 			return (1);
 		}
 		free(key);
@@ -55,7 +57,6 @@ int	init_env(void)
 		free(value);
 	}
 	hm_set_value(&g_env_hm, "?", "0");
-	ft_atexit(free_env);
 	return (0);
 }
 
@@ -69,12 +70,24 @@ int	ms_setenv(const char *key, const char *value)
 	return (hm_set_value(&g_env_hm, key, value));
 }
 
+int	ms_set_exitstatus(const int status)
+{
+	char	*str;
+
+	str = ft_itoa(status);
+	if (!str)
+		return (1);
+	ms_setenv("?", str);
+	free(str);
+	return (0);
+}
+
 int	ms_unsetenv(const char *key)
 {
 	return (hm_unset(&g_env_hm, key));
 }
 
-char	**ms_getenv_full(int sorted, int inc_empty)
+char	**ms_getenv_full(int sorted, int inc_empty, int unquoted)
 {
 	char		**res;
 	char		**temp;
@@ -92,7 +105,7 @@ char	**ms_getenv_full(int sorted, int inc_empty)
 		while (node)
 		{
 			if (inc_empty || ft_strlen(node->value) > 0)
-				if (_node_to_str(node, &*temp++))
+				if (_node_to_str(node, &*temp++, unquoted))
 					return (ft_split_free(res), (NULL));
 			node = node->next;
 		}

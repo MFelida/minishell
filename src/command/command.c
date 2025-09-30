@@ -59,7 +59,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		ft_exit(MS_FAILURE);
 	}
 	close_fds();
-	params.envp	 = ms_getenv_full(0, 1);
+	params.envp	 = ms_getenv_full(0, 1, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	free_parse_tree(&params.pt);
 	ft_print_err(strerror(errno), 2, "cmd_exec", "execve");
