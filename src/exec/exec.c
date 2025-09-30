@@ -19,9 +19,12 @@
 #include "parse_tree.h"
 
 #include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+
+extern sig_atomic_t	g_signal;
 
 static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 {
@@ -55,16 +58,21 @@ int	exec_parsetree(t_parse_node	*pt)
 	else
 	{
 		while (_ms_waitpid(&wait_ret, &last_cmd, WNOHANG) == 0)
-			forward_sigint(&params);
+			if (g_signal == SIGINT)
+				forward_sigint(&params);
 		if (wait_ret < 0)
+		{
+			ms_set_exitstatus(1);
 			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
+		}
 		else if (WIFSIGNALED(last_cmd.wstatus))
 			ms_set_exitstatus(MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus));
 		else
 			ms_set_exitstatus(WEXITSTATUS(last_cmd.wstatus));
 	}
 	while (_ms_waitpid(&wait_ret, NULL, WNOHANG) >= 0)
-		; // TODO: SIGNAL STUFF
+		if (g_signal == SIGINT)
+			forward_sigint(&params);
 	free_cmd_params(params);
 	return (ret);
 }
