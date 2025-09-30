@@ -19,6 +19,7 @@
 int			valid_pwd(const char *env_pwd);
 int			init_env(void);
 void		free_env(void);
+int			valid_envvar(const char *var);
 const char	*ms_getenv(const char *key);
 int			ms_setenv(const char *key, const char *value);
 int			ms_set_exitstatus(const int status);

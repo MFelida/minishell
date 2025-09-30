@@ -13,8 +13,10 @@
 #include "lexer.h"
 #include "libft.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define METACHARS	" \t\n|&;()<>"
 #define WS			" \t\n"
@@ -142,38 +144,6 @@ static void	_handle_meta(t_lex_tok **lex_list, t_lex_context *context)
 	context->error--;
 }
 
-static void	_handle_var(t_lex_tok **lex_list, t_lex_context *context)
-{
-	t_lex_tok	*new;
-
-	context->error++;
-	if (*context->start != '$'
-		|| context->curr != context->start
-		|| !(context->start[1] == '_' || ft_isalpha(context->start[1])
-		|| !ft_strncmp(context->start, "$?", 3)))
-	{
-		return ;
-	}
-	context->start++;
-	context->curr++;
-	if (*context->curr == '?')
-		context->curr++;
-	else
-		while (*context->curr && ft_isalnum(*context->curr))
-			context->curr++;
-	new = _new_id_tok(context);
-	context->start = context->curr;
-	if (!new)
-	{
-		context->error = 1;
-		return ;
-	}
-	new->type = MS_LEX_TOK_VAR;
-	ft_lstadd_back((t_list **) lex_list, (t_list *) new);
-	context->start = context->curr;
-	context->error--;
-}
-
 static void	_set_quote_state(t_lex_context *context)
 {
 	if (!_is_quote(*context->curr))
@@ -193,6 +163,52 @@ static void	_set_quote_state(t_lex_context *context)
 		context->quote_state = MS_LEX_QUOTE_NONE;
 	context->curr++;
 	context->start++;
+}
+
+static void	_handle_single(t_lex_tok **lex_list, t_lex_context *context)
+{
+	t_lex_tok	*new_node;
+
+	while (*context->curr && *context->curr != '\'')
+		context->curr++;
+	if (context->curr != context->start)
+	{
+		new_node = _new_id_tok(context);
+		if (!new_node)
+			return ;
+		ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
+		context->start = context->curr;
+	}
+	if (_is_quote(*context->curr))
+		_set_quote_state(context);
+}
+
+static void	_handle_var(t_lex_tok **lex_list, t_lex_context *context)
+{
+	t_lex_tok	*new;
+
+	if (*context->start != '$'
+		|| context->curr != context->start
+		|| !(context->start[1] == '_' || ft_isalpha(context->start[1])
+		|| !ft_strncmp(context->start, "$?", 2)))
+		return _handle_single(lex_list, context);
+	context->error++;
+	context->start++;
+	context->curr += 2;
+	while (*context->curr
+			&& *(context->curr - 1) != '?' && ft_isalnum(*context->curr))
+		context->curr++;
+	new = _new_id_tok(context);
+	context->start = context->curr;
+	if (!new)
+	{
+		ft_print_err(strerror(errno), 2, "minishell", __FUNCTION__);
+		return ;
+	}
+	new->type = MS_LEX_TOK_VAR;
+	ft_lstadd_back((t_list **) lex_list, (t_list *) new);
+	context->start = context->curr;
+	context->error--;
 }
 
 static void	_handle_unquoted(t_lex_tok **lex_list, t_lex_context *context)
@@ -215,26 +231,6 @@ static void	_handle_unquoted(t_lex_tok **lex_list, t_lex_context *context)
 		_handle_meta(lex_list, context);
 	else if (_is_quote(*context->curr))
 		_set_quote_state(context);
-	else if (*context->curr == '$')
-		return ;
-}
-
-static void	_handle_single(t_lex_tok **lex_list, t_lex_context *context)
-{
-	t_lex_tok	*new_node;
-
-	while (*context->curr && *context->curr != '\'')
-		context->curr++;
-	if (context->curr != context->start)
-	{
-		new_node = _new_id_tok(context);
-		if (!new_node)
-			return ;
-		ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
-		context->start = context->curr;
-	}
-	if (_is_quote(*context->curr))
-		_set_quote_state(context);
 }
 
 static void	_handle_double(t_lex_tok **lex_list, t_lex_context *context)
@@ -253,8 +249,6 @@ static void	_handle_double(t_lex_tok **lex_list, t_lex_context *context)
 	}
 	if (_is_quote(*context->curr))
 		_set_quote_state(context);
-	else if (*context->curr == '$')
-		return ;
 }
 
 t_lex_tok	*lex_input(char *input)

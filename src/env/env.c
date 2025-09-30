@@ -39,6 +39,8 @@ int	init_env(void)
 	while (environ[i])
 	{
 		value = ft_strchr(environ[i], '=') + 1;
+		if (value <= (char *) 1)
+			value = "";
 		key = ft_substr(environ[i], 0, value - environ[i] - 1);
 		if (!key)
 			return (1);
@@ -87,6 +89,16 @@ int	ms_unsetenv(const char *key)
 	return (hm_unset(&g_env_hm, key));
 }
 
+int	valid_envvar(const char *var)
+{
+	if (!(*var == '_' || ft_isalpha(*var)))
+		return (0);
+	while (*(++var))
+		if (!(ft_isalnum(*var) || *var == '_'))
+			return (0);
+	return (1);
+}
+
 char	**ms_getenv_full(int sorted, int inc_empty, int unquoted)
 {
 	char		**res;
@@ -104,7 +116,7 @@ char	**ms_getenv_full(int sorted, int inc_empty, int unquoted)
 		node = g_env_hm.data[i++];
 		while (node)
 		{
-			if (inc_empty || ft_strlen(node->value) > 0)
+			if (valid_envvar(node->key) && (inc_empty || ft_strlen(node->value) > 0))
 				if (_node_to_str(node, &*temp++, unquoted))
 					return (ft_split_free(res), (NULL));
 			node = node->next;
