@@ -37,7 +37,6 @@ int	exec_parsetree(t_parse_node	*pt)
 	t_cmd_params	last_cmd;
 	int				wait_ret;
 	int				ret;
-	int				exit_status;
 
 	params = cmd_params_default();
 	params.pt = pt;
@@ -50,9 +49,8 @@ int	exec_parsetree(t_parse_node	*pt)
 		return (ret);
 	}
 	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) *params.head);
-	exit_status = 1;
 	if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
-		exit_status = WEXITSTATUS(last_cmd.wstatus);
+		ms_set_exitstatus(WEXITSTATUS(last_cmd.wstatus));
 	else
 	{
 		while (_ms_waitpid(&wait_ret, &last_cmd, WNOHANG) == 0)
@@ -60,11 +58,10 @@ int	exec_parsetree(t_parse_node	*pt)
 		if (wait_ret < 0)
 			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
 		else if (WIFSIGNALED(last_cmd.wstatus))
-			exit_status = MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus);
+			ms_set_exitstatus(MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus));
 		else
-			exit_status = WEXITSTATUS(last_cmd.wstatus);
+			ms_set_exitstatus(WEXITSTATUS(last_cmd.wstatus));
 	}
-	ms_set_exitstatus(exit_status);
 	while (_ms_waitpid(&wait_ret, NULL, WNOHANG) >= 0)
 		; // TODO: SIGNAL STUFF
 	free_cmd_params(params);
