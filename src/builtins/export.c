@@ -97,8 +97,6 @@ int	ms_export(char **args, t_cmd_params *params, ...)
 			return (MS_CMD_ERROR_FAILURE);
 		}
 	}
-	// TODO: REMOVE BEFORE FINISHING
-	ft_atexit((void (*)(void)) print_env);
 	params->wstatus = _set_wstatus(MS_SUCCESS, 0);
 	return (MS_CMD_ERROR_OK);
 }
