@@ -63,6 +63,8 @@ int	main(void)
 		}
 		add_history(input);
 		pt = get_parse_tree(input);
+		if (!pt)
+			continue ;
 		ret = exec_parsetree(pt);
 		free_parse_tree(&pt);
 	}

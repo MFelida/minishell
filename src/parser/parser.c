@@ -282,7 +282,6 @@ t_parse_node	*get_parse_tree(char *input)
 	if (_get_parse_tree(&lex_list, &context))
 		free_parse_tree(&context.root);
 	free_lex_list(&lex_list);
-	fp_print(*context.root, 0);
 	return (context.root);
 }
 

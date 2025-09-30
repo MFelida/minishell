@@ -149,14 +149,18 @@ static void	_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 	context->error++;
 	if (*context->start != '$'
 		|| context->curr != context->start
-		|| !(context->start[1] == '_' || ft_isalpha(context->start[1])))
+		|| !(context->start[1] == '_' || ft_isalpha(context->start[1])
+		|| !ft_strncmp(context->start, "$?", 3)))
 	{
 		return ;
 	}
 	context->start++;
 	context->curr++;
-	while (*context->curr && ft_isalnum(*context->curr))
+	if (*context->curr == '?')
 		context->curr++;
+	else
+		while (*context->curr && ft_isalnum(*context->curr))
+			context->curr++;
 	new = _new_id_tok(context);
 	context->start = context->curr;
 	if (!new)
