@@ -196,7 +196,8 @@ static void	_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 	context->start++;
 	context->curr += 2;
 	while (*context->curr
-			&& *(context->curr - 1) != '?' && ft_isalnum(*context->curr))
+			&& *(context->curr - 1) != '?'
+			&& (ft_isalnum(*context->curr) || *context->curr == '_'))
 		context->curr++;
 	new = _new_id_tok(context);
 	context->start = context->curr;
