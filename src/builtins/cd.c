@@ -58,6 +58,8 @@ static int	_get_path(char *dest, const char *arg)
 		ft_strlcat(dest, "/", PATH_MAX + 1);
 		ft_strlcat(dest, arg, PATH_MAX + 1);
 	}
+	if (*(ft_strchr(dest, '\0') - 1) == '/')
+		*(ft_strchr(dest, '\0') - 1) = '\0';
 	_process_dot(dest);
 	_process_dotdot(dest);
 	return (MS_SUCCESS);
