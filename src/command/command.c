@@ -157,6 +157,23 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	return (retval);
 }
 
+int	cmd_hear_doc(t_cmd_params params, t_parse_node *node)
+{
+	int		retval;
+	t_list	*last;
+
+	last = ft_lstlast((t_list *) params.redirs);
+	retval = add_redir(&params,
+					(t_redir_dest){.type = MS_REDIR_FD, .fd = node->tok.op.value},
+					(t_redir_src){.type = MS_REDIR_FD, .fd = STDIN_FILENO});
+	if (retval)
+		return (retval);
+	retval = cmd_next_node(&params, node->children[1]);
+	if (last)
+		ft_lstclear((t_list **) &last->next, free);
+	return (retval);
+}
+
 int	cmd_input_redir(t_cmd_params params, t_parse_node *node)
 {
 	int		retval;
@@ -230,6 +247,8 @@ int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 		return (cmd_run(*params, node));
 	if (op == MS_OP_FILE_INPUT)
 		return (cmd_input_redir(*params, node));
+	if (op == MS_OP_HEREDOC)
+		return (cmd_hear_doc(*params, node));
 	if (op == MS_OP_FILE_OUTPUT)
 		return (cmd_output_redir(*params, node));
 	if (op == MS_OP_FILE_APPEND)

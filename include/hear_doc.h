@@ -10,4 +10,4 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ms_hear_doc(const char *stopword, const int expand);
+int	ms_hear_doc(const char *stopword);

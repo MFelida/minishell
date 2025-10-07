@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "parse_tree.h"
+#include "hear_doc.h"
 #include "libft.h"
+#include "parse_tree.h"
 #include "parser/lexer.h"
 #include "parser.h"
 #include "utils.h"
@@ -93,6 +94,12 @@ t_parse_node	*get_heredoc_node(t_lex_tok **lex_list, t_parse_context *context)
 	if (!res)
 		return (NULL);
 	res->tok = (t_ms_token){.op.type = MS_TOK_OP, .op.op = MS_OP_HEREDOC};
+	res->tok.op.value = ms_hear_doc(res->children[0]->tok.id.value);
+	if (res->tok.op.value == -1)
+	{
+		free_parse_tree(&context->root);
+		return (NULL);
+	}
 	return (res);
 }
 

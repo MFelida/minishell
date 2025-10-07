@@ -36,6 +36,7 @@ typedef struct s_ms_op_token
 {
 	t_ms_token_type	type;
 	t_ms_ops		op;
+	int				value;
 }	t_ms_op_token;
 
 typedef struct s_ms_id_token

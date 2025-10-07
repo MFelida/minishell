@@ -17,6 +17,7 @@
 #include "utils.h"
 
 #include <errno.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <readline/readline.h>
 #include <stdlib.h>
@@ -47,7 +48,7 @@ int	ms_hear_doc(const char *stopword)
 		prompt = "> ";
 	line = NULL;
 	while (_ms_readline(&line, prompt) && !ft_strnstr(line, stopword, ft_strlen(line)))
-		ft_putstr_fd(line, hear_pipe.write);
+		ft_putendl_fd(line, hear_pipe.write);
 	if (line)
 		free(line);
 	close(hear_pipe.write);
