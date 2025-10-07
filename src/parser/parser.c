@@ -56,9 +56,14 @@ static t_parse_node	*_get_redir_node(t_lex_tok **lex_list, t_parse_context *cont
 	tok = tok->next;
 	while (tok && tok->type == MS_LEX_TOK_WS)
 		tok = tok->next;
-	if (tok->type != MS_LEX_TOK_ID)
+	if (!tok || tok->type != MS_LEX_TOK_ID)
 	{
-		ft_print_err(parser_strerror(tok), 1, "minishell");
+		if (!tok)
+			ft_print_err("syntax error near unexpected token `newline'", 1, "minishell");
+		else
+			ft_print_err(parser_strerror(tok), 1, "minishell");
+		free(res->children);
+		free(res);
 		free_parse_tree(&context->root);
 		return (NULL);
 	}
@@ -116,6 +121,7 @@ t_parse_node	*get_append_node(t_lex_tok **lex_list, t_parse_context *context)
 t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context)
 {
 	t_parse_node	*res;
+	t_lex_tok		*next_tok;
 
 	res = malloc(sizeof(t_parse_node));
 	if (!res)
@@ -128,6 +134,17 @@ t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context)
 	res->tok = (t_ms_token){.op.type = MS_TOK_OP, .op.op = MS_OP_PIPE};
 	context->current_cmd_node = &res->children[1];
 	*lex_list = (*lex_list)->next;
+	next_tok = *lex_list;
+	while (next_tok && next_tok->type == MS_LEX_TOK_WS)
+		next_tok = next_tok->next;
+	if (!next_tok || (next_tok->type == MS_LEX_TOK_OP && next_tok->op == MS_LEX_OP_PIPE))
+	{
+		if (!next_tok)
+			ft_print_err("syntax error near unexpected token `newline'", 1, "minishell");
+		else
+			ft_print_err(parser_strerror(next_tok), 1, "minishell");
+		return (free_parse_tree(&context->root), NULL);
+	}
 	if (!get_cmd_node(lex_list, context) || !res->children[1])
 		return (free_parse_tree(&context->root), NULL);
 	return (res);
@@ -223,6 +240,8 @@ t_parse_node	*get_cmd_node(t_lex_tok **lex_list, t_parse_context *context)
 		else if (tok->type == MS_LEX_TOK_OP)
 		{
 			parent = g_op_node_getters[tok->op](&tok, context);
+			if (!parent)
+				return (NULL);
 			*context->current_cmd_node = parent;
 			parent->children[1] = res;
 			context->current_cmd_node = &parent->children[1];
@@ -233,7 +252,7 @@ t_parse_node	*get_cmd_node(t_lex_tok **lex_list, t_parse_context *context)
 			return (free_parse_tree(&context->root), NULL);
 	}
 	*lex_list = tok;
-	if (is_builtin(res->children[0]->tok.id.value))
+	if (res->children[0] && is_builtin(res->children[0]->tok.id.value))
 		res->tok.op.op = MS_OP_BLTIN;
 	return (res);
 }
@@ -243,6 +262,14 @@ static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 	t_lex_tok		*curr;
 	t_parse_node	*new;
 
+	curr = *lex_list;
+	while (curr && curr->type == MS_LEX_TOK_WS)
+		curr = curr->next;
+	if (curr && curr->type == MS_LEX_TOK_OP && curr->op == MS_LEX_OP_PIPE)
+	{
+		ft_print_err(parser_strerror(curr), 1, "minishell");
+		return (1);
+	}
 	curr = *lex_list;
 	while (curr)
 	{
@@ -287,9 +314,11 @@ t_parse_node	*get_parse_tree(char *input)
 
 void	free_parse_tree(t_parse_node **root)
 {
-	size_t	i;
+	size_t			i;
 	t_parse_node	*node;
 
+	if (!root || !*root)
+		return ;
 	i = 0;
 	node = *root;
 	while (node->children && node->children[i])

@@ -25,25 +25,26 @@ static const char	*g_op_err_str[] = {
 const char *parser_strerror(t_lex_tok *tok)
 {
 	static char	full[100] = "syntax error near unexpected token ";
-	static char * const tok_str = full + sizeof(full);
+	char		*tok_str;
 
+	tok_str = full + ft_strlen("syntax error near unexpected token ");
 	if (tok->type == MS_LEX_TOK_OP)
-		ft_strlcpy(tok_str, g_op_err_str[tok->op], 5);
+		ft_strlcpy(tok_str, g_op_err_str[tok->op], 50);
 	else if (tok->type == MS_LEX_TOK_ID)
 	{
-		ft_strlcpy(tok_str, "`", 2);
-		if (ft_strlcat(tok_str, tok->id, 12) > ft_strlen(tok_str))
-			ft_strlcat(full, "...", 20);
+		ft_strlcpy(tok_str, "`", 50);
+		if (ft_strlcat(tok_str, tok->id, 50) > 12)
+			ft_strlcat(tok_str, "...", 50);
 		ft_strlcat(tok_str, "'", 50);
 	}
 	else if (tok->type == MS_LEX_TOK_WS)
-		ft_strlcpy(tok_str, "`whitespace'", 20);
+		ft_strlcpy(tok_str, "`whitespace'", 50);
 	else if (tok->type == MS_LEX_TOK_VAR)
 	{
-		ft_strlcpy(tok_str, "`$", 3);
-		if (ft_strlcat(tok_str, tok->id, 13) > ft_strlen(tok_str))
-			ft_strlcat(tok_str, "...", 20);
-		ft_strlcat(tok_str, "'", 20);
+		ft_strlcpy(tok_str, "`$", 50);
+		if (ft_strlcat(tok_str, tok->id, 50) > 13)
+			ft_strlcat(tok_str, "...", 50);
+		ft_strlcat(tok_str, "'", 50);
 	}
 	return (full);
 }

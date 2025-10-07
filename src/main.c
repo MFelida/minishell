@@ -65,7 +65,10 @@ int	main(void)
 		add_history(input);
 		pt = get_parse_tree(input);
 		if (!pt)
+		{
+			ms_set_exitstatus(MS_BUILTIN_MISUSE);
 			continue ;
+		}
 		ret = exec_parsetree(pt);
 		free_parse_tree(&pt);
 	}
