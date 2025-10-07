@@ -14,6 +14,7 @@
 #include "env.h"
 #include "libft.h"
 
+#include <stdio.h>
 #include <readline/readline.h>
 #include <signal.h>
 #include <unistd.h>
@@ -51,7 +52,7 @@ void	setup_sighandlers(void)
 	struct sigaction	sa;
 
 	sa = (struct sigaction){.sa_handler = _sighandler,
-		.sa_flags = 0, .sa_mask={0}};
+		.sa_flags = 0, .sa_mask={{0}}};
 	if (ms_is_interactive())
 		sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
