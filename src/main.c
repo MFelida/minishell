@@ -13,6 +13,7 @@
 #include "command.h"
 #include "env.h"
 #include "execute.h"
+#include "exit_statuses.h"
 #include "parse_tree.h"
 #include "parser.h"
 #include "libft.h"
@@ -30,8 +31,9 @@ sig_atomic_t	g_signal = 0;
 void	init_minishell(void)
 {
 	init_env();
-	ms_setenv("PS1", "minishell$ ");
-	ms_setenv("?", "0");
+	if (ms_is_interactive())
+		ms_setenv("PS1", "minishell$ ");
+	ms_set_exitstatus(0);
 	setup_sighandlers();
 }
 #else
