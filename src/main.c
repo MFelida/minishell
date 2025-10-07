@@ -54,7 +54,6 @@ int	main(void)
 	char			*input;
 	t_parse_node	*pt;
 
-	printf("%d\n", ms_is_interactive());
 	init_minishell();
 	ret = 0;
 	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
@@ -66,12 +65,10 @@ int	main(void)
 			continue ;
 		add_history(input);
 		pt = get_parse_tree(input);
-		if (!pt)
-		{
+		if (pt)
+			ret = exec_parsetree(pt);
+		else
 			ms_set_exitstatus(MS_BUILTIN_MISUSE);
-			continue ;
-		}
-		ret = exec_parsetree(pt);
 		free_parse_tree(&pt);
 	}
 	printf("exit\n");
