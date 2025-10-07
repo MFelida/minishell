@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <linux/limits.h>
 #include <stddef.h>
 #include <sys/wait.h>
@@ -39,19 +40,26 @@ static void	_clean_before_exit(t_cmd_params params)
 
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
-	int	find_bin_ret;
+	int			find_bin_ret;
+	struct stat	sb;
 
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	if (find_bin_ret)
 	{
 		if (find_bin_ret == MS_CMD_NOT_FOUND)
-			ft_print_err("command not found...", 2, "minishell", params.cmd_args[0]);
+			ft_print_err("command not found", 2, "minishell", params.cmd_args[0]);
 		else if (find_bin_ret == MS_PERM_DENIED)
-			ft_print_err("permission denied", 2, "minishell", params.cmd_args[0]);
+			ft_print_err("Permission denied", 2, "minishell", params.cmd_args[0]);
 		else
 			ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 		_clean_before_exit(params);
 		ft_exit(find_bin_ret);
+	}
+	if (stat(params.bin_path, &sb) == 0 && S_ISDIR(sb.st_mode))
+	{
+		ft_print_err("Is a directory", 2, "minishell", params.cmd_args[0]);
+		_clean_before_exit(params);
+		ft_exit(MS_PERM_DENIED);
 	}
 	if (do_redirs(&params))
 	{
@@ -62,9 +70,9 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	params.envp	 = ms_getenv_full(0, 1, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	free_parse_tree(&params.pt);
-	ft_print_err(strerror(errno), 2, "cmd_exec", "execve");
+	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 	_clean_before_exit(params);
-	ft_exit(MS_FAILURE);
+	ft_exit(MS_PERM_DENIED);
 }
 
 int	bltin_run(t_cmd_params params, t_parse_node *node)

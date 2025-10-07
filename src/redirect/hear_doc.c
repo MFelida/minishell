@@ -14,10 +14,14 @@
 #include "env.h"
 #include "libft.h"
 #include "redirect_types.h"
+#include "utils.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <readline/readline.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 static char	*_ms_readline(char **dest, const char *prompt)
 {
@@ -34,7 +38,10 @@ int	ms_hear_doc(const char *stopword)
 	char		*line;
 
 	if (pipe(hear_pipe.a))
+	{
+		ft_print_err(strerror(errno), 2, "minishell", "pipe");
 		return (-1);
+	}
 	prompt = ms_getenv("PS2");
 	if (!prompt)
 		prompt = "> ";

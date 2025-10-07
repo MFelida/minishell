@@ -15,8 +15,10 @@
 #include "libft.h"
 #include "utils.h"
 
+#include <errno.h>
 #include "stdbool.h"
 #include <stddef.h>
+#include <string.h>
 #include <unistd.h>
 
 int	ms_echo(char **args, t_cmd_params *params, ...)
@@ -36,12 +38,14 @@ int	ms_echo(char **args, t_cmd_params *params, ...)
 	{
 		if (i > first && ft_putchar_fd(' ', STDOUT_FILENO) < 0)
 			write_error = MS_FAILURE;
-		if (ft_putstr_fd(args[i], 1))
+		if (ft_putstr_fd(args[i], 1) < 0)
 			write_error = MS_FAILURE;
 		i++;
 	}
 	if (nl && ft_putchar_fd('\n', STDOUT_FILENO) < 0)
 		write_error = MS_FAILURE;
+	if (write_error != MS_SUCCESS)
+		ft_print_err(strerror(errno), 3, "minishell", "echo", "write error");
 	params->wstatus = _set_wstatus(write_error, 0);
 	return (MS_CMD_ERROR_OK);
 }

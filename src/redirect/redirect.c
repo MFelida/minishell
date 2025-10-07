@@ -127,6 +127,14 @@ int	*ms_save_stdio(void)
 	while (i < 3)
 	{
 		fds[i] = dup(i);
+		if (fds[i] < 0)
+		{
+			ft_print_err(strerror(errno), 2, "minishell", "dup");
+			while (--i >= 0)
+				close(fds[i]);
+			free(fds);
+			return (NULL);
+		}
 		i++;
 	}
 	return (fds);
@@ -152,7 +160,10 @@ int	ms_restore_stdio(int *fds)
 int	ms_pipe(t_pipe *fds)
 {
 	if (pipe(fds->a))
+	{
+		ft_print_err(strerror(errno), 2, "minishell", "pipe");
 		return (-1);
+	}
 	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->read));
 	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->write));
 	return (0);
