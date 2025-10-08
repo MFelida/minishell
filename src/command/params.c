@@ -50,7 +50,7 @@ static void	_free_cmd_param(void *d)
 	t_cmd_params	*params;
 
 	params = d;
-	free(params->cmd_args);
+	params->cmd_args = ft_split_free(params->cmd_args);
 	free(d);
 }
 
@@ -58,7 +58,8 @@ void	free_cmd_params(t_cmd_params params)
 {
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
 	params.head = NULL;
-	ft_split_free(params.envp);
+	params.cmd_args = ft_split_free(params.cmd_args);
+	params.envp = ft_split_free(params.envp);
 }
 
 // t_cmd_params	copy_cmd_params(const t_cmd_params *params)
