@@ -144,15 +144,19 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(&writer, node->children[0]);
-	ft_lstclear((t_list **) &writer.redirs, free);
+	if (last)
+		ft_lstclear((t_list **) &last->next, free);
+	else
+		ft_lstclear((t_list **) &writer.redirs, free);
 	if (add_redir(&reader,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval |= cmd_next_node(&reader, node->children[1]);
-	ft_lstclear((t_list **) &reader.redirs, free);
 	if (last)
-		last->next = NULL;
+		ft_lstclear((t_list **) &last->next, free);
+	else
+		ft_lstclear((t_list **) &reader.redirs, free);
 	return (retval);
 }
 
