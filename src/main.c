@@ -69,7 +69,6 @@ int	main(void)
 			ret = exec_parsetree(pt);
 		else
 			ms_set_exitstatus(MS_BUILTIN_MISUSE);
-		free_parse_tree(&pt);
 	}
 	printf("exit\n");
 	ft_exit(ft_atoi(ms_getenv("?")));
