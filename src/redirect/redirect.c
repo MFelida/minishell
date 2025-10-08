@@ -145,6 +145,8 @@ int	ms_restore_stdio(int *fds)
 	int	i;
 	int	res;
 
+	if (!fds)
+		return (0);
 	res = 0;
 	i = 0;
 	while (fds[i])
@@ -182,6 +184,5 @@ t_redir_error	do_redirs(t_cmd_params *params)
 			return (err);
 		redirs = redirs->next;
 	}
-	// del_redir_list(&params->redirs);
 	return (MS_REDIR_OK);
 }
