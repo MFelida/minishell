@@ -36,6 +36,7 @@ static void	_clean_before_exit(t_cmd_params params)
 {
 	free_cmd_params(params);
 	del_redir_list(&params.redirs);
+	free_parse_tree(&params.pt);
 }
 
 _Noreturn void	cmd_exec(t_cmd_params params)
