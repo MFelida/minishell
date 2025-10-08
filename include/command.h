@@ -50,7 +50,7 @@ typedef struct s_cmd_params
 	struct rusage		rusage;
 	int					wstatus;
 	char				**envp;
-	t_parse_node		*pt;
+	t_parse_node		**pt;
 }	t_cmd_params;
 
 int				cmd_next_node(t_cmd_params *params, t_parse_node *node);

@@ -36,7 +36,7 @@ static void	_clean_before_exit(t_cmd_params params)
 {
 	free_cmd_params(params);
 	del_redir_list(&params.redirs);
-	free_parse_tree(&params.pt);
+	free_parse_tree(params.pt);
 }
 
 _Noreturn void	cmd_exec(t_cmd_params params)
@@ -70,7 +70,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	close_fds();
 	params.envp	 = ms_getenv_full(0, 1, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
-	free_parse_tree(&params.pt);
+	free_parse_tree(params.pt);
 	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 	_clean_before_exit(params);
 	ft_exit(MS_PERM_DENIED);

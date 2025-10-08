@@ -17,6 +17,7 @@
 #include "parse_tree.h"
 #include "parser.h"
 #include "libft.h"
+#include "redirect.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +31,7 @@ sig_atomic_t	g_signal = 0;
 #ifndef DEBUG
 void	init_minishell(void)
 {
+	ft_atexit(ms_close_stdio);
 	init_env();
 	if (ms_is_interactive())
 		ms_setenv("PS1", "minishell$ ");
@@ -40,6 +42,7 @@ void	init_minishell(void)
 void	init_minishell(void)
 {
 	printf("%d\n", getpid());
+	ft_atexit(ms_close_stdio);
 	init_env();
 	if (ms_is_interactive())
 		ms_setenv("PS1", "minishell$ ");
@@ -66,7 +69,7 @@ int	main(void)
 		add_history(input);
 		pt = get_parse_tree(input);
 		if (pt)
-			ret = exec_parsetree(pt);
+			ret = exec_parsetree(&pt);
 		else
 			ms_set_exitstatus(MS_BUILTIN_MISUSE);
 	}

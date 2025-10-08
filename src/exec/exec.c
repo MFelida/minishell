@@ -35,7 +35,7 @@ static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 	return (*ret);
 }
 
-int	exec_parsetree(t_parse_node	*pt)
+int	exec_parsetree(t_parse_node	**pt)
 {
 	t_cmd_params	params;
 	t_cmd_params	last_cmd;
@@ -44,7 +44,7 @@ int	exec_parsetree(t_parse_node	*pt)
 
 	params = cmd_params_default();
 	params.pt = pt;
-	ret = cmd_next_node(&params, pt);
+	ret = cmd_next_node(&params, *pt);
 	close_fds();
 	if (ret & MS_CMD_ERROR_FAILURE)
 	{
