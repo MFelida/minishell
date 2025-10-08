@@ -9,6 +9,8 @@ SRCDIR = src
 
 OBJDIR = obj
 
+OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o))
+
 BLTIN_DIR = $(SRCDIR)/builtins
 include $(BLTIN_DIR)/builtins.mk
 
@@ -26,9 +28,6 @@ include $(PARSE_DIR)/parser.mk
 
 REDIR_DIR = $(SRCDIR)/redirect
 include $(REDIR_DIR)/redirect.mk
-
-OBJS = $(addprefix $(OBJDIR)/,$(SRCFILES:.c=.o)) \
-	$(REDIR_OBJS) $(CMD_OBJS) $(ENV_OBJS) $(BLTIN_OBJS) $(EXEC_OBJS) $(PARSE_OBJS) $(UTILS_OBJS)
 
 LIBFILES = libft.a
 LIBDIR = lib
