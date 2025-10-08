@@ -88,10 +88,14 @@ int	do_builtin(const char *builtin, t_cmd_params *params)
 	if (!builtin_fn)
 	{
 		ft_print_err("Not a valid builtin", 2, "minishell", params->cmd_args[0]);
-		return (MS_FAILURE);
+		return (MS_CMD_ERROR_OK);
 	}
 	stdio = ms_save_stdio();
-	do_redirs(params);
+	if (!stdio || do_redirs(params))
+	{
+		params->wstatus = _set_wstatus(MS_FAILURE, 0);
+		return (MS_CMD_ERROR_OK);
+	}
 	res = builtin_fn(params->cmd_args, params);
 	ms_restore_stdio(stdio);
 	return (res);
