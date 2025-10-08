@@ -159,6 +159,15 @@ int	ms_restore_stdio(int *fds)
 	return (res);
 }
 
+void	ms_close_stdio(void)
+{
+	int i;
+
+	i = 0;
+	while (i < 3)
+		close(i++);
+}
+
 int	ms_pipe(t_pipe *fds)
 {
 	if (pipe(fds->a))

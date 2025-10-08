@@ -24,5 +24,6 @@ void			del_redir_list(t_redir	**redirs);
 int				ms_pipe(t_pipe *fds);
 int				*ms_save_stdio(void);
 int				ms_restore_stdio(int *fds);
+void			ms_close_stdio(void);
 
 #endif // !REDIRECT_H
