@@ -63,6 +63,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		_clean_before_exit(params);
 		ft_exit(MS_FAILURE);
 	}
+	close_fds();
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	_cmd_exec_bin_err(&params, find_bin_ret);
 	if (stat(params.bin_path, &stat_buff) == 0 && S_ISDIR(stat_buff.st_mode))
