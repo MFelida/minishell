@@ -41,7 +41,7 @@ static void	_clean_before_exit(t_cmd_params params)
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
 	int			find_bin_ret;
-	struct stat	sb;
+	struct stat	stat_buff;
 
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	if (find_bin_ret)
@@ -55,7 +55,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 		_clean_before_exit(params);
 		ft_exit(find_bin_ret);
 	}
-	if (stat(params.bin_path, &sb) == 0 && S_ISDIR(sb.st_mode))
+	if (stat(params.bin_path, &stat_buff) == 0 && S_ISDIR(stat_buff.st_mode))
 	{
 		ft_print_err("Is a directory", 2, "minishell", params.cmd_args[0]);
 		_clean_before_exit(params);
