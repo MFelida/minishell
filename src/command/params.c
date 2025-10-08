@@ -12,6 +12,8 @@
 
 #include "command.h"
 #include "libft.h"
+#include "parser.h"
+#include "redirect.h"
 
 #include <stdlib.h>
 
@@ -50,16 +52,17 @@ static void	_free_cmd_param(void *d)
 	t_cmd_params	*params;
 
 	params = d;
-	params->cmd_args = ft_split_free(params->cmd_args);
+	params->envp = ft_split_free(params->envp);
+	free(params->cmd_args);
 	free(d);
 }
 
 void	free_cmd_params(t_cmd_params params)
 {
+	free_parse_tree(params.pt);
+	del_redir_list(&params.redirs);
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
 	params.head = NULL;
-	params.cmd_args = ft_split_free(params.cmd_args);
-	params.envp = ft_split_free(params.envp);
 }
 
 // t_cmd_params	copy_cmd_params(const t_cmd_params *params)

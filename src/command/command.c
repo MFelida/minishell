@@ -34,9 +34,23 @@
 
 static void	_clean_before_exit(t_cmd_params params)
 {
+	close_fds();
 	free_cmd_params(params);
-	del_redir_list(&params.redirs);
-	free_parse_tree(params.pt);
+}
+
+void	_cmd_exec_bin_err(t_cmd_params *params, int find_bin_ret)
+{
+
+	if (!find_bin_ret)
+		return ;
+	if (find_bin_ret == MS_CMD_NOT_FOUND)
+		ft_print_err("command not found", 2, "minishell", params->cmd_args[0]);
+	else if (find_bin_ret == MS_PERM_DENIED)
+		ft_print_err("Permission denied", 2, "minishell", params->cmd_args[0]);
+	else
+		ft_print_err(strerror(errno), 2, "minishell", params->cmd_args[0]);
+	_clean_before_exit(*params);
+	ft_exit(find_bin_ret);
 }
 
 _Noreturn void	cmd_exec(t_cmd_params params)
@@ -44,33 +58,21 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	int			find_bin_ret;
 	struct stat	stat_buff;
 
-	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
-	if (find_bin_ret)
+	if (do_redirs(&params))
 	{
-		if (find_bin_ret == MS_CMD_NOT_FOUND)
-			ft_print_err("command not found", 2, "minishell", params.cmd_args[0]);
-		else if (find_bin_ret == MS_PERM_DENIED)
-			ft_print_err("Permission denied", 2, "minishell", params.cmd_args[0]);
-		else
-			ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 		_clean_before_exit(params);
-		ft_exit(find_bin_ret);
+		ft_exit(MS_FAILURE);
 	}
+	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
+	_cmd_exec_bin_err(&params, find_bin_ret);
 	if (stat(params.bin_path, &stat_buff) == 0 && S_ISDIR(stat_buff.st_mode))
 	{
 		ft_print_err("Is a directory", 2, "minishell", params.cmd_args[0]);
 		_clean_before_exit(params);
 		ft_exit(MS_PERM_DENIED);
 	}
-	if (do_redirs(&params))
-	{
-		_clean_before_exit(params);
-		ft_exit(MS_FAILURE);
-	}
-	close_fds();
 	params.envp	 = ms_getenv_full(0, 1, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
-	free_parse_tree(params.pt);
 	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 	_clean_before_exit(params);
 	ft_exit(MS_PERM_DENIED);
@@ -105,20 +107,20 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	if (!params.cmd_args)
 		return (1);
 	params.context |= MS_CMD_CONTEXT_SIMPLE;
+	params_node = malloc(sizeof(t_cmd_params));
+	if (!params_node)
+		return (MS_CMD_ERROR_MALLOC);
+	*params_node = params;
+	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	errno = 0;
 	params.pid = fork();
 	if (params.pid < 0)
 	{
 		ft_print_err(strerror(errno), 2, __FILE_NAME__, "fork");
-		return (1);
+		return (MS_CMD_ERROR_FAILURE);
 	}
 	if (params.pid == 0)
 		cmd_exec(params);
-	params_node = malloc(sizeof(t_cmd_params));
-	if (!params_node)
-		return (1);
-	*params_node = params;
-	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	return (0);
 }
 
@@ -141,20 +143,15 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDOUT_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval = cmd_next_node(&writer, node->children[0]);
-	if (last)
-		ft_lstclear((t_list **) &last->next, free);
+	ft_lstclear((t_list **) &writer.redirs, free);
 	if (add_redir(&reader,
 			(t_redir_src){.type = MS_REDIR_FD, .fd = p.read}, 
 			(t_redir_dest){.type = MS_REDIR_FD, .fd = STDIN_FILENO}))
 		return (MS_CMD_ERROR_PIPE);
 	retval |= cmd_next_node(&reader, node->children[1]);
+	ft_lstclear((t_list **) &reader.redirs, free);
 	if (last)
-		ft_lstclear((t_list **) &last->next, free);
-	else
-	{
-		ft_lstclear((t_list **) &writer.redirs, free);
-		ft_lstclear((t_list **) &reader.redirs, free);
-	}
+		last->next = NULL;
 	return (retval);
 }
 
