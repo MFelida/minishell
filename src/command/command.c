@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 23:33:37 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 13:20:22 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ int	cmd_pipe(t_cmd_params params, t_parse_node	*node)
 	t_list			*last;
 
 	if (ms_pipe(&p) < 0)
-		return (MS_CMD_ERROR_PIPE);
+		return (MS_CMD_ERROR_PIPE | MS_CMD_ERROR_FAILURE);
 	params.context |= MS_CMD_CONTEXT_PIPE;
 	writer = params;
 	reader = params;
@@ -237,9 +237,7 @@ int	cmd_next_node(t_cmd_params *params, t_parse_node *node)
 	t_ms_ops	op;
 
 	type = node->tok.type;
-	if (type == MS_TOK_ERROR || type == MS_TOK_IDENTIFIER)
-		return (MS_CMD_ERROR_FAILURE);
-	if (type != MS_TOK_OP)
+	if (type == MS_TOK_ERROR || type != MS_TOK_OP)
 		return (MS_CMD_ERROR_FAILURE);
 	op = node->tok.op.op;
 	if (op == MS_OP_ERROR)
