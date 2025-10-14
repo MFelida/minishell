@@ -6,30 +6,39 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/28 22:13:17 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 22:36:52 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:53:39 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 #include "libft.h"
 
-static const char	*g_op_err_str[] = {
-	"error",
+static const char	*_get_err_str(t_lex_op op)
+{
+	static const char	*op_err_str[] = {
+		"error",
 	[MS_LEX_OP_APPEND] = "`>>'",
 	[MS_LEX_OP_OUTPUT] = "`>'",
 	[MS_LEX_OP_INPUT] = "`<'",
 	[MS_LEX_OP_HEREDOC] = "`<<'",
 	[MS_LEX_OP_PIPE] = "`|'",
-};
+	};
 
-const char *parser_strerror(t_lex_tok *tok)
+	if (op > sizeof(op_err_str) || op < 0)
+		return ("error");
+	return (op_err_str[op]);
+}
+
+#define ERROR_BASE	"syntax error near unexpected token "
+
+const char	*parser_strerror(t_lex_tok *tok)
 {
-	static char	full[100] = "syntax error near unexpected token ";
+	static char	full[100] = ERROR_BASE;
 	char		*tok_str;
 
-	tok_str = full + ft_strlen("syntax error near unexpected token ");
+	tok_str = full + ft_strlen(ERROR_BASE);
 	if (tok->type == MS_LEX_TOK_OP)
-		ft_strlcpy(tok_str, g_op_err_str[tok->op], 50);
+		ft_strlcpy(tok_str, _get_err_str(tok->op), 50);
 	else if (tok->type == MS_LEX_TOK_ID)
 	{
 		ft_strlcpy(tok_str, "`", 50);
