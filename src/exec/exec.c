@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 11:17:03 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/30 13:33:45 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:54:36 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,31 @@ static int	_ms_waitpid(int *ret, t_cmd_params *params, int options)
 	return (*ret);
 }
 
+static void	_wait_child_procs(int *wait_ret,
+							t_cmd_params *last_cmd, t_cmd_params *params)
+{
+	if (last_cmd->context & MS_CMD_CONTEXT_BLTIN)
+		ms_set_exitstatus(WEXITSTATUS(last_cmd->wstatus));
+	else
+	{
+		while (_ms_waitpid(wait_ret, last_cmd, WNOHANG) == 0)
+			if (g_signal == SIGINT)
+				forward_sigint(params);
+		if (wait_ret < 0)
+		{
+			ms_set_exitstatus(1);
+			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
+		}
+		else if (WIFSIGNALED(last_cmd->wstatus))
+			ms_set_exitstatus(MS_SIGNAL_EXIT + WTERMSIG(last_cmd->wstatus));
+		else
+			ms_set_exitstatus(WEXITSTATUS(last_cmd->wstatus));
+	}
+	while (_ms_waitpid(wait_ret, NULL, WNOHANG) >= 0)
+		if (g_signal == SIGINT)
+			forward_sigint(params);
+}
+
 int	exec_parsetree(t_parse_node	**pt)
 {
 	t_cmd_params	params;
@@ -53,26 +78,7 @@ int	exec_parsetree(t_parse_node	**pt)
 		return (ret);
 	}
 	last_cmd = *(t_cmd_params *) ft_lstlast((t_list *) *params.head);
-	if (last_cmd.context & MS_CMD_CONTEXT_BLTIN)
-		ms_set_exitstatus(WEXITSTATUS(last_cmd.wstatus));
-	else
-	{
-		while (_ms_waitpid(&wait_ret, &last_cmd, WNOHANG) == 0)
-			if (g_signal == SIGINT)
-				forward_sigint(&params);
-		if (wait_ret < 0)
-		{
-			ms_set_exitstatus(1);
-			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
-		}
-		else if (WIFSIGNALED(last_cmd.wstatus))
-			ms_set_exitstatus(MS_SIGNAL_EXIT + WTERMSIG(last_cmd.wstatus));
-		else
-			ms_set_exitstatus(WEXITSTATUS(last_cmd.wstatus));
-	}
-	while (_ms_waitpid(&wait_ret, NULL, WNOHANG) >= 0)
-		if (g_signal == SIGINT)
-			forward_sigint(&params);
+	_wait_child_procs(&wait_ret, &last_cmd, &params);
 	free_cmd_params(params);
 	return (ret);
 }

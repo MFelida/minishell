@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 13:10:51 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/30 13:47:46 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:56:06 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	_sighandler(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 1);
 		rl_redisplay();
-		 ms_set_exitstatus(128 + SIGINT);
+		ms_set_exitstatus(128 + SIGINT);
 	}
 	else
 		g_signal = signum;
@@ -40,7 +40,7 @@ int	ms_is_interactive(void)
 	return (isatty(STDIN_FILENO) && isatty(STDERR_FILENO));
 }
 
-static	void _reset_signal(void)
+static void	_reset_signal(void)
 {
 	extern sig_atomic_t	g_signal;
 
@@ -52,7 +52,7 @@ void	setup_sighandlers(void)
 	struct sigaction	sa;
 
 	sa = (struct sigaction){.sa_handler = _sighandler,
-		.sa_flags = 0, .sa_mask={{0}}};
+		.sa_flags = 0, .sa_mask = {{0}}};
 	if (ms_is_interactive())
 		sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
@@ -69,9 +69,4 @@ void	forward_sigint(t_cmd_params *params)
 			kill(params->pid, SIGINT);
 		params = params->next;
 	}
-}
-
-void	rl_sigint(void)
-{
-	
 }
