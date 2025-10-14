@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 16:04:42 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/03 17:58:12 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 13:28:51 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	_find_on_path(char	*dest, const char *name)
 
 	path_var = ms_getenv("PATH");
 	if (!path_var)
-		return (1);
+		return (MS_CMD_NOT_FOUND);
 	path_split = ft_split(path_var, ':');
 	if (!path_split)
 		return (1);
@@ -54,7 +54,7 @@ int	find_bin(char *dest, const char *name)
 	{
 		ft_strlcpy(dest, name, PATH_MAX);
 		if (access(dest, F_OK))
-			return (1);
+			return (MS_CMD_NOT_FOUND);
 		if (access(dest, X_OK))
 			return (MS_PERM_DENIED);
 		return (0);
