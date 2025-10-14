@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
 /*   env.c                                              :+:      :+:    :+:   */
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.email.com>       +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  //
-/*   Updated: 2025/09/03 19:05:09 by mifelida         ###   ########.fr       */
-//                                                                            //
-// ************************************************************************** //
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.email.com>       +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  */
+/*   Updated: 2025/10/14 16:03:39 by mifelida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "env.h"
 #include "env_utils.h"
@@ -52,7 +52,8 @@ int	init_env(void)
 		free(key);
 		i++;
 	}
-	if (!hm_get_value(&g_env_hm, "PWD") || !valid_pwd(hm_get_value(&g_env_hm, "PWD")))
+	if (!hm_get_value(&g_env_hm, "PWD")
+		|| !valid_pwd(hm_get_value(&g_env_hm, "PWD")))
 	{
 		value = getcwd(NULL, 0);
 		hm_set_value(&g_env_hm, "PWD", value);

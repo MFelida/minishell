@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
-//   hm_utils.c                                        :+:    :+:             //
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.email.com>       +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/08/19 11:58:32 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 13:02:28 by mifelida     ########   odam.nl          //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
+/*   hm_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.email.com>       +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/08/19 11:58:32 by mifelida     #+#    #+#                  */
+/*   Updated: 2025/10/14 16:00:49 by mifelida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hashmap.h"
 #include "libft.h"
@@ -77,7 +77,7 @@ size_t	_max_len(const char *str1, const char *str2)
 
 int	_safe_strdup(char **dest, const char *src)
 {
-	char *temp;
+	char	*temp;
 
 	temp = ft_strdup(src);
 	if (!temp)

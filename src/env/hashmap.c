@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
-//   hashmap.c                                         :+:    :+:             //
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.email.com>       +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/08/18 11:31:22 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 18:00:53 by mifelida     ########   odam.nl          //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
+/*   hashmap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.email.com>       +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/08/18 11:31:22 by mifelida     #+#    #+#                  */
+/*   Updated: 2025/10/14 15:59:00 by mifelida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hashmap.h"
 #include "libft.h"
@@ -45,7 +45,8 @@ int	hm_set_value(t_hm *hm, const char *key, const char *value)
 	{
 		ft_lstadd_front((t_list **) head, (t_list *) _hm_new_node(key, value));
 		hm->size++;
-		return (*head && ft_strncmp(key, (*head)->key, _max_len(key, (*head)->key)));
+		return (*head && ft_strncmp(key, (*head)->key,
+				_max_len(key, (*head)->key)));
 	}
 	if (node->cap > ft_strlen(value))
 		ft_strlcpy(node->value, value, ft_strlen(value) + 1);

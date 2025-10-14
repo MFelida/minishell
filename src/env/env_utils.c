@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
-//   env_utils.c                                       :+:    :+:             //
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.codam.nl>        +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/08/20 13:19:40 by mifelida     #+#    #+#                  //
-//   Updated: 2025/08/20 13:57:29 by mifelida     ########   odam.nl          //
-//                                                                            //
-// ************************************************************************** //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.codam.nl>        +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/08/20 13:19:40 by mifelida     #+#    #+#                  */
+/*   Updated: 2025/10/14 16:02:34 by mifelida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hashmap.h"
 #include "libft.h"
@@ -18,12 +18,13 @@
 
 static void	_swap(char **a, char **b)
 {
-	char *temp;
+	char	*temp;
 
 	temp = *a;
 	*a = *b;
 	*b = temp;
 }
+
 void	_sort(char **tab)
 {
 	size_t	i;
@@ -39,7 +40,8 @@ void	_sort(char **tab)
 		i = 0;
 		while (i < size - 1)
 		{
-			if (ft_strncmp(tab[i], tab[i + 1], _max_len(tab[i], tab[i + 1])) > 0)
+			if (ft_strncmp(tab[i], tab[i + 1],
+					_max_len(tab[i], tab[i + 1])) > 0)
 				_swap(&tab[i], &tab[i + 1]);
 			i++;
 		}
@@ -50,7 +52,7 @@ void	_sort(char **tab)
 int	_node_to_str(t_hm_node *node, char **dest, int unquoted)
 {
 	size_t	size;
-	
+
 	size = ft_strlen(node->key) + node->cap + 3;
 	*dest = malloc(size * sizeof(char));
 	if (!*dest)
