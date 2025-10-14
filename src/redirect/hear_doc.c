@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "env.h"
 #include "libft.h"
 #include "redirect_types.h"
@@ -47,7 +46,8 @@ int	ms_hear_doc(const char *stopword)
 	if (!prompt)
 		prompt = "> ";
 	line = NULL;
-	while (_ms_readline(&line, prompt) && !ft_strnstr(line, stopword, ft_strlen(line)))
+	while (_ms_readline(&line, prompt)
+		&& !ft_strnstr(line, stopword, ft_strlen(line)))
 		ft_putendl_fd(line, hear_pipe.write);
 	if (line)
 		free(line);

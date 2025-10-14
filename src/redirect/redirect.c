@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                    +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/09 10:36:00 by username     #+#    #+#                  */
-/*   Updated: 2025/10/14 13:22:22 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:46:05 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
-{
-	t_redir			*new;
-	t_redir_error	error;
-
-	error = MS_REDIR_OK;
-	new = _new_redir();
-	if (!new)
-		return (MS_REDIR_ERRNO);
-	error |= _get_src_dest(&new->src, &src);
-	error |= _get_src_dest(&new->dest, &dest);
-	ft_lstadd_back((t_list **) &cmd->redirs, (t_list *) new);
-	return (error);
-}
-
-void	del_redir_list(t_redir **redir)
-{
-	ft_lstclear((t_list **) redir, free);
-}
 
 static t_redir_error	_file_to_fd(t_redir_src file_redir, int fd)
 {
@@ -97,7 +77,7 @@ int	ms_pipe(t_pipe *fds)
 		ft_print_err(strerror(errno), 2, "minishell", "pipe");
 		return (-1);
 	}
-	if (!new_fd(fds->read) ||  !new_fd(fds->write))
+	if (!new_fd(fds->read) || !new_fd(fds->write))
 		return (-1);
 	return (0);
 }

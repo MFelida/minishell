@@ -62,10 +62,9 @@ int	ms_restore_stdio(int *fds)
 
 void	ms_close_stdio(void)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < 3)
 		close(i++);
 }
-

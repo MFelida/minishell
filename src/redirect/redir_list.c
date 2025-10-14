@@ -1,17 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redir_utils.c                                      :+:      :+:    :+:   */
+/*   redir_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/25 14:45:43 by mifelida          #+#    #+#             */
-/*   Updated: 2025/06/25 18:11:38 by mifelida         ###   ########.fr       */
+/*   Created: 2025/10/14 14:42:31 by mifelida          #+#    #+#             */
+/*   Updated: 2025/10/14 14:44:53 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "command.h"
+#include "libft.h"
 #include "redirect_types.h"
+
+#include <stdlib.h>
 
 t_redir	*_new_redir(void)
 {
@@ -34,4 +37,24 @@ t_redir_error	_get_src_dest(t_redir_src *d, t_redir_src	*r)
 		return (MS_REDIR_NULL_FILE);
 	*d = *r;
 	return (MS_REDIR_OK);
+}
+
+t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
+{
+	t_redir			*new;
+	t_redir_error	error;
+
+	error = MS_REDIR_OK;
+	new = _new_redir();
+	if (!new)
+		return (MS_REDIR_ERRNO);
+	error |= _get_src_dest(&new->src, &src);
+	error |= _get_src_dest(&new->dest, &dest);
+	ft_lstadd_back((t_list **) &cmd->redirs, (t_list *) new);
+	return (error);
+}
+
+void	del_redir_list(t_redir **redir)
+{
+	ft_lstclear((t_list **) redir, free);
 }

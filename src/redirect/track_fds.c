@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "libft.h"
 #include "redirect_types.h"
 
@@ -21,7 +20,7 @@
 
 static t_open_fds	*g_open_fds = {0};
 
-t_open_fds	*new_fd(const int	fd)
+t_open_fds	*new_fd(const int fd)
 {
 	t_open_fds	*new;
 
@@ -47,4 +46,3 @@ void	close_fds(void)
 {
 	ft_lstclear((t_list **) &g_open_fds, _del_open_fds);
 }
-
