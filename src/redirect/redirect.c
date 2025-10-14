@@ -6,7 +6,7 @@
 /*   By: username <your@mail.com>                    +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/09 10:36:00 by username     #+#    #+#                  */
-/*   Updated: 2025/06/25 18:48:39 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 13:22:22 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-static t_open_fds	*g_open_fds = {0};
 
 t_redir_error	add_redir(t_cmd_params *cmd, t_redir_src src, t_redir_dest dest)
 {
@@ -48,7 +46,7 @@ static t_redir_error	_file_to_fd(t_redir_src file_redir, int fd)
 {
 	int	temp;
 	int	err;
-	
+
 	temp = open(file_redir.file, file_redir.mode, file_redir.flags);
 	if (temp < 0)
 	{
@@ -78,29 +76,6 @@ static t_redir_error	_fd_to_fd(int from, int to)
 	return (MS_REDIR_OK);
 }
 
-t_open_fds	*new_fd(const int	fd)
-{
-	t_open_fds	*new;
-
-	new = malloc(sizeof(t_open_fds));
-	if (!new)
-		return (NULL);
-	new->fd = fd;
-	new->next = NULL;
-	return (new);
-}
-
-static void	_del_open_fds(void *node)
-{
-	close(((t_open_fds *) node)->fd);
-	free(node);
-}
-
-void	close_fds(void)
-{
-	ft_lstclear((t_list **) &g_open_fds, _del_open_fds);
-}
-
 static t_redir_error	_do_redir(t_redir *redir)
 {
 	t_redir_error	err;
@@ -115,59 +90,6 @@ static t_redir_error	_do_redir(t_redir *redir)
 	return (err);
 }
 
-int	*ms_save_stdio(void)
-{
-	int	*fds;
-	int	i;
-
-	fds = ft_calloc(4, sizeof(int));
-	if (!fds)
-		return (NULL);
-	i = 0;
-	while (i < 3)
-	{
-		fds[i] = dup(i);
-		if (fds[i] < 0)
-		{
-			ft_print_err(strerror(errno), 2, "minishell", "dup");
-			while (--i >= 0)
-				close(fds[i]);
-			free(fds);
-			return (NULL);
-		}
-		i++;
-	}
-	return (fds);
-}
-
-int	ms_restore_stdio(int *fds)
-{
-	int	i;
-	int	res;
-
-	if (!fds)
-		return (0);
-	res = 0;
-	i = 0;
-	while (fds[i])
-	{
-		res |= dup2(fds[i], i) == i;
-		close(fds[i]);
-		i++;
-	}
-	free(fds);
-	return (res);
-}
-
-void	ms_close_stdio(void)
-{
-	int i;
-
-	i = 0;
-	while (i < 3)
-		close(i++);
-}
-
 int	ms_pipe(t_pipe *fds)
 {
 	if (pipe(fds->a))
@@ -175,8 +97,8 @@ int	ms_pipe(t_pipe *fds)
 		ft_print_err(strerror(errno), 2, "minishell", "pipe");
 		return (-1);
 	}
-	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->read));
-	ft_lstadd_back((t_list **) &g_open_fds, (t_list *) new_fd(fds->write));
+	if (!new_fd(fds->read) ||  !new_fd(fds->write))
+		return (-1);
 	return (0);
 }
 
