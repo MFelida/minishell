@@ -24,6 +24,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
+# include <termios.h>
 #include <unistd.h>
 
 sig_atomic_t	g_signal = 0;
@@ -56,11 +57,14 @@ int	main(void)
 	int				ret;
 	char			*input;
 	t_parse_node	*pt;
+	struct termios	tio;
 
 	init_minishell();
+	tcgetattr(STDIN_FILENO, &tio);
 	ret = 0;
 	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
 	{
+		tcsetattr(STDIN_FILENO, TCSANOW, &tio);
 		input = readline(ms_getenv("PS1"));
 		if (!input)
 			break ;
