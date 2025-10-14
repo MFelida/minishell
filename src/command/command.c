@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 22:32:01 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 13:20:22 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:15:25 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,19 @@ static void	_clean_before_exit(t_cmd_params params)
 
 void	_cmd_exec_bin_err(t_cmd_params *params, int find_bin_ret)
 {
+	struct stat	stat_buff;
 
 	if (!find_bin_ret)
 		return ;
 	if (find_bin_ret == MS_CMD_NOT_FOUND)
 		ft_print_err("command not found", 2, "minishell", params->cmd_args[0]);
 	else if (find_bin_ret == MS_PERM_DENIED)
-		ft_print_err("Permission denied", 2, "minishell", params->cmd_args[0]);
+	{
+		if (stat(params->bin_path, &stat_buff) == 0 && S_ISDIR(stat_buff.st_mode))
+			ft_print_err("Is a directory", 2, "minishell", params->cmd_args[0]);
+		else
+			ft_print_err("Permission denied", 2, "minishell", params->cmd_args[0]);
+	}
 	else
 		ft_print_err(strerror(errno), 2, "minishell", params->cmd_args[0]);
 	_clean_before_exit(*params);
@@ -56,7 +62,6 @@ void	_cmd_exec_bin_err(t_cmd_params *params, int find_bin_ret)
 _Noreturn void	cmd_exec(t_cmd_params params)
 {
 	int			find_bin_ret;
-	struct stat	stat_buff;
 
 	if (do_redirs(&params))
 	{
@@ -66,12 +71,6 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	close_fds();
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	_cmd_exec_bin_err(&params, find_bin_ret);
-	if (stat(params.bin_path, &stat_buff) == 0 && S_ISDIR(stat_buff.st_mode))
-	{
-		ft_print_err("Is a directory", 2, "minishell", params.cmd_args[0]);
-		_clean_before_exit(params);
-		ft_exit(MS_PERM_DENIED);
-	}
 	params.envp	 = ms_getenv_full(0, 1, 1);
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);

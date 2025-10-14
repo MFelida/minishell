@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 16:04:42 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 13:28:51 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:09:35 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,37 @@
 #include <asm-generic/errno-base.h>
 #include <errno.h>
 #include <linux/limits.h>
+#include <sys/stat.h>
 #include <unistd.h>
+
+static char	*_build_path(char *dest, const char *path, const char* file)
+{
+	if (ft_strlcpy(dest, path, PATH_MAX) >= PATH_MAX)
+		return (NULL);
+	if (ft_strlcat(dest, "/", PATH_MAX) >= PATH_MAX)
+		return (NULL);
+	if (ft_strlcat(dest, file, PATH_MAX) >= PATH_MAX)
+		return (NULL);
+	return (dest);
+}
 
 static int	_find_on_path(char	*dest, const char *name)
 {
 	const char	*path_var;
-	char	**path_split;
-	int		i;
+	char		**path_split;
+	int			i;
 
 	path_var = ms_getenv("PATH");
 	if (!path_var)
 		return (MS_CMD_NOT_FOUND);
 	path_split = ft_split(path_var, ':');
 	if (!path_split)
-		return (1);
+		return (MS_UNEXPECTED);
 	i = -1;
-	while (path_split[++i])
+	while (dest && path_split[++i])
 	{
-		ft_strlcpy(dest, path_split[i], PATH_MAX);
-		ft_strlcat(dest, "/", PATH_MAX);
-		ft_strlcat(dest, name, PATH_MAX);
-		if (access(dest, F_OK))
+		dest = _build_path(dest, path_split[i], name);
+		if (!dest || access(dest, F_OK))
 			continue ;
 		ft_split_free(path_split);
 		if (access(dest, X_OK))
@@ -45,17 +55,21 @@ static int	_find_on_path(char	*dest, const char *name)
 		return (0);
 	}
 	ft_split_free(path_split);
+	if (!dest)
+		return (MS_UNEXPECTED);
 	return (MS_CMD_NOT_FOUND);
 }
 
 int	find_bin(char *dest, const char *name)
 {
+	struct stat	stat_buff;
+
 	if (ft_strchr(name, '/'))
 	{
 		ft_strlcpy(dest, name, PATH_MAX);
 		if (access(dest, F_OK))
 			return (MS_CMD_NOT_FOUND);
-		if (access(dest, X_OK))
+		if (access(dest, X_OK) || ((stat(dest, &stat_buff) == 0) && S_ISDIR(stat_buff.st_mode)))
 			return (MS_PERM_DENIED);
 		return (0);
 	}
