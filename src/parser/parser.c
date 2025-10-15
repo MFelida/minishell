@@ -129,7 +129,7 @@ static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 	while (curr)
 	{
 		if (curr->type == MS_LEX_TOK_ERROR)
-			return (1);
+			return (free_parse_tree(&context->root), 1);
 		else if (context->root == NULL)
 		{
 			new = get_cmd_node(&curr, context);
