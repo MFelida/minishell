@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.email.com>       +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  */
-/*   Updated: 2025/10/14 16:03:39 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:36:08 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,78 +26,23 @@ void	free_env(void)
 	free_hm(&g_env_hm);
 }
 
-int	init_env(void)
-{
-	extern char	**environ;
-	size_t		i;
-	char		*key;
-	char		*value;
-
-	i = 0;
-	g_env_hm.size = 0;
-	ft_atexit(free_env);
-	while (environ[i])
-	{
-		value = ft_strchr(environ[i], '=') + 1;
-		if (value <= (char *) 1)
-			value = "";
-		key = ft_substr(environ[i], 0, value - environ[i] - 1);
-		if (!key)
-			return (1);
-		if (hm_set_value(&g_env_hm, key, value))
-		{
-			free(key);
-			return (1);
-		}
-		free(key);
-		i++;
-	}
-	if (!hm_get_value(&g_env_hm, "PWD")
-		|| !valid_pwd(hm_get_value(&g_env_hm, "PWD")))
-	{
-		value = getcwd(NULL, 0);
-		hm_set_value(&g_env_hm, "PWD", value);
-		free(value);
-	}
-	hm_set_value(&g_env_hm, "?", "0");
-	return (0);
-}
-
 const char	*ms_getenv(const char *key)
 {
+	if (!ft_strncmp("?", key, 2))
+		return (_exit_status(NULL));
 	return (hm_get_value(&g_env_hm, key));
 }
 
 int	ms_setenv(const char *key, const char *value)
 {
+	if (!ft_strncmp("?", key, 2))
+		return (!!_exit_status(value));
 	return (hm_set_value(&g_env_hm, key, value));
-}
-
-int	ms_set_exitstatus(const int status)
-{
-	char	*str;
-
-	str = ft_itoa(status);
-	if (!str)
-		return (1);
-	ms_setenv("?", str);
-	free(str);
-	return (0);
 }
 
 int	ms_unsetenv(const char *key)
 {
 	return (hm_unset(&g_env_hm, key));
-}
-
-int	valid_envvar(const char *var)
-{
-	if (!(*var == '_' || ft_isalpha(*var)))
-		return (0);
-	while (*(++var))
-		if (!(ft_isalnum(*var) || *var == '_'))
-			return (0);
-	return (1);
 }
 
 char	**ms_getenv_full(int sorted, int inc_empty, int unquoted)
@@ -117,7 +62,8 @@ char	**ms_getenv_full(int sorted, int inc_empty, int unquoted)
 		node = g_env_hm.data[i++];
 		while (node)
 		{
-			if (valid_envvar(node->key) && (inc_empty || ft_strlen(node->value) > 0))
+			if (valid_envvar(node->key)
+				&& (inc_empty || ft_strlen(node->value) > 0))
 				if (_node_to_str(node, &*temp++, unquoted))
 					return (ft_split_free(res), (NULL));
 			node = node->next;

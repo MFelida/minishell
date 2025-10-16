@@ -1,4 +1,4 @@
-ENV_SRCFILES = env.c env_utils.c print_env.c hashmap.c hm_utils.c
+ENV_SRCFILES = env.c env_exit_status.c env_init.c env_utils.c print_env.c hashmap.c hm_utils.c
 
 ENV_OBJS = $(addprefix $(OBJDIR)/,$(ENV_SRCFILES:.c=.o))
 

@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/08/20 13:35:31 by mifelida     #+#    #+#                  */
-/*   Updated: 2025/10/14 16:02:56 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:36:42 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 
 # include "hashmap.h"
 
-void	_sort(char **tab);
-char	*_node_to_str(t_hm_node *node, char **dest, int unquoted);
+int			valid_envvar(const char *var);
+void		free_env(void);
+const char	*_exit_status(const char *value);
+void		_sort(char **tab);
+char		*_node_to_str(t_hm_node *node, char **dest, int unquoted);
 
 #endif	// ENV_UTILS_H

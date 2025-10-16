@@ -6,15 +6,26 @@
 /*   By: mifelida <mifelida@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/08/20 13:19:40 by mifelida     #+#    #+#                  */
-/*   Updated: 2025/10/14 16:02:34 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:36:56 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "env.h"
 #include "hashmap.h"
 #include "libft.h"
 
 #include <stddef.h>
 #include <stdlib.h>
+
+int	valid_envvar(const char *var)
+{
+	if (!(*var == '_' || ft_isalpha(*var)))
+		return (0);
+	while (*(++var))
+		if (!(ft_isalnum(*var) || *var == '_'))
+			return (0);
+	return (1);
+}
 
 static void	_swap(char **a, char **b)
 {
