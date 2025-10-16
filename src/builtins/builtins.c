@@ -93,6 +93,7 @@ int	do_builtin(const char *builtin, t_cmd_params *params)
 	stdio = ms_save_stdio();
 	if (!stdio || do_redirs(params))
 	{
+		ms_restore_stdio(stdio);
 		params->wstatus = _set_wstatus(MS_FAILURE, 0);
 		return (MS_CMD_ERROR_OK);
 	}
