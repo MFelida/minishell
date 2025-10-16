@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "redirect.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -36,6 +37,7 @@ int	*ms_save_stdio(void)
 			free(fds);
 			return (NULL);
 		}
+		new_fd(fds[i]);
 		i++;
 	}
 	return (fds);
@@ -53,7 +55,6 @@ int	ms_restore_stdio(int *fds)
 	while (fds[i])
 	{
 		res |= dup2(fds[i], i) == i;
-		close(fds[i]);
 		i++;
 	}
 	free(fds);
