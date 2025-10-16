@@ -64,7 +64,6 @@ void	_process_dotdot(char *path)
 			dotdot = ft_strrchr(path, '/') + 1;
 		}
 		ft_strlcpy(dotdot, rest, PATH_MAX - (path - dotdot));
-		printf("%s\n", path);
 		dotdot = ft_strnstr(path, "/..", PATH_MAX);
 	}
 }
@@ -75,22 +74,19 @@ void _process_dot(char *path)
 	char	*rest;
 
 	dot = ft_strnstr(path, "/.", PATH_MAX);
-	while (dot++)
+	while (dot)
 	{
-		if (dot[1] != '/' && dot[1] != '\0')
+		if (dot[2] != '/' && dot[2] != '\0')
 		{
-			dot = ft_strnstr(dot + 1, "/.", PATH_MAX - (path - dot) - 2);
+			dot = ft_strnstr(dot + 2, "/.", PATH_MAX - (path - dot) - 3);
 			continue ;
 		}
-		if (dot[1])
-			rest = dot + 2;
+		if (dot[2])
+			rest = dot + 3;
 		else
-		{
 			rest = "";
-			dot--;
-		}
-		ft_strlcpy(dot, rest, PATH_MAX + 1 - (path - dot));
-		printf("%s\n", path);
-		dot = ft_strnstr(dot, "/.", PATH_MAX - (path - dot));
+		dot++;
+		ft_strlcpy(dot, rest, PATH_MAX - (dot - path));
+		dot = ft_strnstr(dot, "/.", PATH_MAX - (dot - path));
 	}
 }

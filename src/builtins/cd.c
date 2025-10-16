@@ -55,7 +55,8 @@ static int	_get_path(char *dest, const char *arg)
 	{
 		if (!_get_pwd(dest))
 			return (MS_FAILURE);
-		ft_strlcat(dest, "/", PATH_MAX + 1);
+		if (*(ft_strchr(dest, '\0') - 1) != '/')
+			ft_strlcat(dest, "/", PATH_MAX + 1);
 		ft_strlcat(dest, arg, PATH_MAX + 1);
 	}
 	if (*(ft_strchr(dest, '\0') - 1) == '/' && ft_strlen(dest) > 1)
