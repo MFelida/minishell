@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:23:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 15:25:22 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:27:45 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context)
 	res = new_node(3);
 	if (!res)
 		return (NULL);
+	res->children[0] = *context->current_cmd_node;
 	context->root = res;
-	res->tok = (t_ms_token){.op.type = MS_TOK_OP, .op.op = MS_OP_PIPE};
 	context->current_cmd_node = &res->children[1];
+	res->tok = (t_ms_token){.op.type = MS_TOK_OP, .op.op = MS_OP_PIPE};
 	*lex_list = (*lex_list)->next;
 	next_tok = *lex_list;
 	while (next_tok && next_tok->type == MS_LEX_TOK_WS)
