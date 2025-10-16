@@ -64,8 +64,9 @@ int	main(void)
 	ret = 0;
 	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
 	{
-		tcsetattr(STDIN_FILENO, TCSANOW, &tio);
+		// tcsetattr(STDIN_FILENO, TCSANOW, &tio);
 		input = readline(ms_getenv("PS1"));
+		tcsetattr(STDIN_FILENO, TCSANOW, &tio);
 		if (!input)
 			break ;
 		if (!*input)
