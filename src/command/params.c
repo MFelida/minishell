@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
 /*   params.c                                           :+:      :+:    :+:   */
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.email.com>       +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/07/22 14:50:55 by mifelida     #+#    #+#                  //
-/*   Updated: 2025/09/23 11:40:45 by mifelida         ###   ########.fr       */
-//                                                                            //
-// ************************************************************************** //
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.email.com>       +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/07/22 14:50:55 by mifelida     #+#    #+#                  */
+/*   Updated: 2025/10/15 13:53:45 by mifelida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "command.h"
 #include "libft.h"
@@ -19,7 +19,7 @@
 
 t_cmd_params	cmd_params_default(void)
 {
-	t_cmd_params	res;
+	t_cmd_params		res;
 	static t_cmd_params	*params_list = NULL;
 
 	res.pid = -1;
@@ -64,13 +64,6 @@ void	free_cmd_params(t_cmd_params params)
 	ft_lstclear((t_list **) params.head, _free_cmd_param);
 	params.head = NULL;
 }
-
-// t_cmd_params	copy_cmd_params(const t_cmd_params *params)
-// {
-// 	t_cmd_params	copy;
-//
-// 	copy = *params;
-// }
 
 char	**make_argv(t_parse_node *node)
 {
