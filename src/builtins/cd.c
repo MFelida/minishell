@@ -89,5 +89,6 @@ int	ms_cd(char **args, t_cmd_params *params, ...)
 	// TODO: Check if OLDPWD should change if new path is identical to PWD
 	ms_setenv("OLDPWD", ms_getenv("PWD"));
 	ms_setenv("PWD", path);
+	ft_putendl_fd(path, STDOUT_FILENO);
 	return (MS_CMD_ERROR_OK);
 }
