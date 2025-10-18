@@ -26,7 +26,7 @@ t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context)
 	res = new_node(3);
 	if (!res)
 		return (NULL);
-	res->children[0] = *context->current_cmd_node;
+	res->children[0] = context->root;
 	context->root = res;
 	context->current_cmd_node = &res->children[1];
 	res->tok = (t_ms_token){.op.type = MS_TOK_OP, .op.op = MS_OP_PIPE};
