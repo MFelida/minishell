@@ -45,7 +45,7 @@ static void	_wait_child_procs(int *wait_ret,
 		while (_ms_waitpid(wait_ret, last_cmd, WNOHANG) == 0)
 			if (g_signal == SIGINT)
 				forward_sigint(params);
-		if (wait_ret < 0)
+		if (*wait_ret < 0)
 		{
 			ms_set_exitstatus(1);
 			ft_print_err(strerror(errno), 2, "minishell", "waitpid");
