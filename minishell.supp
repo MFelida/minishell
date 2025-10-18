@@ -1,22 +1,24 @@
 {
-   restored_stdio
-   CoreError:FdNotClosed
-   fun:dup2
-   fun:ms_restore_stdio
-   fun:do_builtin
-   fun:bltin_run
-   fun:cmd_next_node
-   fun:cmd_pipe
-   fun:cmd_next_node
-   fun:main
-}
-{
-   fake_parser_expected_leak
+   rl:rl_
    Memcheck:Leak
    match-leak-kinds: reachable
-   fun:malloc
    ...
-   fun:get_next_node
-   fun:get_parse_tree
-   fun:main
+   fun:rl_*
+   ...
+}
+{
+   rl:add_history
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:add_history
+   ...
+}
+{
+   rl:readline
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:readline
+   ...
 }
