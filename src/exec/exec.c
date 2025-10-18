@@ -60,6 +60,13 @@ static void	_wait_child_procs(int *wait_ret,
 			forward_sigint(params);
 }
 
+#ifdef DEBUG
+void	fp_print(t_parse_node node, int tab_depth);
+# define PRINT_DEBUG {fp_print(**pt, 0);}
+#else
+# define PRINT_DEBUG
+#endif
+
 int	exec_parsetree(t_parse_node	**pt)
 {
 	t_cmd_params	params;
@@ -67,6 +74,7 @@ int	exec_parsetree(t_parse_node	**pt)
 	int				wait_ret;
 	int				ret;
 
+	PRINT_DEBUG
 	params = cmd_params_default();
 	params.pt = pt;
 	ret = cmd_next_node(&params, *pt);
