@@ -27,7 +27,8 @@ int	_validate_input(char **args, t_cmd_params	*params)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("invalid option", 3, "minishell", "cd", _invalid_option(args[i], ""));
+			ft_print_err("invalid option", 3,
+				"minishell", "cd", _invalid_option(args[i], ""));
 			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 			return (MS_BUILTIN_MISUSE);
 		}
@@ -43,15 +44,16 @@ int	_validate_input(char **args, t_cmd_params	*params)
 
 void	_process_dotdot(char *path)
 {
-	char *dotdot;
-	char *rest;
+	char	*dotdot;
+	char	*rest;
 
 	dotdot = ft_strnstr(path, "/..", PATH_MAX);
 	while (dotdot++)
 	{
 		if (dotdot[2] != '/' && dotdot[2] != '\0')
 		{
-			dotdot = ft_strnstr(dotdot + 2, "/..", PATH_MAX - (path - dotdot) - 2);
+			dotdot = ft_strnstr(
+					dotdot + 2, "/..", PATH_MAX - (path - dotdot) - 2);
 			continue ;
 		}
 		if (dotdot[2])
@@ -68,7 +70,7 @@ void	_process_dotdot(char *path)
 	}
 }
 
-void _process_dot(char *path)
+void	_process_dot(char *path)
 {
 	char	*dot;
 	char	*rest;
