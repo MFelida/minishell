@@ -34,17 +34,13 @@ t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context)
 	next_tok = *lex_list;
 	while (next_tok && next_tok->type == MS_LEX_TOK_WS)
 		next_tok = next_tok->next;
-	if (!next_tok || (next_tok->type == MS_LEX_TOK_OP && next_tok->op == MS_LEX_OP_PIPE))
+	if (!next_tok
+		|| (next_tok->type == MS_LEX_TOK_OP && next_tok->op == MS_LEX_OP_PIPE))
 	{
-		if (!next_tok)
-			ft_print_err("syntax error near unexpected token `newline'", 1, "minishell");
-		else
-			ft_print_err(parser_strerror(next_tok), 1, "minishell");
+		ft_print_err(parser_strerror(next_tok), 1, "minishell");
 		return (free_parse_tree(&context->root), NULL);
 	}
 	if (!get_cmd_node(lex_list, context) || !res->children[1])
 		return (free_parse_tree(&context->root), NULL);
 	return (res);
 }
-
-

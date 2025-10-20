@@ -6,14 +6,13 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 14:55:54 by mifelida          #+#    #+#             */
-/*   Updated: 2025/05/30 10:53:16 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 16:32:02 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 
 #include "parse_tree.h"
-#include "parser.h"
 #include "libft.h"
 
 static void	_indent(int tab_depth)

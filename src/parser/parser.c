@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:05:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 15:25:55 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 15:49:45 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,10 @@
 t_parse_node	*get_next_node(t_lex_tok **lex_list, t_parse_context *context);
 void			fp_print(t_parse_node node, int tab_depth);
 
-int	count_chld_nodes(t_parse_node *parent)
+t_parse_node	*get_op_node(t_lex_tok **lex_list, t_parse_context *context)
 {
-	int				res;
-	t_parse_node	**chld_arr;
-
-	res = 0;
-	chld_arr = parent->children;
-	while (*(chld_arr++) != NULL)
-		res++;
-	return (res);
-}
-
-t_parse_node	*new_node(size_t n_children)
-{
-	t_parse_node	*new;
-
-	new = ft_calloc(1, sizeof(t_parse_node));
-	if (!new)
-		return (NULL);
-	if (n_children == 0)
-		return (new);
-	new->children = ft_calloc(3, sizeof(t_parse_node));
-	if (new->children)
-		return (new);
-	free(new);
-	return (NULL);
-}
-
-static t_node_getter	_get_node_getter(t_lex_op op)
-{
-	static t_node_getter	op_node_getters[] = {
+	t_lex_tok					*tok;
+	static const t_node_getter	op_node_getters[] = {
 		NULL,
 	[MS_LEX_OP_INPUT] = get_input_node,
 	[MS_LEX_OP_HEREDOC] = get_heredoc_node,
@@ -67,17 +40,10 @@ static t_node_getter	_get_node_getter(t_lex_op op)
 	[MS_LEX_OP_PIPE] = get_pipe_node,
 	};
 
-	return (op_node_getters[op]);
-}
-
-t_parse_node	*get_op_node(t_lex_tok **lex_list, t_parse_context *context)
-{
-	t_lex_tok	*tok;
-
 	tok = *lex_list;
 	if (tok->op == MS_LEX_OP_ERROR)
 		return (NULL);
-	return (_get_node_getter(tok->op)(lex_list, context));
+	return (op_node_getters[tok->op](lex_list, context));
 }
 
 t_parse_node	*get_id_node(t_lex_tok **lex_list, t_parse_context *context)
@@ -105,13 +71,6 @@ t_parse_node	*get_ws_node(t_lex_tok **lex_list, t_parse_context *context);
 
 t_parse_node	*get_var_node(t_lex_tok **lex_list, t_parse_context *context);
 
-// static t_node_getter g_node_getters[] = {
-// 	[MS_LEX_TOK_OP] = get_op_node,
-// 	[MS_LEX_TOK_ID] = get_id_node,
-// 	[MS_LEX_TOK_WS] = get_ws_node,
-// 	[MS_LEX_TOK_VAR]= get_var_node,
-// };
-
 static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 {
 	t_lex_tok		*curr;
@@ -121,19 +80,14 @@ static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 	while (curr && curr->type == MS_LEX_TOK_WS)
 		curr = curr->next;
 	if (curr && curr->type == MS_LEX_TOK_OP && curr->op == MS_LEX_OP_PIPE)
-	{
-		ft_print_err(parser_strerror(curr), 1, "minishell");
-		return (1);
-	}
+		return (ft_print_err(parser_strerror(curr), 1, "minishell"), 1);
 	curr = *lex_list;
 	while (curr)
 	{
 		if (curr->type == MS_LEX_TOK_ERROR)
 			return (free_parse_tree(&context->root), 1);
 		else if (context->root == NULL)
-		{
 			new = get_cmd_node(&curr, context);
-		}
 		else if (curr->type == MS_LEX_TOK_OP && curr->op == MS_LEX_OP_PIPE)
 			new = get_pipe_node(&curr, context);
 		else
@@ -165,23 +119,4 @@ t_parse_node	*get_parse_tree(char *input)
 		free_parse_tree(&context.root);
 	free_lex_list(&lex_list);
 	return (context.root);
-}
-
-void	free_parse_tree(t_parse_node **root)
-{
-	size_t			i;
-	t_parse_node	*node;
-
-	if (!root || !*root)
-		return ;
-	i = 0;
-	node = *root;
-	while (node->children && node->children[i])
-		free_parse_tree(&node->children[i++]);
-	if (node->tok.type == MS_TOK_IDENTIFIER)
-		free(node->tok.id.value);
-	if (node->children)
-		free(node->children);
-	free(node);
-	*root = NULL;
 }

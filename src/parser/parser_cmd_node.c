@@ -65,7 +65,10 @@ static t_parse_node	*_get_id(t_parse_node **dest,
 	return (new);
 }
 
-static t_parse_node *_get_cmd_inner(t_parse_node *node, t_lex_tok **lex_list, t_parse_context *context)
+static t_parse_node	*_get_cmd_inner(
+	t_parse_node *node,
+	t_lex_tok **lex_list,
+	t_parse_context *context)
 {
 	t_lex_tok		*tok;
 	size_t			i;

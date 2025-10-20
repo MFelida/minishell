@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_input_nodes.c                               :+:      :+:    :+:   */
+/*   parser_redir_nodes.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:11:02 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 15:15:23 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 16:25:56 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@ static t_parse_node	*_get_redir_node(t_lex_tok **lex_list,
 	t_parse_node	*res;
 	t_lex_tok		*tok;
 
-	res = ft_calloc(1, sizeof(t_parse_node));
+	res = new_node(3);
 	if (!res)
-		return (NULL);
-	res->children = ft_calloc(3, sizeof(t_parse_node));
-	if (!res->children)
 		return (NULL);
 	tok = *lex_list;
 	tok = tok->next;
@@ -37,11 +34,7 @@ static t_parse_node	*_get_redir_node(t_lex_tok **lex_list,
 		tok = tok->next;
 	if (!tok || tok->type != MS_LEX_TOK_ID)
 	{
-		if (!tok)
-			ft_print_err("syntax error near unexpected token `newline'",
-				1, "minishell");
-		else
-			ft_print_err(parser_strerror(tok), 1, "minishell");
+		ft_print_err(parser_strerror(tok), 1, "minishell");
 		free(res->children);
 		free(res);
 		free_parse_tree(&context->root);

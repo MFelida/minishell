@@ -64,6 +64,5 @@ typedef struct s_parse_node
 # define MS_FI_N_CHLD	2
 
 t_parse_node	*get_parse_tree(char *file);
-int				count_chld_nodes(t_parse_node *parent);
 
 #endif // !FAKE_PARSER_H

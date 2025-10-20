@@ -37,7 +37,9 @@ const char	*parser_strerror(t_lex_tok *tok)
 	char		*tok_str;
 
 	tok_str = full + ft_strlen(ERROR_BASE);
-	if (tok->type == MS_LEX_TOK_OP)
+	if (!tok)
+		ft_strlcpy(tok_str, "`newline'", 50);
+	else if (tok->type == MS_LEX_TOK_OP)
 		ft_strlcpy(tok_str, _get_err_str(tok->op), 50);
 	else if (tok->type == MS_LEX_TOK_ID)
 	{

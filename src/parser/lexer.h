@@ -6,14 +6,14 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/28 12:04:40 by mifelida          #+#    #+#             */
-/*   Updated: 2025/09/28 16:05:33 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 16:15:01 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 
-typedef	enum e_lex_type
+typedef enum e_lex_type
 {
 	MS_LEX_TOK_ERROR = 0,
 	MS_LEX_TOK_ID,
@@ -56,9 +56,24 @@ typedef struct s_lex_context
 	int				error;
 }	t_lex_context;
 
+int			is_meta(const char c);
+int			is_quote(const char c);
+int			is_ws(const char c);
+char		*skip_ws(char *s);
+
+t_lex_tok	*lx_default_tok(void);
+
+void		lx_handle_single(t_lex_tok **lex_list, t_lex_context *context);
+void		lx_handle_unquoted(t_lex_tok **lex_list, t_lex_context *context);
+void		lx_handle_double(t_lex_tok **lex_list, t_lex_context *context);
+
+t_lex_tok	*lx_new_id_tok(t_lex_context *context);
+void		lx_handle_meta(t_lex_tok **lex_list, t_lex_context *context);
+
 t_lex_tok	*lex_input(char *input);
+t_lex_tok	*expand_vars(t_lex_tok *lex_list);
+
 void		free_lex_list(t_lex_tok **list);
 void		free_lex_node(void *node);
-t_lex_tok	*expand_vars(t_lex_tok *lex_list);
 
 #endif
