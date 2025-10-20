@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.email.com>       +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/08/19 10:42:11 by mifelida     #+#    #+#                  */
-/*   Updated: 2025/10/15 13:36:08 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:20:03 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,19 @@ void	free_env(void)
 
 const char	*ms_getenv(const char *key)
 {
+	if (!key)
+		return (NULL);
 	if (!ft_strncmp("?", key, 2))
 		return (_exit_status(NULL));
+	if (!valid_envvar(key))
+		return (NULL);
 	return (hm_get_value(&g_env_hm, key));
 }
 
 int	ms_setenv(const char *key, const char *value)
 {
+	if (!key || !valid_envvar(key))
+		return (1);
 	if (!ft_strncmp("?", key, 2))
 		return (!!_exit_status(value));
 	return (hm_set_value(&g_env_hm, key, value));
