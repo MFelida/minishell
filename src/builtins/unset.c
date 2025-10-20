@@ -27,7 +27,8 @@ int	ms_unset(const char **args, t_cmd_params *params, ...)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("invalid option", 3, "minishell", "unset", _invalid_option(args[i], ""));
+			ft_print_err("invalid option", 3,
+				"minishell", "unset", _invalid_option(args[i], ""));
 			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 			return (MS_CMD_ERROR_OK);
 		}

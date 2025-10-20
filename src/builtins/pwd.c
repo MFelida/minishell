@@ -47,10 +47,23 @@ int	valid_pwd(const char *env_pwd)
 	return (env_stat.st_ino == cwd_stat.st_ino);
 }
 
-// TODO: Don't use getcwd, print from $PWD to respect logical path (symbolic links)
+static int	_get_pwd(const char **dest)
+{
+	static char	buff[PATH_MAX + 1];
+
+	*dest = buff;
+	if (ms_getenv("PWD") && valid_pwd(ms_getenv("PWD")))
+		*dest = ms_getenv("PWD");
+	else if (!getcwd(buff, PATH_MAX))
+	{
+		ft_print_err(strerror(errno), 2, "minishell", "pwd");
+		return (1);
+	}
+	return (0);
+}
+
 int	ms_pwd(const char **args, t_cmd_params *params, ...)
 {
-	char		buff[PATH_MAX + 1];
 	const char	*pwd;
 	size_t		i;
 
@@ -59,17 +72,14 @@ int	ms_pwd(const char **args, t_cmd_params *params, ...)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("invalid option", 3, "minishell", "pwd", _invalid_option(args[i], ""));
+			ft_print_err("invalid option", 3,
+				"minishell", "pwd", _invalid_option(args[i], ""));
 			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 			return (MS_CMD_ERROR_OK);
 		}
 	}
-	pwd = buff;
-	if (ms_getenv("PWD") && valid_pwd(ms_getenv("PWD")))
-		pwd = ms_getenv("PWD");
-	else if (!getcwd(buff, PATH_MAX))
+	if (_get_pwd(&pwd))
 	{
-		ft_print_err(strerror(errno), 2, "minishell", "pwd");
 		params->wstatus = _set_wstatus(MS_FAILURE, 0);
 		return (MS_CMD_ERROR_FAILURE);
 	}

@@ -24,12 +24,13 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-# include <termios.h>
+#include <termios.h>
 #include <unistd.h>
 
 sig_atomic_t	g_signal = 0;
 
 #ifndef DEBUG
+
 void	init_minishell(void)
 {
 	ft_atexit(ms_close_stdio);
@@ -40,6 +41,7 @@ void	init_minishell(void)
 	setup_sighandlers();
 }
 #else
+
 void	init_minishell(void)
 {
 	printf("%d\n", getpid());
@@ -64,9 +66,8 @@ int	main(void)
 	ret = 0;
 	while (!(ret & MS_CMD_ERROR_SHOULD_EXIT))
 	{
-		// tcsetattr(STDIN_FILENO, TCSANOW, &tio);
-		input = readline(ms_getenv("PS1"));
 		tcsetattr(STDIN_FILENO, TCSANOW, &tio);
+		input = readline(ms_getenv("PS1"));
 		if (!input)
 			break ;
 		if (!*input)

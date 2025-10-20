@@ -1,14 +1,14 @@
-// ************************************************************************** //
-//                                                                            //
-//                                                       ::::::::             //
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::             */
 /*   export.c                                           :+:      :+:    :+:   */
-//                                                    +:+                     //
-//   By: mifelida <mifelida@student.codam.nl>        +#+                      //
-//                                                  +#+                       //
-//   Created: 2025/08/19 14:23:40 by mifelida     #+#    #+#                  //
+/*                                                    +:+                     */
+/*   By: mifelida <mifelida@student.codam.nl>        +#+                      */
+/*                                                  +#+                       */
+/*   Created: 2025/08/19 14:23:40 by mifelida     #+#    #+#                  */
 /*   Updated: 2025/09/03 18:45:26 by mifelida         ###   ########.fr       */
-//                                                                            //
-// ************************************************************************** //
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "command.h"
 #include "env.h"
@@ -37,11 +37,11 @@ static int	_export_setenv(const char *keyvalpair)
 	size_t	len;
 	int		append;
 
-	value = ft_strchr(keyvalpair, '=') + 1;
-	if (value <= (char *) 1)
+	value = ft_strchr(keyvalpair, '=');
+	if (!value)
 		return (ms_setenv(keyvalpair, ""));
-	append = ft_strnstr(keyvalpair, "+=", ft_strlen(keyvalpair)) == ft_strchr(keyvalpair, '=') - 1;
-	len = value	- keyvalpair - 1 - append;
+	append = value[-1] == '+';
+	len = value++ - keyvalpair - append;
 	key = ft_substr(keyvalpair, 0, len);
 	if (!key)
 		return (1);
@@ -66,13 +66,15 @@ static int	_validate_args(char **args, t_cmd_params *params)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("invalid option", 3, "minishell", "export", _invalid_option(args[i], ""));
+			ft_print_err("invalid option", 3,
+				"minishell", "export", _invalid_option(args[i], ""));
 			params->wstatus = _set_wstatus(MS_BUILTIN_MISUSE, 0);
 			return (1);
 		}
 		else if (!_is_valid_key(args[i]))
 		{
-			ft_print_err("not a valid identifier", 3, "minishell", "export", args[i]);
+			ft_print_err("not a valid identifier", 3,
+				"minishell", "export", args[i]);
 			params->wstatus = _set_wstatus(MS_FAILURE, 0);
 			return (1);
 		}

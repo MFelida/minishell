@@ -27,7 +27,8 @@ int	ms_env(const char **args, t_cmd_params *params, ...)
 	{
 		if (_is_option(args[i]))
 		{
-			ft_print_err("invalid option", 3, "minishell", "env", _invalid_option(args[i], ""));
+			ft_print_err("invalid option", 3,
+				"minishell", "env", _invalid_option(args[i], ""));
 			return (MS_CMD_ERROR_OK);
 		}
 	}

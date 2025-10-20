@@ -49,7 +49,8 @@ static bool	_is_numeric(const char *arg)
 		i++;
 	}
 	return ((!is_neg && ft_strncmp(arg, LLONG_MAX_S, sizeof(LLONG_MAX_S)) <= 0)
-		|| (is_neg && ft_strncmp(arg, &LLONG_MIN_S[1], sizeof(LLONG_MIN_S)) <= 0));
+		|| (is_neg
+			&& ft_strncmp(arg, &LLONG_MIN_S[1], sizeof(LLONG_MIN_S)) <= 0));
 }
 
 static int	_get_status(const char *status)
@@ -76,7 +77,8 @@ int	ms_exit(const char **args, t_cmd_params *params, ...)
 	if (args[1] == NULL)
 		exit_status = ft_atoi(ms_getenv("?"));
 	else if (!_is_numeric(args[1]))
-		ft_print_err("numeric argument required", 3, "minishell", "exit", args[1]);
+		ft_print_err("numeric argument required", 3,
+			"minishell", "exit", args[1]);
 	else if (args[2])
 	{
 		ft_print_err("too many arguments", 2, "minishell", "exit");

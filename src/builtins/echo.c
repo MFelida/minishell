@@ -32,7 +32,7 @@ int	ms_echo(char **args, t_cmd_params *params, ...)
 	nl = true;
 	write_error = MS_SUCCESS;
 	while (args[++i] && _is_option(args[i]) && !_invalid_option(args[i], "n"))
-			nl = !ft_strchr(args[i], 'n');
+		nl = !ft_strchr(args[i], 'n');
 	first = i;
 	while (args[i])
 	{
