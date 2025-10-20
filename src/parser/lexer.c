@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/28 12:04:32 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/20 16:17:37 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:24:39 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,13 @@ void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 {
 	t_lex_tok	*new;
 
-	if (*context->start != '$'
-		|| context->curr != context->start
-		|| !(context->start[1] == '_' || ft_isalpha(context->start[1])
-			|| !ft_strncmp(context->start, "$?", 2)))
-		return (lx_handle_single(lex_list, context));
 	context->error++;
-	context->start++;
-	context->curr += 2;
+	if (*context->start != '$' || context->curr != context->start)
+		return ;
+	if (context->start[1] == '_' || ft_isalpha(context->start[1])
+			|| !ft_strncmp(context->start, "$?", 2))
+		context->start++;
+	context->curr = context->start + 1;
 	while (*context->curr
 		&& *(context->curr - 1) != '?'
 		&& (ft_isalnum(*context->curr) || *context->curr == '_'))
@@ -61,7 +60,8 @@ void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 		ft_print_err(strerror(errno), 2, "minishell", __FUNCTION__);
 		return ;
 	}
-	new->type = MS_LEX_TOK_VAR;
+	if (new->id[0] != '$')
+		new->type = MS_LEX_TOK_VAR;
 	ft_lstadd_back((t_list **) lex_list, (t_list *) new);
 	context->start = context->curr;
 	context->error--;
