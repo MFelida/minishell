@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:05:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/20 15:49:45 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:05:24 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ t_parse_node	*get_id_node(t_lex_tok **lex_list, t_parse_context *context)
 }
 
 t_parse_node	*get_ws_node(t_lex_tok **lex_list, t_parse_context *context);
-
-t_parse_node	*get_var_node(t_lex_tok **lex_list, t_parse_context *context);
 
 static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 {

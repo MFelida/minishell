@@ -6,7 +6,7 @@
 /*   By: mifelida <mifelida@student.codam.nl>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/28 19:43:55 by mifelida          #+#    #+#             */
-/*   Updated: 2025/10/14 15:24:40 by mifelida         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:05:36 by mifelida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ t_parse_node	*get_append_node(t_lex_tok **lex_list,
 t_parse_node	*get_pipe_node(t_lex_tok **lex_list, t_parse_context *context);
 t_parse_node	*get_op_node(t_lex_tok **lex_list, t_parse_context *context);
 t_parse_node	*get_id_node(t_lex_tok **lex_list, t_parse_context *context);
-t_parse_node	*get_ws_node(t_lex_tok **lex_list, t_parse_context *context);
-t_parse_node	*get_var_node(t_lex_tok **lex_list, t_parse_context *context);
 t_parse_node	*get_cmd_node(t_lex_tok **lex_list, t_parse_context *context);
 
 #endif
