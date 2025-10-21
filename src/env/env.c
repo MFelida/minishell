@@ -39,10 +39,12 @@ const char	*ms_getenv(const char *key)
 
 int	ms_setenv(const char *key, const char *value)
 {
-	if (!key || !valid_envvar(key))
+	if (!key)
 		return (1);
 	if (!ft_strncmp("?", key, 2))
 		return (!!_exit_status(value));
+	if (!valid_envvar(key))
+		return (1);
 	return (hm_set_value(&g_env_hm, key, value));
 }
 
