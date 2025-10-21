@@ -40,14 +40,11 @@ void	lx_handle_single(t_lex_tok **lex_list, t_lex_context *context)
 
 	while (*context->curr && *context->curr != '\'')
 		context->curr++;
-	if (context->curr != context->start)
-	{
-		new_node = lx_new_id_tok(context);
-		if (!new_node)
-			return ;
-		ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
-		context->start = context->curr;
-	}
+	new_node = lx_new_id_tok(context);
+	if (!new_node)
+		return ;
+	ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
+	context->start = context->curr;
 	if (is_quote(*context->curr))
 		_set_quote_state(context);
 }
@@ -80,14 +77,11 @@ void	lx_handle_double(t_lex_tok **lex_list, t_lex_context *context)
 
 	while (*context->curr && *context->curr != '"' && *context->curr != '$')
 		context->curr++;
-	if (context->curr != context->start)
-	{
-		new_node = lx_new_id_tok(context);
-		if (!new_node)
-			return ;
-		ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
-		context->start = context->curr;
-	}
+	new_node = lx_new_id_tok(context);
+	if (!new_node)
+		return ;
+	ft_lstadd_back((t_list **) lex_list, (t_list *) new_node);
+	context->start = context->curr;
 	if (is_quote(*context->curr))
 		_set_quote_state(context);
 }
