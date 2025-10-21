@@ -38,7 +38,7 @@ static int	_find_on_path(char	*dest, const char *name)
 	int			i;
 
 	path_var = ms_getenv("PATH");
-	if (!path_var)
+	if (!path_var || *name == '\0')
 		return (MS_CMD_NOT_FOUND);
 	path_split = ft_split(path_var, ':');
 	if (!path_split)
