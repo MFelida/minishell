@@ -64,4 +64,12 @@ void	fp_print(t_parse_node node, int tab_depth)
 		printf("%s\n", node.children[0]->tok.id.value);
 		fp_print(*node.children[1], tab_depth + 1);
 	}
+	if (node.tok.op.op == MS_OP_HEREDOC)
+	{
+		_indent(tab_depth);
+		printf("heredoc:\n");
+		_indent(tab_depth + 1);
+		printf("fd: %d, word: %s\n", node.tok.op.value, node.children[0]->tok.id.value);
+		fp_print(*node.children[1], tab_depth + 1);
+	}
 }
