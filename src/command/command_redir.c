@@ -29,6 +29,7 @@ int	cmd_hear_doc(t_cmd_params params, t_parse_node *node)
 	if (retval)
 		return (retval);
 	retval = cmd_next_node(&params, node->children[1]);
+	free(ft_lstlast((t_list *) params.redirs));
 	if (last)
 		ft_lstclear((t_list **) &last->next, free);
 	return (retval);

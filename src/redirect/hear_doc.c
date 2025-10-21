@@ -12,6 +12,7 @@
 
 #include "env.h"
 #include "libft.h"
+#include "redirect.h"
 #include "redirect_types.h"
 #include "utils.h"
 
@@ -52,5 +53,6 @@ int	ms_hear_doc(const char *stopword)
 	if (line)
 		free(line);
 	close(hear_pipe.write);
+	new_fd(hear_pipe.read);
 	return (hear_pipe.read);
 }
