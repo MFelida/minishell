@@ -72,8 +72,12 @@ static int	_get_status(const char *status)
 int	ms_exit(const char **args, t_cmd_params *params, ...)
 {
 	int	exit_status;
+	int	ret_val;
 
 	exit_status = MS_BUILTIN_MISUSE;
+	ret_val = MS_CMD_ERROR_SHOULD_EXIT;
+	if (params->context == MS_CMD_CONTEXT_PIPE)
+		ret_val = MS_CMD_ERROR_OK;
 	if (args[1] == NULL)
 		exit_status = ft_atoi(ms_getenv("?"));
 	else if (!_is_numeric(args[1]))
@@ -82,13 +86,11 @@ int	ms_exit(const char **args, t_cmd_params *params, ...)
 	else if (args[2])
 	{
 		ft_print_err("too many arguments", 2, "minishell", "exit");
-		params->wstatus = _set_wstatus(MS_FAILURE, 0);
-		return (MS_CMD_ERROR_OK);
+		exit_status = MS_FAILURE;
+		ret_val = MS_CMD_ERROR_OK;
 	}
 	else
 		exit_status = _get_status(args[1]);
 	params->wstatus = _set_wstatus(exit_status, 0);
-	if (params->context & MS_CMD_CONTEXT_PIPE)
-		return (MS_CMD_ERROR_OK);
-	return (MS_CMD_ERROR_SHOULD_EXIT);
+	return (ret_val);
 }
