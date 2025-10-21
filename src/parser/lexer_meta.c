@@ -29,8 +29,8 @@ static t_lex_tok	*lx_new_op_tok(t_lex_context *context)
 		new->op = MS_LEX_OP_PIPE;
 	else
 		context->error = 1;
-	context->curr += 1 + (new->op == MS_LEX_OP_INPUT
-			|| new->op == MS_LEX_OP_OUTPUT);
+	context->curr += 1 + (new->op == MS_LEX_OP_HEREDOC
+			|| new->op == MS_LEX_OP_APPEND);
 	context->start = context->curr;
 	return (new);
 }
