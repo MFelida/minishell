@@ -38,6 +38,23 @@ t_lex_tok	*lx_new_id_tok(t_lex_context *context)
 	return (res);
 }
 
+static int	_is_valid_var_char(const t_lex_context *context)
+{
+	if (context->curr < context->start + 1
+		&& (context->curr[-1] == '?' || context->curr[-1] == '$'))
+		return (0);
+	if (ft_isalnum(*context->curr) || *context->curr == '_')
+		return (1);
+	if (context->curr == context->start + 1)
+	{
+		if (*context->curr == '?')
+			return (1);
+		if (*context->curr == '$')
+			return (1);
+	}
+	return (0);
+}
+
 void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 {
 	t_lex_tok	*new;
@@ -46,12 +63,11 @@ void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 	if (*context->start != '$' || context->curr != context->start)
 		return ;
 	if (context->start[1] == '_' || ft_isalpha(context->start[1])
-			|| !ft_strncmp(context->start, "$?", 2))
+			|| !ft_strncmp(context->start, "$?", 2)
+			|| !ft_strncmp(context->start, "$$", 2))
 		context->start++;
 	context->curr = context->start + 1;
-	while (*context->curr
-		&& *(context->curr - 1) != '?'
-		&& (ft_isalnum(*context->curr) || *context->curr == '_'))
+	while (*context->curr && _is_valid_var_char(context))
 		context->curr++;
 	new = lx_new_id_tok(context);
 	context->start = context->curr;
@@ -60,8 +76,7 @@ void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 		ft_print_err(strerror(errno), 2, "minishell", __FUNCTION__);
 		return ;
 	}
-	if (new->id[0] != '$')
-		new->type = MS_LEX_TOK_VAR;
+	new->type = MS_LEX_TOK_VAR;
 	ft_lstadd_back((t_list **) lex_list, (t_list *) new);
 	context->start = context->curr;
 	context->error--;

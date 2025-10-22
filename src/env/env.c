@@ -32,6 +32,8 @@ const char	*ms_getenv(const char *key)
 		return (NULL);
 	if (!ft_strncmp("?", key, 2))
 		return (_exit_status(NULL));
+	if (!ft_strncmp("$", key, 2))
+		return ("$");
 	if (!valid_envvar(key))
 		return (NULL);
 	return (hm_get_value(&g_env_hm, key));
