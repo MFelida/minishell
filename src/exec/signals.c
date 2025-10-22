@@ -23,7 +23,7 @@ static void	_sighandler(int signum)
 {
 	extern sig_atomic_t	g_signal;
 
-	if (!rl_done)
+	if (!rl_done && signum == SIGINT)
 	{
 		ft_putchar_fd('\n', 1);
 		rl_on_new_line();
@@ -40,11 +40,17 @@ int	ms_is_interactive(void)
 	return (isatty(STDIN_FILENO) && isatty(STDERR_FILENO));
 }
 
-static void	_reset_signal(void)
+void	reset_signal(void)
 {
 	extern sig_atomic_t	g_signal;
+	struct sigaction	sa;
 
 	g_signal = 0;
+	sa = (struct sigaction){.sa_handler = SIG_DFL,
+		.sa_flags = 0, .sa_mask = {{0}}};
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
 }
 
 void	setup_sighandlers(void)
@@ -58,7 +64,7 @@ void	setup_sighandlers(void)
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 	sigaction(SIGTERM, &sa, NULL);
-	ft_atexit(_reset_signal);
+	ft_atexit(reset_signal);
 }
 
 void	forward_sigint(t_cmd_params *params)

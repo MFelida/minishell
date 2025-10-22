@@ -12,6 +12,7 @@
 
 #include "command.h"
 #include "env.h"
+#include "execute.h"
 #include "exit_statuses.h"
 #include "libft.h"
 #include "redirect.h"
@@ -62,6 +63,7 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
 	_cmd_exec_bin_err(&params, find_bin_ret);
 	params.envp = ms_getenv_full(0, 1, 1);
+	reset_signal();
 	execve(params.bin_path, params.cmd_args, params.envp);
 	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
 	_clean_and_exit(MS_PERM_DENIED, params);
