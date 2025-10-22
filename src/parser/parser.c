@@ -67,8 +67,6 @@ t_parse_node	*get_id_node(t_lex_tok **lex_list, t_parse_context *context)
 	return (res);
 }
 
-t_parse_node	*get_ws_node(t_lex_tok **lex_list, t_parse_context *context);
-
 static int	_get_parse_tree(t_lex_tok **lex_list, t_parse_context *context)
 {
 	t_lex_tok		*curr;
