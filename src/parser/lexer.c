@@ -63,8 +63,8 @@ void	lx_handle_var(t_lex_tok **lex_list, t_lex_context *context)
 	if (*context->start != '$' || context->curr != context->start)
 		return ;
 	if (context->start[1] == '_' || ft_isalpha(context->start[1])
-			|| !ft_strncmp(context->start, "$?", 2)
-			|| !ft_strncmp(context->start, "$$", 2))
+		|| !ft_strncmp(context->start, "$?", 2)
+		|| !ft_strncmp(context->start, "$$", 2))
 		context->start++;
 	context->curr = context->start + 1;
 	while (*context->curr && _is_valid_var_char(context))
