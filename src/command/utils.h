@@ -18,6 +18,7 @@
 
 _Noreturn void	cmd_exec(t_cmd_params params);
 int				find_bin(char *dest, const char *name);
+int				is_rel_path(const char *str);
 char			**make_argv(t_parse_node *node);
 
 int				cmd_input_redir(t_cmd_params params, t_parse_node *node);

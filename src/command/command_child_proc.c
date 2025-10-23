@@ -36,8 +36,10 @@ void	_cmd_exec_bin_err(t_cmd_params *params, int find_bin_ret)
 
 	if (!find_bin_ret)
 		return ;
-	if (find_bin_ret == MS_CMD_NOT_FOUND)
+	if (find_bin_ret == MS_CMD_NOT_FOUND && !is_rel_path(params->cmd_args[0]))
 		ft_print_err("command not found", 2, "minishell", params->cmd_args[0]);
+	else if (find_bin_ret == MS_CMD_NOT_FOUND)
+		ft_print_err("No such file or directory", 2, "minishell", params->cmd_args[0]);
 	else if (find_bin_ret == MS_PERM_DENIED)
 	{
 		if (stat(params->bin_path, &stat_buff) == 0
@@ -60,11 +62,16 @@ _Noreturn void	cmd_exec(t_cmd_params params)
 	if (do_redirs(&params))
 		_clean_and_exit(MS_FAILURE, params);
 	close_fds();
-	find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
-	_cmd_exec_bin_err(&params, find_bin_ret);
-	params.envp = ms_getenv_full(0, 1, 1);
-	reset_signal();
-	execve(params.bin_path, params.cmd_args, params.envp);
-	ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
-	_clean_and_exit(MS_PERM_DENIED, params);
+	if (*params.cmd_args)
+	{
+		find_bin_ret = find_bin(params.bin_path, params.cmd_args[0]);
+		_cmd_exec_bin_err(&params, find_bin_ret);
+		params.envp = ms_getenv_full(0, 1, 1);
+		reset_signal();
+		execve(params.bin_path, params.cmd_args, params.envp);
+		ft_print_err(strerror(errno), 2, "minishell", params.cmd_args[0]);
+		_clean_and_exit(MS_PERM_DENIED, params);
+	}
+	else
+		_clean_and_exit(MS_SUCCESS, params);
 }

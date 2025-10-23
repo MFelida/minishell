@@ -60,13 +60,21 @@ static int	_find_on_path(char	*dest, const char *name)
 	return (MS_CMD_NOT_FOUND);
 }
 
+int	is_rel_path(const char *str)
+{
+	return (ft_strchr(str, '/') || ft_strchr(str, '.'));
+}
+
 int	find_bin(char *dest, const char *name)
 {
 	struct stat	stat_buff;
 
-	if (ft_strchr(name, '/'))
+	if (is_rel_path(name))
 	{
-		ft_strlcpy(dest, name, PATH_MAX);
+		dest[0] = '\0';
+		if (!ft_strchr(name, '/'))
+			ft_strlcat(dest, "./", PATH_MAX);
+		ft_strlcat(dest, name, PATH_MAX);
 		if (access(dest, F_OK))
 			return (MS_CMD_NOT_FOUND);
 		if (access(dest, X_OK) || ((stat(dest, &stat_buff) == 0)
