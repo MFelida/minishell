@@ -61,11 +61,6 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	if (!params.cmd_args)
 		return (1);
 	params.context |= MS_CMD_CONTEXT_SIMPLE;
-	params_node = malloc(sizeof(t_cmd_params));
-	if (!params_node)
-		return (MS_CMD_ERROR_MALLOC);
-	*params_node = params;
-	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	errno = 0;
 	params.pid = fork();
 	if (params.pid < 0)
@@ -75,6 +70,11 @@ int	cmd_run(t_cmd_params params, t_parse_node *node)
 	}
 	if (params.pid == 0)
 		cmd_exec(params);
+	params_node = malloc(sizeof(t_cmd_params));
+	if (!params_node)
+		return (MS_CMD_ERROR_MALLOC);
+	*params_node = params;
+	ft_lstadd_back((t_list **) params.head, (t_list *) params_node);
 	return (0);
 }
 
