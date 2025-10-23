@@ -88,6 +88,5 @@ int	ms_cd(char **args, t_cmd_params *params, ...)
 		params->wstatus = _set_wstatus(MS_SUCCESS, 0);
 	ms_setenv("OLDPWD", ms_getenv("PWD"));
 	ms_setenv("PWD", path);
-	ft_putendl_fd(path, STDOUT_FILENO);
 	return (MS_CMD_ERROR_OK);
 }
