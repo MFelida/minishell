@@ -62,7 +62,11 @@ static int	_find_on_path(char	*dest, const char *name)
 
 int	is_rel_path(const char *str)
 {
-	return (ft_strchr(str, '/') || ft_strchr(str, '.'));
+	if (ft_strchr(str, '/'))
+		return (2);
+	if (ft_strchr(str, '.'))
+		return (1);
+	return (0);
 }
 
 int	find_bin(char *dest, const char *name)
@@ -76,7 +80,11 @@ int	find_bin(char *dest, const char *name)
 			ft_strlcat(dest, "./", PATH_MAX);
 		ft_strlcat(dest, name, PATH_MAX);
 		if (access(dest, F_OK))
+		{
+			if (!ft_strchr(name, '/'))
+				return (_find_on_path(dest, name));
 			return (MS_CMD_NOT_FOUND);
+		}
 		if (access(dest, X_OK) || ((stat(dest, &stat_buff) == 0)
 				&& S_ISDIR(stat_buff.st_mode)))
 			return (MS_PERM_DENIED);
