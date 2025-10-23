@@ -15,7 +15,6 @@
 #include "libft.h"
 
 #include <asm-generic/errno-base.h>
-#include <errno.h>
 #include <linux/limits.h>
 #include <sys/stat.h>
 #include <unistd.h>

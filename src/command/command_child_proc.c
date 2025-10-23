@@ -36,8 +36,10 @@ void	_cmd_exec_bin_err(t_cmd_params *params, int find_bin_ret)
 
 	if (!find_bin_ret)
 		return ;
-	if (find_bin_ret == MS_CMD_NOT_FOUND && is_rel_path(params->cmd_args[0]) > 1)
-		ft_print_err("No such file or directory", 2, "minishell", params->cmd_args[0]);
+	if (find_bin_ret == MS_CMD_NOT_FOUND
+		&& is_rel_path(params->cmd_args[0]) > 1)
+		ft_print_err("No such file or directory",
+			2, "minishell", params->cmd_args[0]);
 	else if (find_bin_ret == MS_CMD_NOT_FOUND)
 		ft_print_err("command not found", 2, "minishell", params->cmd_args[0]);
 	else if (find_bin_ret == MS_PERM_DENIED)

@@ -20,7 +20,6 @@
 #include "redirect.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
@@ -29,8 +28,6 @@
 
 sig_atomic_t	g_signal = 0;
 
-#ifndef DEBUG
-
 void	init_minishell(void)
 {
 	ft_atexit(ms_close_stdio);
@@ -40,19 +37,6 @@ void	init_minishell(void)
 	ms_set_exitstatus(0);
 	setup_sighandlers();
 }
-#else
-
-void	init_minishell(void)
-{
-	printf("%d\n", getpid());
-	ft_atexit(ms_close_stdio);
-	init_env();
-	if (ms_is_interactive())
-		ms_setenv("PS1", "minishell$ ");
-	ms_set_exitstatus(0);
-	setup_sighandlers();
-}
-#endif
 
 int	main(void)
 {
