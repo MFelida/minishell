@@ -42,8 +42,7 @@ t_lex_tok	*lx_new_id_tok(t_lex_context *context)
 
 static int	_is_valid_var_char(const t_lex_context *context)
 {
-	if (context->curr > context->start + 1
-		&& (context->curr[-1] == '?' || context->curr[-1] == '$'))
+	if (context->start[0] == '?' || context->start[0] == '$')
 		return (0);
 	if (ft_isalnum(*context->curr) || *context->curr == '_')
 		return (1);
