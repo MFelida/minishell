@@ -38,6 +38,8 @@ static bool	_is_numeric(const char *arg)
 		arg++;
 		is_neg = 1;
 	}
+	else if (*arg == '+')
+		arg++;
 	while (*arg == '0')
 		arg++;
 	while (arg[i])
