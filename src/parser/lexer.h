@@ -45,6 +45,7 @@ typedef struct s_lex_tok
 	t_lex_type			type;
 	t_lex_op			op;
 	char				*id;
+	int					was_quoted;
 }	t_lex_tok;
 
 typedef struct s_lex_context

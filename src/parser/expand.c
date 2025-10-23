@@ -54,12 +54,16 @@ t_lex_tok	*expand_vars(t_lex_tok *lex_list)
 		if (curr->type == MS_LEX_TOK_VAR)
 		{
 			temp = curr->id;
-			if (!ms_getenv(temp))
+			curr->type = MS_LEX_TOK_ID;
+			if (!ms_getenv(temp) || ms_getenv(temp)[0] == '\0')
+			{
 				curr->id = ft_strdup("");
+				if (!curr->was_quoted)
+					curr->type = MS_LEX_TOK_WS;
+			}
 			else
 				curr->id = ft_strdup(ms_getenv(temp));
 			free(temp);
-			curr->type = MS_LEX_TOK_ID;
 		}
 		curr = curr->next;
 	}

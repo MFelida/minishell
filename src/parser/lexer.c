@@ -35,6 +35,8 @@ t_lex_tok	*lx_new_id_tok(t_lex_context *context)
 		context->error = 1;
 		return (NULL);
 	}
+	if (context->quote_state != MS_LEX_QUOTE_NONE)
+		res->was_quoted = 1;
 	return (res);
 }
 
